@@ -2,8 +2,8 @@ package com.project.projectWs.facade;
 
 import java.util.List;
 
-import com.project.location.entity.Area;
+import com.project.location.dto.AreaDto;
 
 public interface LocationFacade {
-	public List<Area> findAll();
+	public List<AreaDto> findAll();
 }
