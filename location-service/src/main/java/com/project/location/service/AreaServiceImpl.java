@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.common.utils.ObjectMapperUtils;
+import com.project.location.dto.AreaDto;
 import com.project.location.entity.Area;
 import com.project.location.repository.AreaRepository;
 
@@ -15,9 +17,13 @@ public class AreaServiceImpl implements AreaService {
 	private AreaRepository areaRepository;
 
 	@Override
-	public List<Area> findAll() {
+	public List<AreaDto> findAll() {
 		
-		return areaRepository.findAll();
+		List<Area> areas = areaRepository.findAll();
+		
+		List<AreaDto> areaDtos = ObjectMapperUtils.mapAll(areas,AreaDto.class);
+		
+		return areaDtos;
 	}
 
 }

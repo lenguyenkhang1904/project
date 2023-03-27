@@ -1,0 +1,6 @@
+com\project\projectWs\Rest\LocationRest.class
+com\project\projectWs\ProjecWsApplication.class
+com\project\projectWs\facade\LocationFacade.class
+com\project\projectWs\Utils\Routes.class
+com\project\projectWs\config\SwaggerConfig.class
+com\project\projectWs\facade\LocationFacadeImpl.class

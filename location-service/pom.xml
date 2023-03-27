@@ -6,7 +6,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>location-service</artifactId>
-  
+  <packaging>jar</packaging>
   <dependencies> 
   <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
@@ -18,7 +18,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.giasuomt</groupId>
+			<artifactId>common-service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
   </dependencies>
-  
-  <packaging>war</packaging>
 </project>
