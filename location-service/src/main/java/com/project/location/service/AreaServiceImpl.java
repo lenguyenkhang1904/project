@@ -13,7 +13,7 @@ import com.project.location.repository.AreaRepository;
 @Service
 public class AreaServiceImpl implements AreaService {
 	
-	@Autowired
+	@Autowired(required = true)
 	private AreaRepository areaRepository;
 
 	@Override

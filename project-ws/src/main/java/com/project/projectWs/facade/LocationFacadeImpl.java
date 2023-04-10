@@ -11,7 +11,7 @@ import com.project.location.service.AreaService;
 @Service
 public class LocationFacadeImpl implements LocationFacade {
 	
-	@Autowired(required = true)
+	@Autowired
 	private AreaService areaService;
 
 	@Override

@@ -14,8 +14,6 @@ import com.project.location.dto.AreaDto;
 import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.facade.LocationFacade;
 
-import lombok.AllArgsConstructor;
-
 @RestController
 @RequestMapping(value = Routes.AREA)
 public class LocationRest {
