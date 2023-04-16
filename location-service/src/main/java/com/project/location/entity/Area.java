@@ -16,31 +16,31 @@ import lombok.Setter;
 @Entity
 @Table(name = "area")
 @JsonIgnoreProperties(value={"hibernateLazyInitializer"}) 
-public class Area extends AbstractEntity {
+public class Area {
 	
 	@Id
 	private String id;
 	
 	@Column(name = "nation")
-	protected String nation;
+	private String nation;
 	
 	@Column(name = "state")
-	protected String state;	
+	private String state;	
 	
 	@Column(name = "provincial_level")
-	protected String provincialLevel;
+	private String provincialLevel;
 	
 	@Column(name = "district")
-	protected String district;
+	private String district;
 	
 	@Column(name = "commune")
-	protected String commune;
+	private String commune;
 	
 	@Column(name = "x_rel_coo")
-	protected String xRelCoo;
+	private String xRelCoo;
 	
 	@Column(name = "y_rel_coo")
-	protected String yRelCoo;
+	private String yRelCoo;
 
 }
 
