@@ -5,5 +5,11 @@ import java.util.List;
 import com.project.location.dto.AreaDto;
 
 public interface AreaService {
-	public List<AreaDto>  findAll();
+	List<AreaDto>  findAll();
+	
+	AreaDto findById(final String id);
+	
+	void deleteById(final String id);
+	
+	List<AreaDto> findByNationAndStateAndProvincialLevelAndDistrictAndCommune(final AreaDto areaDto);
 }

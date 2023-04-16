@@ -5,11 +5,9 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class AreaDto implements Serializable {
-
+public class RequestFindingArea implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
-
-	private String id;
 
 	private String nation;
 
@@ -20,8 +18,5 @@ public class AreaDto implements Serializable {
 	private String district;
 
 	private String commune;
-	
-	private String xRelCoo;
 
-	private String yRelCoo;
 }
