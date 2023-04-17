@@ -3,7 +3,7 @@ package com.project.projectWs.facade;
 import java.util.List;
 
 import com.project.location.dto.AreaDto;
-import com.project.location.dto.RequestFindingArea;
+import com.project.projectWs.dto.RequestFindingArea;
 
 public interface LocationFacade {
 	List<AreaDto> findAll();

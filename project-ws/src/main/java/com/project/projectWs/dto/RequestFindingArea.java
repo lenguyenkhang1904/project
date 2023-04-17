@@ -1,4 +1,4 @@
-package com.project.location.dto;
+package com.project.projectWs.dto;
 
 import java.io.Serializable;
 
