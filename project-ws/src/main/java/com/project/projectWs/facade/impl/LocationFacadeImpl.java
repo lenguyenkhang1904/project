@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.location.dto.AreaDto;
-import com.project.location.dto.RequestFindingArea;
 import com.project.location.service.AreaService;
+import com.project.projectWs.dto.RequestFindingArea;
 import com.project.projectWs.facade.LocationFacade;
 
 @Service

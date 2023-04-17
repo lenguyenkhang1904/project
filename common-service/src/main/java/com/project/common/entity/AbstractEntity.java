@@ -22,18 +22,18 @@ import lombok.Setter;
 //@EntityListeners(AuditingEntityListener.class) //để model này lấy được @EnableJpaAuditing đã Config ở bên JpaConfig.java để @CreatedDate,@LastModifiedDate có hiệu lực
 public class AbstractEntity {
 	
-	@Version 
-	protected Long version; 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@CreatedDate 
-	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@Column(name = "created_at", nullable = false, updatable = false) 
-	protected LocalDateTime createdAt;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@LastModifiedDate 
-	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@Column(name = "updated_at", nullable = false)
-	protected LocalDateTime updatedAt;
+//	@Version 
+//	protected Long version; 
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
+//	@CreatedDate 
+//	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
+//	@Column(name = "created_at", nullable = false, updatable = false) 
+//	protected LocalDateTime createdAt;
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
+//	@LastModifiedDate 
+//	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
+//	@Column(name = "updated_at", nullable = false)
+//	protected LocalDateTime updatedAt;
 //	@CreatedBy 
 //	protected String createdBy;  
 //	@LastModifiedBy

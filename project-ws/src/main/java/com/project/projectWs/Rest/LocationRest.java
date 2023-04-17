@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.common.utils.ResponseHandler;
 import com.project.location.dto.AreaDto;
-import com.project.location.dto.RequestFindingArea;
 import com.project.projectWs.Utils.Routes;
+import com.project.projectWs.dto.RequestFindingArea;
 import com.project.projectWs.facade.LocationFacade;
 
 @RestController
