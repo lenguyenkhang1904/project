@@ -1,8 +1,11 @@
 package com.project.location.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,7 +18,6 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "area")
-@JsonIgnoreProperties(value={"hibernateLazyInitializer"}) 
 public class Area {
 	
 	@Id
@@ -41,6 +43,9 @@ public class Area {
 	
 	@Column(name = "y_rel_coo")
 	private String yRelCoo;
+	
+	@OneToMany(mappedBy = "area")
+	private List<TaskPlaceAddress> taskPlaceAddresses;
 
 }
 

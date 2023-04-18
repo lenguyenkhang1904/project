@@ -58,5 +58,6 @@
 		<module>db-service</module>
 		<module>project-ws</module>
 		<module>common-service</module>
+		<module>person-service</module>
 	</modules>
 </project>
