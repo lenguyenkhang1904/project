@@ -24,7 +24,11 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.12.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.giasuomt</groupId>
+			<artifactId>person-service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>project-ws</finalName>

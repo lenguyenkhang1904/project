@@ -3,8 +3,10 @@ package com.project.person.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -30,26 +32,21 @@ public class Tutor {
 	@Id
 	private Long id;
 	
-//	@Version 
-//	protected Long version; //version có thể dùng để truyền vào cache
-//	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
 	@CreatedDate 
 	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
 	@Column(name = "created_at", nullable = false, updatable = false)
-	protected LocalDateTime createdAt;
+	private LocalDateTime createdAt;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
 	@LastModifiedDate 
 	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT)
 	@Column(name = "updated_at", nullable = false)
-	protected LocalDateTime updatedAt;
-//	
-//	@CreatedBy 
-//	protected String createdBy;  
-//	
-//	@LastModifiedBy
-//	protected String updatedBy;
+	private LocalDateTime updatedAt;
+
+	private String createdBy;  
+
+	private String updatedBy;
 
 	@Column(name = "registered_status")
 	private String registeredStatus;
@@ -95,6 +92,9 @@ public class Tutor {
 	@Column(name = "tutor_address_area_id")
 	private String tutorAddressAreaId;
 
+	@Column(name = "place_of_birth")
+	private String placeOfBirth;
+	
 //VỊ TRÍ TƯƠNG ĐỐI CỦA GIA SƯ - vị trí này được xác định theo: vị trí các lớp đã nhận (trọng số theo thời gian và số lớp), các lớp đã đăng ký (trọng số theo thời gian và số lớp), nơi ở hiện tại mà gia sư khai báo (trọng số theo thời gian và nơi ở là tạm trú hay thường trú) 
 	@Column(name = "x_Rel_Coo")
 	private String xRelCoo;
@@ -104,4 +104,16 @@ public class Tutor {
 	
 	@OneToMany(mappedBy = "tutor")
 	private List<AreaTutor> areaTutor;
+//MEDIA
+	@Column(name = "avatar")
+	private String avatar;
+	
+	@Column(name = "public_imgs")
+	private String publicImgs;
+
+	@Column(name = "private_imgs")
+	private String privateImgs;
+
+	@Column(name = "exp_notices")
+	private String expNotices;
 }

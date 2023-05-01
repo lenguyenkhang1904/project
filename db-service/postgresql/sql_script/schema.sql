@@ -79,7 +79,7 @@ ALTER TABLE IF EXISTS public.tutor
     OWNER to postgres;
     
 
-CREATE TABLE IF NOT EXISTS public.tutor_area_rel
+CREATE TABLE IF NOT EXISTS public.tutor_area
 (
 	id character varying(255) COLLATE pg_catalog."default" NOT NULL,
     tutor_id bigint NOT NULL,
@@ -99,5 +99,5 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.tutor_area_rel
+ALTER TABLE IF EXISTS public.tutor_area
     OWNER to postgres;

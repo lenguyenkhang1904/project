@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -25,7 +26,7 @@ public class AreaTutor {
 	private String id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Column(name ="tutor_id")
+	@JoinColumn(name ="tutor_id")
 	private Tutor tutor;
 	
 	@Column(name ="area_id")
