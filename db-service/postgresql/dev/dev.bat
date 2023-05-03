@@ -1,5 +1,9 @@
-SET PGPASSWORD=anhhungemkhang
+@echo off 
+set PGPASSWORD=postgres
+set PGDATABASE=OMTDev
+set HOST=localhost
+set port=5432
 SET PGCLIENTENCODING=utf-8
 chcp 65001
-psql -h 112.78.3.43 -d OMTDev -U postgres -p 5432 -f D:/Thesis/project/db-service/postgresql/sql_script/update_data_location.sql
-psql -h 112.78.3.43 -d OMTDev -U postgres -p 5432 -f D:/Thesis/project/db-service/postgresql/sql_script/update_schema.sql
+psql -h %HOST% -d %PGDATABASE% -U postgres -p %port% -f D:/Thesis/project/db-service/postgresql/sql_script/update_data_location.sql
+psql -h %HOST% -d %PGDATABASE% -U postgres -p %port% -f D:/Thesis/project/db-service/postgresql/sql_script/update_schema.sql
