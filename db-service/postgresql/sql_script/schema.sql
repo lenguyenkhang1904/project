@@ -101,3 +101,35 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.tutor_area
     OWNER to postgres;
+
+CREATE TABLE IF NOT EXISTS public.register_and_learner
+(
+    id character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    created_by character varying(255) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone NOT NULL,
+    updated_by character varying(255) COLLATE pg_catalog."default",
+    birth_date date,
+    birth_year character varying(255) COLLATE pg_catalog."default",
+    emails character varying(255) COLLATE pg_catalog."default",
+    english_full_name character varying(255) COLLATE pg_catalog."default",
+    fbs character varying(255) COLLATE pg_catalog."default",
+    full_name character varying(255) COLLATE pg_catalog."default",
+    gender character varying(255) COLLATE pg_catalog."default",
+    id_card_issued_on character varying(255) COLLATE pg_catalog."default",
+    id_card_number character varying(255) COLLATE pg_catalog."default",
+    phones character varying(255) COLLATE pg_catalog."default",
+    registered_status character varying(255) COLLATE pg_catalog."default",
+    zaloes character varying(255) COLLATE pg_catalog."default",
+    avatar character varying(255) COLLATE pg_catalog."default",
+    note character varying(255) COLLATE pg_catalog."default",
+    vocative character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT register_and_learner_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.register_and_learner
+    OWNER to postgres;

@@ -1,8 +1,7 @@
 package com.project.projectWs.facade.impl;
 
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;import java.util.stream.Collector;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class TutorFacadeImpl implements TutorFacade {
 	}
 
 	@Override
-	public List<ResponseTutor> findallTutor() {
+	public List<ResponseTutor> findAllTutor() {
 		List<AreaTutorDto> dtos = tutorService.findAllTutor();
 		List<ResponseTutor> tutors = new LinkedList<>();
 		List<AreaDto> areas = areaService.findAll();
@@ -54,10 +53,45 @@ public class TutorFacadeImpl implements TutorFacade {
 			
 			responseTutor.setAreaTutorId(areas.stream().filter(area -> item.getRelArea().stream().
 					anyMatch(it -> it.equals(area.getId()))).
-					collect(Collectors.toList()))  ;			
+					collect(Collectors.toList()));			
 			tutors.add(responseTutor);
 		});		
 		return tutors;
+	}
+
+	@Override
+	public TutorDto findByTutorCode(final Long tutorCode) {
+		return tutorService.findByTutorCode(tutorCode);
+	}
+
+	@Override
+	public List<TutorDto> findByPhoneNumber(final String phoneNumber) {
+		return tutorService.findByPhoneNumber(phoneNumber);
+	}
+
+	@Override
+	public List<TutorDto> findByEndPhoneNumber(final String endPhoneNumber) {
+		return tutorService.findByEndPhoneNumber(endPhoneNumber);
+	}
+
+	@Override
+	public List<TutorDto> findByFullNameContain(final String fullName) {
+		return tutorService.findByFullNameContain(fullName);
+	}
+
+	@Override
+	public List<TutorDto> findByEnglishFullName(final String fullname) {
+		return tutorService.findByEnglishFullName(fullname);
+	}
+
+	@Override
+	public List<String> findByEngfullnameAndShowFullName(final String fullname) {
+		return tutorService.findByEngfullnameAndShowFullName(fullname);
+	}
+
+	@Override
+	public List<String> findByfullnameAndShowFullName(final String fullname) {
+		return tutorService.findByfullnameAndShowFullName(fullname);
 	}
 
 }

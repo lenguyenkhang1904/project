@@ -1,24 +1,14 @@
 package com.project.person.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.common.utils.DateTimeUtils;
-import com.project.common.utils.DateUtils;
+import com.project.common.entity.PersonAbstractInformation;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,64 +17,10 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "tutor")
-public class Tutor {
+public class Tutor extends PersonAbstractInformation {
 	
 	@Id
 	private Long id;
-	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@CreatedDate 
-	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@Column(name = "created_at", nullable = false, updatable = false)
-	private LocalDateTime createdAt;
-	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@LastModifiedDate 
-	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT)
-	@Column(name = "updated_at", nullable = false)
-	private LocalDateTime updatedAt;
-
-	private String createdBy;  
-
-	private String updatedBy;
-
-	@Column(name = "registered_status")
-	private String registeredStatus;
-
-	@Column(name = "full_name")
-	private String fullName;
-	
-	@Column(name = "english_fullName")
-	private String englishFullName;
-
-	@Column(name = "gender")
-	private String gender;
-	
-	@Column(name = "birth_year")
-	private String birthYear;
-	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtils.DATE_FORMAT)																				// tượng thành Json để trả về																					// Clients
-	@DateTimeFormat(pattern = DateUtils.DATE_FORMAT)
-	@Column(name = "birth_date")
-	private LocalDate birthDate;
-	
-	@Column(name = "phones")
-	private String phones;
-	
-	@Column(name = "emails")
-	private String emails;
-	
-	@Column(name = "zaloes")
-	private String zaloes;
-	
-	@Column(name = "fbs")
-	private String fbs;
-	
-	@Column(name = "id_card_number")
-	private String idCardNumber;
-	
-	@Column(name = "id_card_issued_on")
-	private String idCardIssuedOn;
 	
 	@Column(name = "tutor_address")
 	private String tutorAddress;
@@ -116,4 +52,7 @@ public class Tutor {
 
 	@Column(name = "exp_notices")
 	private String expNotices;
+//
+	@Column(name = "average_start_numbers")
+	private Double averageStarNumbers;
 }
