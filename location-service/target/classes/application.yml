@@ -9,7 +9,7 @@ spring:
   #Data Configuration  
   datasource:
     #url:  jdbc:postgresql://112.78.1.62/databasecentral jdbc:postgresql://host.docker.internal:49153/giasuomt
-    url:   jdbc:postgresql://localhost:5432/OMTDev
+    url:  jdbc:postgresql://localhost:5432/OMTDev
     username: postgres
     password: postgres
    
