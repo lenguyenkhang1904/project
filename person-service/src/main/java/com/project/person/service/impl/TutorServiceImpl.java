@@ -45,14 +45,16 @@ public class TutorServiceImpl implements TutorService{
 		tutor = tutorRepository.save(tutor);
 		// areaTutor
 		List<String> areaTutorIds = dto.getAreaTutorId();
-		List<AreaTutor> areaTutors = new LinkedList<>();
-		for(String areaId : areaTutorIds) {
-			AreaTutor areaTutor = new AreaTutor();
-			areaTutor.setTutor(tutor);
-			areaTutor.setAreaId(areaId);
-			areaTutors.add(areaTutor);
+		if(!areaTutorIds.isEmpty()) {
+			List<AreaTutor> areaTutors = new LinkedList<>();
+			for(String areaId : areaTutorIds) {
+				AreaTutor areaTutor = new AreaTutor();
+				areaTutor.setTutor(tutor);
+				areaTutor.setAreaId(areaId);
+				areaTutors.add(areaTutor);
+			}
+			areaTutors = areaTutorRepository.saveAll(areaTutors);
 		}
-		areaTutors = areaTutorRepository.saveAll(areaTutors);
 		
 		return tutor.getId();
 	}
@@ -116,12 +118,49 @@ public class TutorServiceImpl implements TutorService{
 			dto.setUpdatedAt(DateConverter.convertDateToLocalDateTime((Timestamp) objectList[19]));
 			
 			String relAreas = (String) objectList[26];
-			List<String> realAreaIds = Arrays.asList(relAreas.split(","));
+			List<String> realAreaIds = Arrays.asList(relAreas.split(", "));
 			dto.setRelArea(realAreaIds);
 			tutorDtos.add(dto);
 		});
 		
 		return tutorDtos;
+	}
+	
+	@Override
+	public TutorDto findByTutorCode(final Long tutorCode) {
+		return ObjectMapperUtils.map(tutorRepository.findByIdOrTutorCode(tutorCode), TutorDto.class);
+	}
+
+	@Override
+	public List<TutorDto> findByPhoneNumber(final String phoneNumber) {
+		return ObjectMapperUtils.mapAll(tutorRepository.findByPhonesContaining(phoneNumber), TutorDto.class);
+	}
+
+	@Override
+	public List<TutorDto> findByEndPhoneNumber(final String endPhoneNumber) {
+		return ObjectMapperUtils.mapAll(tutorRepository.findByPhonesContaining(endPhoneNumber.concat("#")), TutorDto.class);
+	}
+
+	@Override
+	public List<TutorDto> findByFullNameContain(final String fullName) {
+		return ObjectMapperUtils.mapAll(tutorRepository.findByFullNameContaining(fullName), TutorDto.class);
+	}
+
+
+	@Override
+	public List<TutorDto> findByEnglishFullName(final String fullname) {
+		 return ObjectMapperUtils.mapAll(tutorRepository.findByEnglishFullNameContaining(fullname), TutorDto.class);
+	}
+
+
+	@Override
+	public List<String> findByEngfullnameAndShowFullName(final String fullname) {
+		return tutorRepository.findByEnglishNameAndShowFullName(fullname);
+	}
+
+	@Override
+	public List<String> findByfullnameAndShowFullName(final String fullname) {
+		return tutorRepository.showFullname(fullname);
 	}
 
 	
