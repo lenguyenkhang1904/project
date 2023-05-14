@@ -23,4 +23,17 @@ public interface TutorService {
 	List<String> findByEngfullnameAndShowFullName(final String fullname);
  
     List<String> findByfullnameAndShowFullName(final String fullname);
+    
+    TutorDto findById(final Long id);
+    
+    Long updateTutor(final TutorDto dto);
+    
+    Long updateSubjetGroupMaybe(TutorDto dto);
+
+	Long updateSubjectGroupForSure(TutorDto dto);
+	
+	Long updateNowLevelAndNowUpdateAt(TutorDto dto);
+
+	Long updateCalendar(TutorDto dto);
+
 }

@@ -1,51 +1,23 @@
 package com.project.person.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-import lombok.Data;
-@Data
-public class TutorDto implements Serializable {
-	
+import com.project.common.dto.PersonInformationDto;
+import com.project.common.utils.Calendar;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class TutorDto extends PersonInformationDto implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
-	
-	protected LocalDateTime createdAt;
-	
-	protected LocalDateTime updatedAt;
-//	
-//	@CreatedBy 
-//	protected String createdBy;  
-//	
-//	@LastModifiedBy
-//	protected String updatedBy;
-
-	private String registeredStatus;
-
-	private String fullName;
-
-	private String englishFullName;
-
-	private String gender;
-
-	private String birthYear;
-	
-	private LocalDate birthDate;
-
-	private String phones;
-
-	private String emails;
-
-	private String zaloes;
-
-	private String fbs;
-
-	private String idCardNumber;
-
-	private String idCardIssuedOn;
 
 	private String tutorAddress;
 
@@ -53,9 +25,43 @@ public class TutorDto implements Serializable {
 
 	private String xRelCoo;
 
-    private String yRelCoo;
-    
-    private String placeOfBirth;
+	private String yRelCoo;
+
+	private String placeOfBirth;
+
+	private List<String> areaTutorIds;
+
+	private String expNotices;
+
+	private Double averageStarNumbers;
+
+	private String hienDangLa;
+
+	private String nowLevel;
+
+	private LocalDateTime nowLevelUpdatedAt;
+
+	private String studyingInsitution;
+
+	private String teachingInstitution;
+
+	private String major;
+
+	private String voices;
+
+	private List<String> tutorTutorTagIds;
+
+	private String tutorNotices;
+
+	private String advantageNote;
+
+	private List<String> tutorSubjectGroupMaybeIds;
+
+	private List<String> tutorSubjectGroupForSureIds;
+
+	private String subject;
+
+	private String subjectClass;
 	
-	private List<String> areaTutorId;
+	private List<Calendar> calendars;
 }
