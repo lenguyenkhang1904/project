@@ -52,6 +52,9 @@ public class TaskPlaceAddress {
 	@ManyToOne
 	@JoinColumn(name = "area_id")
 	private Area area;
+	
+	@Column(name = "register_and_learner_id")
+	private String registerAndLearnerId;
 
 	@Override
 	public String toString() {

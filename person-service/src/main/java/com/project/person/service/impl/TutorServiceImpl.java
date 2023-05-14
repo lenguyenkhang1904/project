@@ -1,41 +1,56 @@
 package com.project.person.service.impl;
 
-import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.common.utils.Calendar;
 import com.project.common.utils.DateConverter;
 import com.project.common.utils.HandleCharacter;
 import com.project.common.utils.ObjectMapperUtils;
+import com.project.common.utils.TypeOfSubjectGroup;
 import com.project.person.dto.AreaTutorDto;
 import com.project.person.dto.TutorDto;
 import com.project.person.entity.AreaTutor;
 import com.project.person.entity.Tutor;
+import com.project.person.entity.TutorSubjectGroupForSure;
+import com.project.person.entity.TutorSubjectGroupMaybe;
+import com.project.person.entity.TutorTutorTag;
 import com.project.person.repository.AreaTutorRepository;
 import com.project.person.repository.TutorRepository;
+import com.project.person.repository.TutorSubjectGroupForSureRepository;
+import com.project.person.repository.TutorSubjectGroupMaybeRepository;
+import com.project.person.repository.TutorTutorTagRepository;
 import com.project.person.service.TutorService;
 import com.project.person.utils.GenerateTutorId;
 
 @Service
-public class TutorServiceImpl implements TutorService{
-	
+public class TutorServiceImpl implements TutorService {
+
 	@Autowired
 	private TutorRepository tutorRepository;
-	
+
 	@Autowired
 	private AreaTutorRepository areaTutorRepository;
 
+	@Autowired
+	private TutorTutorTagRepository tutorTutorTagRepository;
+
+	@Autowired
+	private TutorSubjectGroupForSureRepository tutorSubjectGroupForSureRepository;
+
+	@Autowired
+	private TutorSubjectGroupMaybeRepository tutorSubjectGroupMaybeRepository;
+
 	@Override
 	public Long saveTutor(TutorDto dto) {
-		//tutor
+		// tutor
 		Tutor tutor = new Tutor();
 		tutor = ObjectMapperUtils.map(dto, Tutor.class);
 		Long id = Long.parseLong(generateTutorCode());
@@ -43,34 +58,72 @@ public class TutorServiceImpl implements TutorService{
 		tutor.setFullName(dto.getFullName().toUpperCase());
 		tutor.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName()).toUpperCase());
 		tutor = tutorRepository.save(tutor);
-		// areaTutor
-		List<String> areaTutorIds = dto.getAreaTutorId();
-		if(!areaTutorIds.isEmpty()) {
-			List<AreaTutor> areaTutors = new LinkedList<>();
-			for(String areaId : areaTutorIds) {
-				AreaTutor areaTutor = new AreaTutor();
-				areaTutor.setTutor(tutor);
-				areaTutor.setAreaId(areaId);
-				areaTutors.add(areaTutor);
-			}
-			areaTutors = areaTutorRepository.saveAll(areaTutors);
+		// Area Tutor
+		List<String> areaTutorIds = dto.getAreaTutorIds();
+		if (!areaTutorIds.isEmpty()) {
+			saveAllAreaTutor(areaTutorIds, tutor);
 		}
-		
+		// Tutor Tutor Tag
+		List<String> tutorTutorTagIds = dto.getTutorTutorTagIds();
+		if (!tutorTutorTagIds.isEmpty()) {
+			saveAllTutorTutorTag(tutorTutorTagIds, tutor);
+		}
 		return tutor.getId();
 	}
-	
-	
+
+	private void saveAllAreaTutor(List<String> areaTutorIds, Tutor tutor) {
+		List<AreaTutor> areaTutors = new LinkedList<>();
+		for (String areaId : areaTutorIds) {
+			AreaTutor areaTutor = new AreaTutor();
+			areaTutor.setTutor(tutor);
+			areaTutor.setAreaId(areaId);
+			areaTutors.add(areaTutor);
+		}
+		areaTutorRepository.saveAll(areaTutors);
+	}
+
+	private void saveAllTutorTutorTag(List<String> tutorTutorTagIds, Tutor tutor) {
+		List<TutorTutorTag> tutorTutorTags = new LinkedList<>();
+		for (String tutorTutorTagId : tutorTutorTagIds) {
+			TutorTutorTag tutorTutorTag = new TutorTutorTag();
+			tutorTutorTag.setTutor(tutor);
+			tutorTutorTag.setTutorTagId(tutorTutorTagId);
+			tutorTutorTags.add(tutorTutorTag);
+		}
+		tutorTutorTagRepository.saveAll(tutorTutorTags);
+	}
+
+	private void saveAllTutorSubjectGroup(List<String> tutorSubjectGroupIds, String typeOfSubjectGroup, Tutor tutor) {
+		List<TutorSubjectGroupMaybe> tutorSubjectGroupMaybes = new LinkedList<>();
+		List<TutorSubjectGroupForSure> tutorSubjectGroupForSures = new LinkedList<>();
+
+		if (typeOfSubjectGroup.equals("MAYBE")) {
+			for (String tutorSubjectGroupId : tutorSubjectGroupIds) {
+				TutorSubjectGroupMaybe tutorSubjectGroupMaybe = new TutorSubjectGroupMaybe();
+				tutorSubjectGroupMaybe.setTutor(tutor);
+				tutorSubjectGroupMaybe.setSubjectGroupId(tutorSubjectGroupId);
+				tutorSubjectGroupMaybes.add(tutorSubjectGroupMaybe);
+			}
+			tutorSubjectGroupMaybeRepository.saveAll(tutorSubjectGroupMaybes);
+		} else {
+			for (String tutorSubjectGroupId : tutorSubjectGroupIds) {
+				TutorSubjectGroupForSure tutorSubjectGroupForSure = new TutorSubjectGroupForSure();
+				tutorSubjectGroupForSure.setTutor(tutor);
+				tutorSubjectGroupForSure.setSubjectGroupId(tutorSubjectGroupId);
+				tutorSubjectGroupForSures.add(tutorSubjectGroupForSure);
+			}
+			tutorSubjectGroupForSureRepository.saveAll(tutorSubjectGroupForSures);
+		}
+
+	}
+
 	private String generateTutorCode() {
 		String ResponseTutorCode = null;
-		// lấy những người có tutorcode à ko null
 		Tutor personHasTutorCode = tutorRepository.getLastTutor();
 		if (personHasTutorCode != null) {
 			if (personHasTutorCode != null) {
-				String tutorCodeWithIdMaxorPreviousId = String.valueOf(personHasTutorCode.getId());// lấy mã đó ra từ //
-																									// Person
-				// trước đó cuối
-				int count = GenerateTutorId
-						.generateResponsiveReserve(tutorCodeWithIdMaxorPreviousId.substring(6, 8));
+				String tutorCodeWithIdMaxorPreviousId = String.valueOf(personHasTutorCode.getId());
+				int count = GenerateTutorId.generateResponsiveReserve(tutorCodeWithIdMaxorPreviousId.substring(6, 8));
 				if (tutorCodeWithIdMaxorPreviousId == null
 						|| GenerateTutorId.AutoGennerate(tutorCodeWithIdMaxorPreviousId) == -1
 						|| GenerateTutorId.AutoGennerate(tutorCodeWithIdMaxorPreviousId) == 2) {
@@ -86,16 +139,15 @@ public class TutorServiceImpl implements TutorService{
 		return GenerateTutorId.generatorCode().concat(ResponseTutorCode);
 	}
 
-
 	@Override
 	public List<AreaTutorDto> findAllTutor() {
 		List<AreaTutorDto> tutorDtos = new LinkedList<>();
-		
+
 		tutorRepository.findAllTutor().stream().forEach(item -> {
 			Object[] objectList = (Object[]) item;
-			AreaTutorDto dto = new AreaTutorDto();			
-			String convertToStringId = (String) objectList[0].toString();		
-			Long id = Long.parseLong(convertToStringId);			
+			AreaTutorDto dto = new AreaTutorDto();
+			String convertToStringId = (String) objectList[0].toString();
+			Long id = Long.parseLong(convertToStringId);
 			dto.setId(id);
 			dto.setBirthDate(DateConverter.convertDateToLocalDate((Date) objectList[1]));
 			dto.setBirthYear((String) objectList[2]);
@@ -116,16 +168,16 @@ public class TutorServiceImpl implements TutorService{
 			dto.setTutorAddressAreaId((String) objectList[17]);
 			dto.setCreatedAt(DateConverter.convertDateToLocalDateTime((Timestamp) objectList[18]));
 			dto.setUpdatedAt(DateConverter.convertDateToLocalDateTime((Timestamp) objectList[19]));
-			
+
 			String relAreas = (String) objectList[26];
 			List<String> realAreaIds = Arrays.asList(relAreas.split(", "));
 			dto.setRelArea(realAreaIds);
 			tutorDtos.add(dto);
 		});
-		
+
 		return tutorDtos;
 	}
-	
+
 	@Override
 	public TutorDto findByTutorCode(final Long tutorCode) {
 		return ObjectMapperUtils.map(tutorRepository.findByIdOrTutorCode(tutorCode), TutorDto.class);
@@ -138,7 +190,8 @@ public class TutorServiceImpl implements TutorService{
 
 	@Override
 	public List<TutorDto> findByEndPhoneNumber(final String endPhoneNumber) {
-		return ObjectMapperUtils.mapAll(tutorRepository.findByPhonesContaining(endPhoneNumber.concat("#")), TutorDto.class);
+		return ObjectMapperUtils.mapAll(tutorRepository.findByPhonesContaining(endPhoneNumber.concat("#")),
+				TutorDto.class);
 	}
 
 	@Override
@@ -146,12 +199,10 @@ public class TutorServiceImpl implements TutorService{
 		return ObjectMapperUtils.mapAll(tutorRepository.findByFullNameContaining(fullName), TutorDto.class);
 	}
 
-
 	@Override
 	public List<TutorDto> findByEnglishFullName(final String fullname) {
-		 return ObjectMapperUtils.mapAll(tutorRepository.findByEnglishFullNameContaining(fullname), TutorDto.class);
+		return ObjectMapperUtils.mapAll(tutorRepository.findByEnglishFullNameContaining(fullname), TutorDto.class);
 	}
-
 
 	@Override
 	public List<String> findByEngfullnameAndShowFullName(final String fullname) {
@@ -163,5 +214,89 @@ public class TutorServiceImpl implements TutorService{
 		return tutorRepository.showFullname(fullname);
 	}
 
-	
+	@Override
+	public TutorDto findById(final Long id) {
+		Optional<Tutor> tutorOpt = tutorRepository.findById(id);
+		if (!tutorOpt.isEmpty()) {
+			Tutor tutor = tutorOpt.get();
+			TutorDto tutorDto = new TutorDto();
+			tutorDto = ObjectMapperUtils.map(tutor, TutorDto.class);
+			tutorDto.setPublicImgs(tutor.getPublicImgs());
+			tutorDto.setPrivateImgs(tutor.getPrivateImgs());
+			return tutorDto;
+		}
+		return null;
+	}
+
+	@Override
+	public Long updateTutor(TutorDto dto) {
+		Tutor tutor = ObjectMapperUtils.map(dto, Tutor.class);
+		tutor = tutorRepository.save(tutor);
+		return tutor.getId();
+	}
+
+	@Override
+	public Long updateSubjetGroupMaybe(TutorDto dto) {
+		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
+		if (!tutorOpt.isEmpty()) {
+			Tutor tutor = tutorOpt.get();
+			tutorSubjectGroupMaybeRepository.deleteByTutorId(dto.getId());
+			// Subject Group Maybe
+			List<String> tutorSubjectGroupMaybeIds = dto.getTutorSubjectGroupMaybeIds();
+			if (!tutorSubjectGroupMaybeIds.isEmpty()) {
+				saveAllTutorSubjectGroup(tutorSubjectGroupMaybeIds, TypeOfSubjectGroup.MAYBE.name(), tutor);
+				return tutor.getId();
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Long updateSubjectGroupForSure(TutorDto dto) {
+		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
+		if (!tutorOpt.isEmpty()) {
+			Tutor tutor = tutorOpt.get();
+			tutorSubjectGroupForSureRepository.deleteByTutorId(dto.getId());
+			// Subject Group ForSure
+			List<String> tutorSubjectGroupForSureIds = dto.getTutorSubjectGroupForSureIds();
+			if (!tutorSubjectGroupForSureIds.isEmpty()) {
+				saveAllTutorSubjectGroup(tutorSubjectGroupForSureIds, TypeOfSubjectGroup.FORSURE.name(), tutor);
+				return tutor.getId();
+			}
+		}
+		return null;
+	}
+
+	private Optional<Tutor> findByIdTutor(Long id) {
+		return tutorRepository.findById(id);
+	}
+
+	@Override
+	public Long updateNowLevelAndNowUpdateAt(TutorDto dto) {
+		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
+		if (!tutorOpt.isEmpty()) {
+			Tutor tutor = tutorOpt.get();
+			tutor.setNowLevel(dto.getNowLevel());
+			tutor = tutorRepository.save(tutor);
+			return tutor.getId();
+		}
+		return null;
+	}
+
+	@Override
+	public Long updateCalendar(TutorDto dto) {
+		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
+		if (!tutorOpt.isEmpty()) {
+			Tutor tutor = tutorOpt.get();
+			List<Calendar> calendars = new LinkedList<>();
+			for (Calendar calendar : dto.getCalendars()) {
+				calendars.add(calendar);
+			}
+			tutor.setCalendars(calendars);
+			tutor = tutorRepository.save(tutor);
+			return tutor.getId();
+		}
+		return null;
+	}
+
 }

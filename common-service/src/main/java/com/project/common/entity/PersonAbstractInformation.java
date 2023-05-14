@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @MappedSuperclass
-public class PersonAbstractInformation extends AbstractEntity{
+public class PersonAbstractInformation extends AbstractEntity {
 
 	@Column(name = "registered_status")
 	protected String registeredStatus;

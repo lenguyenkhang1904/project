@@ -1,0 +1,28 @@
+package com.project.person.dto;
+
+import java.io.Serializable;
+import java.util.List;
+
+import com.project.common.dto.PersonInformationDto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class RegisterAndLearnerDto extends PersonInformationDto implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private String id;
+
+	private String vocative;
+
+	private String note;
+
+	private List<String> registerAndLearnerTagIds;
+
+	private List<SchoolerDto> schoolerDtos;
+
+	private List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationships;
+}
