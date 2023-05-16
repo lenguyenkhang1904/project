@@ -18,4 +18,4 @@ spring:
     show-sql: true #để xem câu sql mà nó tự sinh
     generate-ddl: true #để thằng Hibernate tự nhìn Object và tạo database được
     hibernate: 
-      ddl-auto: create-drop
+      ddl-auto: update

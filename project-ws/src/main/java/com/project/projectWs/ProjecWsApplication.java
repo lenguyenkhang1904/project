@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan({ "com.project.projectWs", "com.project.location", "com.project.person", "com.project.storage",
-		"com.project.tags", "com.project.education"})
+		 "com.project.education"})
 @EnableJpaRepositories({ "com.project.location.repository", "com.project.person.repository",
-		"com.project.tags.repository", "com.project.education.repository"})
+	 "com.project.education.repository"})
 public class ProjecWsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProjecWsApplication.class, args);

@@ -49,7 +49,7 @@ public class TutorDto extends PersonInformationDto implements Serializable {
 
 	private String voices;
 
-	private List<String> tutorTutorTagIds;
+	private String tutorTag;
 
 	private String tutorNotices;
 

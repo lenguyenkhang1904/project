@@ -60,7 +60,6 @@
 		<module>common-service</module>
 		<module>person-service</module>
 		<module>storage-service</module>
-		<module>tutor-tag-service</module>
 		<module>education-service</module>
 	</modules>
 </project>

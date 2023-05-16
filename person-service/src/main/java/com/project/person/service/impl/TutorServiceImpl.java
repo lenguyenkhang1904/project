@@ -21,12 +21,10 @@ import com.project.person.entity.AreaTutor;
 import com.project.person.entity.Tutor;
 import com.project.person.entity.TutorSubjectGroupForSure;
 import com.project.person.entity.TutorSubjectGroupMaybe;
-import com.project.person.entity.TutorTutorTag;
 import com.project.person.repository.AreaTutorRepository;
 import com.project.person.repository.TutorRepository;
 import com.project.person.repository.TutorSubjectGroupForSureRepository;
 import com.project.person.repository.TutorSubjectGroupMaybeRepository;
-import com.project.person.repository.TutorTutorTagRepository;
 import com.project.person.service.TutorService;
 import com.project.person.utils.GenerateTutorId;
 
@@ -38,9 +36,6 @@ public class TutorServiceImpl implements TutorService {
 
 	@Autowired
 	private AreaTutorRepository areaTutorRepository;
-
-	@Autowired
-	private TutorTutorTagRepository tutorTutorTagRepository;
 
 	@Autowired
 	private TutorSubjectGroupForSureRepository tutorSubjectGroupForSureRepository;
@@ -63,11 +58,6 @@ public class TutorServiceImpl implements TutorService {
 		if (!areaTutorIds.isEmpty()) {
 			saveAllAreaTutor(areaTutorIds, tutor);
 		}
-		// Tutor Tutor Tag
-		List<String> tutorTutorTagIds = dto.getTutorTutorTagIds();
-		if (!tutorTutorTagIds.isEmpty()) {
-			saveAllTutorTutorTag(tutorTutorTagIds, tutor);
-		}
 		return tutor.getId();
 	}
 
@@ -80,17 +70,6 @@ public class TutorServiceImpl implements TutorService {
 			areaTutors.add(areaTutor);
 		}
 		areaTutorRepository.saveAll(areaTutors);
-	}
-
-	private void saveAllTutorTutorTag(List<String> tutorTutorTagIds, Tutor tutor) {
-		List<TutorTutorTag> tutorTutorTags = new LinkedList<>();
-		for (String tutorTutorTagId : tutorTutorTagIds) {
-			TutorTutorTag tutorTutorTag = new TutorTutorTag();
-			tutorTutorTag.setTutor(tutor);
-			tutorTutorTag.setTutorTagId(tutorTutorTagId);
-			tutorTutorTags.add(tutorTutorTag);
-		}
-		tutorTutorTagRepository.saveAll(tutorTutorTags);
 	}
 
 	private void saveAllTutorSubjectGroup(List<String> tutorSubjectGroupIds, String typeOfSubjectGroup, Tutor tutor) {

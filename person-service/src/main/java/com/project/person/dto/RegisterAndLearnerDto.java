@@ -20,7 +20,7 @@ public class RegisterAndLearnerDto extends PersonInformationDto implements Seria
 
 	private String note;
 
-	private List<String> registerAndLearnerTagIds;
+	private String registerAndLearnerTag;
 
 	private List<SchoolerDto> schoolerDtos;
 
