@@ -1,6 +1,5 @@
 package com.project.person.service.impl;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +13,8 @@ import com.project.person.dto.RegisterAndLearnerRelationshipDto;
 import com.project.person.dto.SchoolerDto;
 import com.project.person.dto.TutorDto;
 import com.project.person.entity.RegisterAndLearner;
-import com.project.person.entity.RegisterAndLearnerRegisterAndLearnerTag;
 import com.project.person.entity.RegisterAndLearnerRelationship;
 import com.project.person.entity.Schooler;
-import com.project.person.repository.RegisterAndLearnerRegisterAndLearnerTagRepository;
 import com.project.person.repository.RegisterAndLearnerRelationshipRepository;
 import com.project.person.repository.RegisterAndLearnerRepository;
 import com.project.person.repository.SchoolerRepository;
@@ -28,9 +25,6 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 
 	@Autowired
 	private RegisterAndLearnerRepository registerAndLearnerRepository;
-
-	@Autowired
-	private RegisterAndLearnerRegisterAndLearnerTagRepository registerAndLearnerRegisterAndLearnerTagRepository;
 
 	@Autowired
 	private RegisterAndLearnerRelationshipRepository registerAndLearnerRelationshipRepository;
@@ -102,19 +96,6 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 				registerAndLearner.addSchooler(schooler);
 			}
 		}
-		
-		// tags
-		List<String> registerAndLearnerTagIds = dto.getRegisterAndLearnerTagIds();
-		List<RegisterAndLearnerRegisterAndLearnerTag> registerAndLearnerRegisterAndLearnerTags = new LinkedList<>();
-		for(String registerAndLearnerTagId : registerAndLearnerTagIds) {
-			RegisterAndLearnerRegisterAndLearnerTag registerAndLearnerRegisterAndLearnerTag = new RegisterAndLearnerRegisterAndLearnerTag();
-			registerAndLearnerRegisterAndLearnerTag.setRegisterAndLearner(registerAndLearner);
-			registerAndLearnerRegisterAndLearnerTag.setRegisterAndLearnerTagId(registerAndLearnerTagId);
-			registerAndLearnerRegisterAndLearnerTags.add(registerAndLearnerRegisterAndLearnerTag);
-		}
-		registerAndLearnerRegisterAndLearnerTagRepository.saveAll(registerAndLearnerRegisterAndLearnerTags);
-		
-		
 		return registerAndLearner.getId();
 	}
 

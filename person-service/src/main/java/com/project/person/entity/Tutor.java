@@ -92,8 +92,8 @@ public class Tutor extends PersonAbstractInformation {
 	@Column(name = "voices")
 	private String voices;
 
-	@OneToMany(mappedBy = "tutor")
-	private List<TutorTutorTag> tutorTags;
+	@Column(name = "tutor_tag")
+	private String tutorTag;
 
 	@Column(name = "tutor_notices")
 	private String tutorNotices;

@@ -48,8 +48,8 @@ public class RegisterAndLearner extends PersonAbstractInformation {
 	@OneToMany(mappedBy = "registerAndLearner", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Schooler> schoolers;
 
-	@OneToMany(mappedBy = "registerAndLearner", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<RegisterAndLearnerRegisterAndLearnerTag> RegisterAndLearnerRegisterAndLearnerTags;
+	@Column(name = "register_and_learner")
+	private String registerAndLearnerTag;
 
 	@Column(name = "note")
 	private String note;
