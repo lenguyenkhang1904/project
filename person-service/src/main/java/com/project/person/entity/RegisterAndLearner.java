@@ -1,18 +1,23 @@
 package com.project.person.entity;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.common.entity.PersonAbstractInformation;
 
 import lombok.Getter;
@@ -45,44 +50,26 @@ public class RegisterAndLearner extends PersonAbstractInformation {
 	private List<String> privateImgs;
 
 	// HIỆN ĐANG LÀ
-	@OneToMany(mappedBy = "registerAndLearner", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "registerAndLearner")
 	private List<Schooler> schoolers;
 
-	@Column(name = "register_and_learner")
+	@Column(name = "register_and_learner_tag")
 	private String registerAndLearnerTag;
 
 	@Column(name = "note")
 	private String note;
 
 	@OneToMany(mappedBy = "registerAndLearner")
-	private List<TutorIntivation> tutorInvitations;
+	private List<TutorInvitation> tutorInvitations;
 
 	@OneToMany(mappedBy = "registerAndLearner")
 	private List<TutorInterest> tutorInterests;
-	
-	@OneToMany(mappedBy = "registerAndLearnerBy", cascade = CascadeType.ALL, orphanRemoval = true)
+
+	@OneToMany(mappedBy = "registerAndLearnerBy") 
 	private List<RegisterAndLearnerRelationship> relationshipBy;
-	
-	@OneToMany(mappedBy = "registerAndLearnerWith", cascade = CascadeType.ALL, orphanRemoval = true)
+
+	@OneToMany(mappedBy = "registerAndLearnerWith")
+	@JsonIgnore
 	private List<RegisterAndLearnerRelationship> relationshipWith;
-	
-
-	public void addSchooler(Schooler schooler) {
-		schooler.setRegisterAndLearner(this);
-		this.schoolers.add(schooler);
-	}
-
-	public void removeSchooler(Schooler schooler) {
-		this.schoolers.remove(schooler);
-	}
-
-	public void removeRelationshipWith(RegisterAndLearnerRelationship relationship) {
-		this.relationshipWith.remove(relationship);
-	}
-
-	public void addRelationshipWith(RegisterAndLearnerRelationship relationship) {
-		relationship.setRegisterAndLearnerWith(this);
-		this.relationshipWith.add(relationship);
-	}
 
 }

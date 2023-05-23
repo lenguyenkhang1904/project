@@ -16,6 +16,10 @@ import com.project.person.dto.TutorDto;
 import com.project.person.service.TutorService;
 import com.project.person.utils.RemoveDuplicateElement;
 import com.project.projectWs.dto.RequestSaveTutor;
+import com.project.projectWs.dto.RequestUpdateTutorCalendarDto;
+import com.project.projectWs.dto.RequestUpdateTutorNowLevelAndUpdateAtDto;
+import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
+import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupMaybeDto;
 import com.project.projectWs.dto.ResponseTutor;
 import com.project.projectWs.facade.TutorFacade;
 import com.project.storage.service.AvatarAndPublicAndPrivateImgsTutorAwsService;
@@ -223,5 +227,49 @@ public class TutorFacadeImpl implements TutorFacade {
 	public String updatePublicImageToAmazon(final MultipartFile file, final String tutorCode) {
 		return avatarTutorAwsService.updatePublicImageToAmazon(file, tutorCode);
 	}
+
+	@Override
+	public TutorDto findById(Long id) {
+		return tutorService.findById(id);
+	}
+
+	@Override
+	public Long updateTutor(TutorDto dto) {
+		return tutorService.updateTutor(dto);
+	}
+
+	@Override
+	public Long updateSubjetGroupMaybe(RequestUpdateTutorSubjectGroupMaybeDto dto) {
+		TutorDto tutorDto = new TutorDto();
+		tutorDto.setId(dto.getId());
+		tutorDto.setTutorSubjectGroupMaybeIds(dto.getTutorSubjectGroupMaybeIds());
+		return tutorService.updateSubjetGroupMaybe(tutorDto);
+	}
+
+	@Override
+	public Long updateSubjectGroupForSure(RequestUpdateTutorSubjectGroupForSureDto dto) {
+		TutorDto tutorDto = new TutorDto();
+		tutorDto.setId(dto.getId());
+		tutorDto.setTutorSubjectGroupForSureIds(dto.getTutorSubjectGroupForSureIds());
+		return tutorService.updateSubjetGroupMaybe(tutorDto);
+	}
+
+	@Override
+	public Long updateNowLevelAndNowUpdateAt(RequestUpdateTutorNowLevelAndUpdateAtDto dto) {
+		TutorDto tutorDto = new TutorDto();
+		tutorDto.setId(dto.getId());
+		tutorDto.setNowLevel(dto.getNowLevel());
+		tutorDto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());
+		return tutorService.updateNowLevelAndNowUpdateAt(tutorDto);
+	}
+
+	@Override
+	public Long updateCalendar(RequestUpdateTutorCalendarDto dto) {
+		TutorDto tutorDto = new TutorDto();
+		tutorDto.setId(dto.getId());
+		tutorDto.setCalendars(dto.getCalendars());
+		return tutorService.updateSubjetGroupMaybe(tutorDto);
+	}
+
 
 }

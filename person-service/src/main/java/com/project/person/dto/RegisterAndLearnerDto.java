@@ -1,6 +1,7 @@
 package com.project.person.dto;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.project.common.dto.PersonInformationDto;
@@ -13,7 +14,7 @@ import lombok.Setter;
 public class RegisterAndLearnerDto extends PersonInformationDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	private String id;
 
 	private String vocative;
@@ -22,7 +23,7 @@ public class RegisterAndLearnerDto extends PersonInformationDto implements Seria
 
 	private String registerAndLearnerTag;
 
-	private List<SchoolerDto> schoolerDtos;
+	private List<SchoolerDto> schoolerDtos  = new LinkedList<>();
 
-	private List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationships;
+	private List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationships  = new LinkedList<>();
 }

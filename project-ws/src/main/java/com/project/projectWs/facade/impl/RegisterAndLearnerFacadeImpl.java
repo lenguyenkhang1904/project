@@ -7,10 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.common.utils.ObjectMapperUtils;
+import com.project.location.dto.RegisterAndLearnerAddressDto;
+import com.project.location.service.RegisterAndLearnerAddressService;
 import com.project.person.dto.RegisterAndLearnerDto;
 import com.project.person.dto.TutorDto;
 import com.project.person.service.RegisterAndLearnerService;
 import com.project.person.utils.RemoveDuplicateElement;
+import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
 import com.project.projectWs.facade.RegisterAndLearnerFacade;
 import com.project.storage.service.AvatarAndPublicAndPrivateRegisterAndLearnerAwsService;
 
@@ -22,6 +26,9 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 
 	@Autowired
 	private AvatarAndPublicAndPrivateRegisterAndLearnerAwsService avatarAndPublicAndPrivateRegisterAndLearnerAwsService;
+	
+	@Autowired
+	private RegisterAndLearnerAddressService registerAndLearnerAddressService;
 
 	@Override
 	public String createOrUpdateRegisterAndLearnerAvatar(MultipartFile file, String registerAndLearnerId) {
@@ -36,7 +43,8 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 			String urlParameter) {
 		RegisterAndLearnerDto registerAndLearnerDto = registerAndLearnerService.findById(registerAndLearnerId);
 		registerAndLearnerDto.setAvatar(urlParameter);
-		String registerAndLearnerIdUpdatedId = registerAndLearnerService.updateRegisterAndLearner(registerAndLearnerDto);
+		String registerAndLearnerIdUpdatedId = registerAndLearnerService
+				.updateRegisterAndLearner(registerAndLearnerDto);
 		return registerAndLearnerIdUpdatedId;
 	}
 
@@ -150,6 +158,80 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	@Override
 	public String updatePublicImageToAmazon(MultipartFile file, String tutorCode) {
 		return avatarAndPublicAndPrivateRegisterAndLearnerAwsService.updatePublicImageToAmazon(file, tutorCode);
+	}
+
+	@Override
+	public TutorDto findByRegisterAndLearnerCode(String registerAndLearnerId) {
+		return registerAndLearnerService.findByRegisterAndLearnerCode(registerAndLearnerId);
+	}
+
+	@Override
+	public List<RegisterAndLearnerDto> findByPhoneNumber(String phoneNumber) {
+		return registerAndLearnerService.findByPhoneNumber(phoneNumber);
+	}
+
+	@Override
+	public List<RegisterAndLearnerDto> findByEndPhoneNumber(String endPhoneNumber) {
+		return registerAndLearnerService.findByEndPhoneNumber(endPhoneNumber);
+	}
+
+	@Override
+	public List<RegisterAndLearnerDto> findByFullNameContain(String fullName) {
+		return registerAndLearnerService.findByFullNameContain(fullName);
+	}
+
+	@Override
+	public List<RegisterAndLearnerDto> findByEnglishFullNameContaining(String englishFullName) {
+		return registerAndLearnerService.findByEnglishFullNameContaining(englishFullName);
+	}
+
+	@Override
+	public List<String> findByEnglishNameAndShowEngLishFullName(String englishFullName) {
+		return registerAndLearnerService.findByEnglishNameAndShowEngLishFullName(englishFullName);
+	}
+
+	@Override
+	public List<String> findByEngfullnameAndShowFullName(String fullname) {
+		return registerAndLearnerService.findByfullnameAndShowFullName(fullname);
+	}
+
+	@Override
+	public List<String> findByfullnameAndShowFullName(String fullname) {
+		return registerAndLearnerService.findByfullnameAndShowFullName(fullname);
+	}
+
+	@Override
+	public List<RegisterAndLearnerDto> findByVocativeAndEnglishFullNameContaining(String vocative, String englishName) {
+		return registerAndLearnerService.findByVocativeAndEnglishFullNameContaining(vocative, englishName);
+	}
+
+	@Override
+	public List<String> findByVocativeAndEnglishFullNameAndShowFullName(String vocative, String englishName) {
+		return registerAndLearnerService.findByVocativeAndEnglishFullNameAndShowFullName(vocative, englishName);
+	}
+
+	@Override
+	public List<RegisterAndLearnerDto> findByVocativeAndFullName(String vocative, String fullName) {
+		return registerAndLearnerService.findByVocativeAndFullName(vocative, fullName);
+	}
+
+	@Override
+	public List<String> findByVocativeAndFullNameAndShowFullName(String vocative, String fullName) {
+		return registerAndLearnerService.findByVocativeAndFullNameAndShowFullName(vocative, fullName);
+	}
+
+	@Override
+	public String save(RequestSaveResigterAndLearnerDto dto) {
+		RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
+		registerAndLearnerDto = ObjectMapperUtils.map(dto, RegisterAndLearnerDto.class);
+		registerAndLearnerDto.setRegisterAndLearnerRelationships(dto.getRegisterAndLearnerRelationships());
+		String idResigterAndLearner = registerAndLearnerService.saveRegisterAndLearner(registerAndLearnerDto);	
+		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = dto.getRegisterAndLearnerAddressDtos();
+		if(!registerAndLearnerAddressDtos.isEmpty()) {
+			registerAndLearnerAddressService.saveAll(registerAndLearnerAddressDtos, idResigterAndLearner);
+			return idResigterAndLearner;
+		}
+		return null;
 	}
 
 }

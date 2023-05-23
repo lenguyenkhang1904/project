@@ -10,10 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PersonInformationDto {
-	
-	protected LocalDateTime createdAt;
-	
-	protected LocalDateTime updatedAt;
 //	
 //	@CreatedBy 
 //	protected String createdBy;  
@@ -50,4 +46,8 @@ public class PersonInformationDto {
 	protected  List<String> publicImgs;
 
 	protected  List<String> privateImgs;
+	
+	protected LocalDateTime createdAt;
+	
+	protected LocalDateTime updatedAt;
 }
