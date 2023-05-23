@@ -29,5 +29,9 @@ public class SchoolerDto implements Serializable  {
 	private String institutionCode;
 
 	private String institutionType;
+	
+	protected LocalDateTime createdAt;
+	
+	protected LocalDateTime updatedAt;
 
 }

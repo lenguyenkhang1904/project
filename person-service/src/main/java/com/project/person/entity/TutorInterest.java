@@ -2,6 +2,7 @@ package com.project.person.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -10,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.project.common.entity.AbstractEntity;
 
@@ -20,6 +22,7 @@ import lombok.Setter;
 @Table(name = "tutor_interest")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class TutorInterest extends AbstractEntity {
 	
 	@Id

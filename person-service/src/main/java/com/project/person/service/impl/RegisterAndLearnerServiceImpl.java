@@ -1,8 +1,10 @@
 package com.project.person.service.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,63 +41,37 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		registerAndLearner.setFullName(dto.getFullName().toUpperCase());
 		registerAndLearner.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName().toUpperCase()));
 		registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
-		// Relationship
-		List<RegisterAndLearnerRelationshipDto> saveRegisterAndLearnerRelationshipDtoWiths = dto
-				.getRegisterAndLearnerRelationships();
-		for (RegisterAndLearnerRelationship registerAndLearnerRelationship : registerAndLearner.getRelationshipWith()) {
-			Boolean deleteThis = true;
-			for (RegisterAndLearnerRelationshipDto saveRegisterAndLearnerRelationshipDto : saveRegisterAndLearnerRelationshipDtoWiths) {
-				if (registerAndLearnerRelationship.getId() == saveRegisterAndLearnerRelationshipDto.getId())
-					deleteThis = false;
-			}
-			if (deleteThis) {
-				registerAndLearner.removeRelationshipWith(registerAndLearnerRelationship);
-			}
-		}
-		for (RegisterAndLearnerRelationshipDto saveRegisterAndLearnerRelationshipDtos : saveRegisterAndLearnerRelationshipDtoWiths) {
-			RegisterAndLearnerRelationshipDto saveRegisterAndLearnerRelationshipDto = saveRegisterAndLearnerRelationshipDtos;
-			if (saveRegisterAndLearnerRelationshipDto.getId() != null) {
-				RegisterAndLearnerRelationship registerAndLearnerRelationship = registerAndLearnerRelationshipRepository
-						.getOne(saveRegisterAndLearnerRelationshipDto.getId());
-				registerAndLearnerRelationship = ObjectMapperUtils.map(saveRegisterAndLearnerRelationshipDto,
-						RegisterAndLearnerRelationship.class);
-				registerAndLearnerRelationship.setRegisterAndLearnerBy(
-						registerAndLearnerRepository.getOne(saveRegisterAndLearnerRelationshipDto.getIdPersonBy()));
-				registerAndLearner.addRelationshipWith(registerAndLearnerRelationship);
-			} else { // Create
+
+		// register and learner relationship
+		List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationshipDtos = new LinkedList<>();
+		List<RegisterAndLearnerRelationship> registerAndLearnerRelationships = new LinkedList<>();
+		for (RegisterAndLearnerRelationshipDto registerAndLearnerRelationshipDto : registerAndLearnerRelationshipDtos) {
+			if (StringUtils.isBlank(registerAndLearnerRelationshipDto.getIdPersonBy())) {
 				RegisterAndLearnerRelationship registerAndLearnerRelationship = new RegisterAndLearnerRelationship();
-				registerAndLearnerRelationship = ObjectMapperUtils.map(saveRegisterAndLearnerRelationshipDto,
+				registerAndLearnerRelationship = ObjectMapperUtils.map(registerAndLearnerRelationshipDto,
 						RegisterAndLearnerRelationship.class);
 				registerAndLearnerRelationship.setRegisterAndLearnerBy(
-						registerAndLearnerRepository.getOne(saveRegisterAndLearnerRelationshipDto.getIdPersonBy()));
-				registerAndLearner.addRelationshipWith(registerAndLearnerRelationship);
+						registerAndLearnerRepository.findById(registerAndLearnerRelationshipDto.getIdPersonBy()).get());
+				registerAndLearnerRelationship.setRegisterAndLearnerWith(registerAndLearner);
+				registerAndLearnerRelationships.add(registerAndLearnerRelationship);
 			}
 		}
-       // Schooler
-		List<SchoolerDto> saveSchoolerDtos = dto.getSchoolerDtos();
-		for (int i = 0; i < registerAndLearner.getSchoolers().size(); i++) {
-			Boolean deleteThis = true;
-			for (int j = 0; j < saveSchoolerDtos.size(); j++) {
-				if (registerAndLearner.getSchoolers().get(i).getId() == saveSchoolerDtos.get(j).getId())
-					deleteThis = false;
-			}
-			if (deleteThis) {
-				registerAndLearner.removeSchooler(registerAndLearner.getSchoolers().get(i));
-				i--;
-			}
+
+		if (!registerAndLearnerRelationships.isEmpty()) {
+			registerAndLearnerRelationshipRepository.saveAll(registerAndLearnerRelationships);
 		}
-		for (int i = 0; i < saveSchoolerDtos.size(); i++) {
-			SchoolerDto saveSchoolerDto = saveSchoolerDtos.get(i);
-			if (saveSchoolerDto.getId() != null) {
-				Schooler schooler = schoolerRepository.getOne(saveSchoolerDto.getId());
-				schooler = ObjectMapperUtils.map(saveSchoolerDto, Schooler.class);
-				registerAndLearner.addSchooler(schooler);
-			} else {
-				Schooler schooler = new Schooler();
-				schooler = ObjectMapperUtils.map(saveSchoolerDto, Schooler.class);
-				registerAndLearner.addSchooler(schooler);
-			}
+
+		// Schooler
+		List<SchoolerDto> schoolerDtos = dto.getSchoolerDtos();
+		List<Schooler> schoolers = new LinkedList<>();
+		for (SchoolerDto schoolerDto : schoolerDtos) {
+			Schooler schooler = new Schooler();
+			schooler = ObjectMapperUtils.map(schoolerDto, Schooler.class);
+			schooler.setRegisterAndLearner(registerAndLearner);
+			schoolers.add(schooler);
 		}
+		schoolerRepository.saveAll(schoolers);
+
 		return registerAndLearner.getId();
 	}
 

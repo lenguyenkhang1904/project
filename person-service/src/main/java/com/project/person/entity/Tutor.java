@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -28,6 +30,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "tutor")
+@EntityListeners(AuditingEntityListener.class)
 public class Tutor extends PersonAbstractInformation {
 
 	@Id
@@ -109,6 +112,9 @@ public class Tutor extends PersonAbstractInformation {
 	
 	@OneToMany(mappedBy = "tutor")
 	private List<TutorSubjectGroupForSure> tutorSubjectGroupForSures;
+	
+	@OneToMany(mappedBy = "tutor")
+	private List<TutorSubjectGroupFails> tutorSubjectGroupFails;
 
 	@Column(name = "subject")
 	private String subject;

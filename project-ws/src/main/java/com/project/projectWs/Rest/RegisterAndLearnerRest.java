@@ -1,22 +1,28 @@
 package com.project.projectWs.Rest;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.common.utils.HandleCharacter;
 import com.project.common.utils.ResponseHandler;
+import com.project.person.dto.RegisterAndLearnerDto;
 import com.project.projectWs.Utils.Routes;
+import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
 import com.project.projectWs.facade.RegisterAndLearnerFacade;
 import com.project.projectWs.facade.StorageFacade;
 
@@ -25,14 +31,13 @@ import come.project.storage.utils.ConstaintInformationStorage;
 @RestController
 @RequestMapping(value = Routes.REGISTER_AND_LEARNER)
 public class RegisterAndLearnerRest {
-	
+
 	@Autowired
 	private RegisterAndLearnerFacade registerAndLearnerFacade;
-	
+
 	@Autowired
 	private StorageFacade storageFacade;
-	
-	
+
 	@PostMapping("/create-or-update-register-and-learner-avatar/{registerAndLearnerId}")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
@@ -41,7 +46,8 @@ public class RegisterAndLearnerRest {
 
 		if (filename.contains(".jpeg") || filename.contains(".jpg") || filename.contains(".png")) {
 
-			String awsAvatarURL = registerAndLearnerFacade.createOrUpdateRegisterAndLearnerAvatar(file, registerAndLearnerId);
+			String awsAvatarURL = registerAndLearnerFacade.createOrUpdateRegisterAndLearnerAvatar(file,
+					registerAndLearnerId);
 
 			return ResponseHandler.getResponse(awsAvatarURL, HttpStatus.CREATED);
 		}
@@ -64,7 +70,7 @@ public class RegisterAndLearnerRest {
 		return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
 				HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@PostMapping("/create-or-update-private-img/{registerAndLearnerId}")
 	public ResponseEntity<Object> uploadOrUpdatePrivateImgs(@RequestParam("file") MultipartFile file,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
@@ -77,41 +83,39 @@ public class RegisterAndLearnerRest {
 		return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
 				HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@PostMapping("/create-or-update-multiple-private-imgs/{registerAndLearnerId}")
 	public ResponseEntity<Object> uploadMutiplePrivateImgs(@RequestParam("files") MultipartFile[] files,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
-			int count = 0;
-			for (MultipartFile file : files) {
-				String filename = StringUtils.cleanPath(file.getOriginalFilename());
-				if (filename.contains(".jpeg") || filename.contains(".jpg") || filename.contains(".png")) {
-					count += 1;
-					registerAndLearnerFacade.uploadImageToAmazonPrivateImgs(file,
-							registerAndLearnerId + "Private" + String.valueOf(count));
-				}
-				else
-					return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
-							HttpStatus.BAD_REQUEST);
-			}
-			return ResponseHandler.getResponse("Upload files successfully", HttpStatus.CREATED);
+		int count = 0;
+		for (MultipartFile file : files) {
+			String filename = StringUtils.cleanPath(file.getOriginalFilename());
+			if (filename.contains(".jpeg") || filename.contains(".jpg") || filename.contains(".png")) {
+				count += 1;
+				registerAndLearnerFacade.uploadImageToAmazonPrivateImgs(file,
+						registerAndLearnerId + "Private" + String.valueOf(count));
+			} else
+				return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
+						HttpStatus.BAD_REQUEST);
+		}
+		return ResponseHandler.getResponse("Upload files successfully", HttpStatus.CREATED);
 	}
-	
+
 	@PostMapping("/create-or-update-multiple-public-imgs/{registerAndLearnerId}")
 	public ResponseEntity<Object> uploadMutiplePubliImgs(@RequestParam("files") MultipartFile[] files,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
-			int count = 0;
-			for (MultipartFile file : files) {
-				String filename = StringUtils.cleanPath(file.getOriginalFilename());
-				if (filename.contains(".jpeg") || filename.contains(".jpg") || filename.contains(".png")) {
-					count += 1;
-					registerAndLearnerFacade.uploadImageToAmazonPubclicImgs(file,
-							registerAndLearnerId + "Public" + String.valueOf(count));
-				}
-				else
-					return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
-							HttpStatus.BAD_REQUEST);
-			}
-			return ResponseHandler.getResponse("Upload files successfully", HttpStatus.CREATED);
+		int count = 0;
+		for (MultipartFile file : files) {
+			String filename = StringUtils.cleanPath(file.getOriginalFilename());
+			if (filename.contains(".jpeg") || filename.contains(".jpg") || filename.contains(".png")) {
+				count += 1;
+				registerAndLearnerFacade.uploadImageToAmazonPubclicImgs(file,
+						registerAndLearnerId + "Public" + String.valueOf(count));
+			} else
+				return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
+						HttpStatus.BAD_REQUEST);
+		}
+		return ResponseHandler.getResponse("Upload files successfully", HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/delete-register-and-learner-avatar/{urlPic}")
@@ -143,7 +147,7 @@ public class RegisterAndLearnerRest {
 		registerAndLearnerFacade.deleteByFileNameAndIDPublicImgs(registerAndLearnerPublicImgsURL + urlPic);
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/update-register-and-learner-privateImg/{nameFile}")
 	public ResponseEntity<Object> UpdatePrivateImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
@@ -167,9 +171,106 @@ public class RegisterAndLearnerRest {
 			String awsAvatarURL = registerAndLearnerFacade.updatePublicImageToAmazon(file, nameFile);
 
 			return ResponseHandler.getResponse(awsAvatarURL, HttpStatus.CREATED);
-		}
-		else
+		} else
 			return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
 					HttpStatus.BAD_REQUEST);
 	}
+
+	@GetMapping("/find-by-phone-number/{phoneNumber}")
+	public ResponseEntity<Object> findByPhones(@RequestParam("phoneNumber") String phoneNumber) {
+		List<RegisterAndLearnerDto> registerAndLearnerDtos = registerAndLearnerFacade.findByPhoneNumber(phoneNumber);
+		if (registerAndLearnerDtos.isEmpty())
+			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
+		return ResponseHandler.getResponse(registerAndLearnerDtos, HttpStatus.OK);
+	}
+
+	@GetMapping("/find-by-end-phone-number/{endPhoneNumber}")
+	public ResponseEntity<Object> findByEndPhone(@RequestParam("endPhoneNumber") String endPhoneNumber) {
+		List<RegisterAndLearnerDto> registerAndLearnerDtos = registerAndLearnerFacade
+				.findByEndPhoneNumber(endPhoneNumber);
+		if (registerAndLearnerDtos.isEmpty())
+			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
+		return ResponseHandler.getResponse(registerAndLearnerDtos, HttpStatus.OK);
+	}
+
+	@GetMapping("/find-by-full-name-and-return-object/{fullName}")
+	public ResponseEntity<Object> findByFullnameAndReturnObject(@RequestParam("fullName") String fullName) {
+		List<RegisterAndLearnerDto> registerAndLearnerDtos = registerAndLearnerFacade
+				.findByEnglishFullNameContaining(fullName.toUpperCase());
+		if (registerAndLearnerDtos.isEmpty()) {
+			List<RegisterAndLearnerDto> registerAndLearners = registerAndLearnerFacade
+					.findByEnglishFullNameContaining(HandleCharacter.removeAccent(fullName.toUpperCase()));
+			if (registerAndLearners.isEmpty())
+				return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse(registerAndLearners, HttpStatus.OK);
+		}
+		return ResponseHandler.getResponse(registerAndLearnerDtos, HttpStatus.OK);
+	}
+
+	@GetMapping("/find-by-full-name-and-return-full-name/{fullNameShowName}")
+	public ResponseEntity<Object> findByFullnameAndReturnFullName(
+			@RequestParam("fullNameShowName") String fullNameShowName) {
+
+		List<String> tutorNames = registerAndLearnerFacade
+				.findByfullnameAndShowFullName(fullNameShowName.toUpperCase());
+
+		if (tutorNames.isEmpty()) {
+			List<String> registerAndLearnerEngNames = registerAndLearnerFacade
+					.findByfullnameAndShowFullName(HandleCharacter.removeAccent(fullNameShowName.toUpperCase()));
+			if (registerAndLearnerEngNames.isEmpty())
+				return ResponseHandler.getResponse("cant find any registerAndLearner", HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse(registerAndLearnerEngNames, HttpStatus.OK);
+		}
+		return ResponseHandler.getResponse(tutorNames, HttpStatus.OK);
+	}
+
+	@GetMapping("/find-by-full-name-and-vocative-and-return-object/{fullname}/{vocative}")
+	public ResponseEntity<Object> findByFullnameAndVocativeAndReturnObject(@RequestParam("fullname") String fullname,
+			@RequestParam("vocative") String vocative) {
+		List<RegisterAndLearnerDto> registerAndLearners = registerAndLearnerFacade.findByVocativeAndFullName(vocative,
+				fullname.toUpperCase());
+		if (registerAndLearners.isEmpty()) {
+			List<RegisterAndLearnerDto> registerAndLearnersWithEnglishFullName = registerAndLearnerFacade
+					.findByVocativeAndEnglishFullNameContaining(vocative,
+							HandleCharacter.removeAccent(fullname.toUpperCase()));
+			if (registerAndLearnersWithEnglishFullName.isEmpty())
+				return ResponseHandler.getResponse("cant find any Register and Learner", HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse(registerAndLearnersWithEnglishFullName, HttpStatus.OK);
+		}
+		return ResponseHandler.getResponse(registerAndLearners, HttpStatus.OK);
+	}
+
+	@GetMapping("/find-by-full-name-and-vocative-and-return-fullName/{fullname}/{vocative}")
+	public ResponseEntity<Object> findByFullnameAndVocativeAndReturnFullName(@RequestParam("fullname") String fullname,
+			@RequestParam("vocative") String vocative) {
+		List<String> registerAndLearners = registerAndLearnerFacade.findByVocativeAndFullNameAndShowFullName(vocative,
+				fullname.toUpperCase());
+		if (registerAndLearners.isEmpty()) {
+			List<String> RegisterAndLearnerServiceWithEnglishFullName = registerAndLearnerFacade
+					.findByVocativeAndEnglishFullNameAndShowFullName(vocative,
+							HandleCharacter.removeAccent(fullname.toUpperCase()));
+			if (RegisterAndLearnerServiceWithEnglishFullName.isEmpty())
+				return ResponseHandler.getResponse("cant find any Register and Learner", HttpStatus.OK);
+			return ResponseHandler.getResponse(RegisterAndLearnerServiceWithEnglishFullName, HttpStatus.OK);
+		}
+		return ResponseHandler.getResponse(registerAndLearners, HttpStatus.OK);
+	}
+
+	@PostMapping("/create-register-and-learner")
+	public ResponseEntity<Object> CreateRegisterAndLearner(@RequestBody final RequestSaveResigterAndLearnerDto dto) {
+		String registerAndLearnerId = registerAndLearnerFacade.save(dto);
+		if (registerAndLearnerId == null)
+			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+		return ResponseHandler.getResponse(registerAndLearnerId, HttpStatus.OK);
+	}
+	
+//	@PutMapping("/update-avatar-register-and-learner")
+//	public ResponseEntity<Object> updateAvatarRegisterAndLearner(@RequestBody final UpdateAvatarRegisterAndLearner dto,
+//			BindingResult errors) {
+//		String registerAndLearnerId = registerAndLearnerFacade.updateAvatarRegisterAndLearner(dto);
+//		if (errors.hasErrors()) {
+//			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
+//		}
+//		return ResponseHandler.getResponse(registerAndLearnerId, HttpStatus.OK);
+//	}
 }

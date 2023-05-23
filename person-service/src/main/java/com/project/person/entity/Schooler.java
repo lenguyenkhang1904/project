@@ -2,6 +2,7 @@ package com.project.person.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.common.entity.AbstractEntity;
 
 import lombok.Getter;
@@ -47,7 +49,7 @@ public class Schooler extends AbstractEntity {
 	@Column(name = "institution_type")
 	private String institutionType;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "register_and_learner_id")
 	private RegisterAndLearner registerAndLearner;
 }
