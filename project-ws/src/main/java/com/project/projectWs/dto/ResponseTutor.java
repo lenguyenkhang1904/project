@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.project.location.dto.AreaDto;
-import com.project.person.dto.TutorDto;
 
 import lombok.Getter;
 import lombok.Setter;

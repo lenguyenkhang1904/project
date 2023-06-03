@@ -3,6 +3,7 @@ package com.project.person.dto;
 import java.io.Serializable;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.project.common.dto.PersonInformationDto;
@@ -29,7 +30,7 @@ public class TutorDto extends PersonInformationDto implements Serializable {
 
 	private String placeOfBirth;
 
-	private List<String> areaTutorIds;
+	private List<String> areaTutorIds = new LinkedList<>();
 
 	private String expNotices;
 
@@ -55,13 +56,13 @@ public class TutorDto extends PersonInformationDto implements Serializable {
 
 	private String advantageNote;
 
-	private List<String> tutorSubjectGroupMaybeIds;
+	private List<String> tutorSubjectGroupMaybeIds = new LinkedList<>();
 
-	private List<String> tutorSubjectGroupForSureIds;
+	private List<String> tutorSubjectGroupForSureIds = new LinkedList<>();
 
 	private String subject;
 
 	private String subjectClass;
 	
-	private List<Calendar> calendars;
+	private List<Calendar> calendars = new LinkedList<>();
 }

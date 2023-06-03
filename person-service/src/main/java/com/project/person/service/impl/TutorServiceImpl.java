@@ -52,6 +52,8 @@ public class TutorServiceImpl implements TutorService {
 		tutor.setId(id);
 		tutor.setFullName(dto.getFullName().toUpperCase());
 		tutor.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName()).toUpperCase());
+		tutor.setCreatedBy(dto.getCreatedBy());
+		tutor.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 		tutor = tutorRepository.save(tutor);
 		// Area Tutor
 		List<String> areaTutorIds = dto.getAreaTutorIds();
@@ -146,7 +148,6 @@ public class TutorServiceImpl implements TutorService {
 			dto.setYRelCoo((String) objectList[16]);
 			dto.setTutorAddressAreaId((String) objectList[17]);
 			dto.setCreatedAt(DateConverter.convertDateToLocalDateTime((Timestamp) objectList[18]));
-			dto.setUpdatedAt(DateConverter.convertDateToLocalDateTime((Timestamp) objectList[19]));
 
 			String relAreas = (String) objectList[26];
 			List<String> realAreaIds = Arrays.asList(relAreas.split(", "));
@@ -219,6 +220,8 @@ public class TutorServiceImpl implements TutorService {
 		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
+			tutor.setUpdatedBy(dto.getCreatedBy());
+			tutor.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 			tutorSubjectGroupMaybeRepository.deleteByTutorId(dto.getId());
 			// Subject Group Maybe
 			List<String> tutorSubjectGroupMaybeIds = dto.getTutorSubjectGroupMaybeIds();
@@ -235,6 +238,7 @@ public class TutorServiceImpl implements TutorService {
 		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
+			tutor.setUpdatedBy(dto.getCreatedBy());
 			tutorSubjectGroupForSureRepository.deleteByTutorId(dto.getId());
 			// Subject Group ForSure
 			List<String> tutorSubjectGroupForSureIds = dto.getTutorSubjectGroupForSureIds();
@@ -255,7 +259,9 @@ public class TutorServiceImpl implements TutorService {
 		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
+			tutor.setUpdatedBy(dto.getCreatedBy());
 			tutor.setNowLevel(dto.getNowLevel());
+			tutor.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 			tutor = tutorRepository.save(tutor);
 			return tutor.getId();
 		}
@@ -267,6 +273,8 @@ public class TutorServiceImpl implements TutorService {
 		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
+			tutor.setUpdatedBy(dto.getCreatedBy());
+			tutor.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 			List<Calendar> calendars = new LinkedList<>();
 			for (Calendar calendar : dto.getCalendars()) {
 				calendars.add(calendar);

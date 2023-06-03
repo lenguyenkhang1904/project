@@ -3,6 +3,7 @@ package com.project.projectWs.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Getter;
@@ -48,6 +49,6 @@ public class RequestSaveTutor implements Serializable {
 
 	private String yRelCoo;
 	
-	private List<String> areaTutorId;
+	private List<String> areaTutorId = new LinkedList<>();
 
 }

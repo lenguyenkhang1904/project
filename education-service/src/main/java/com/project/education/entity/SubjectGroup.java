@@ -19,7 +19,6 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "subject_group")
-@EntityListeners(AuditingEntityListener.class)
 public class SubjectGroup extends AbstractEntity {
 	
 	@Id

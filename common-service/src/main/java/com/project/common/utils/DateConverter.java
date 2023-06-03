@@ -15,4 +15,8 @@ public class DateConverter {
 	public static LocalDateTime convertDateToLocalDateTime(Timestamp date) {
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
+	
+	public static LocalDateTime convertDateToLocalDateTime(java.util.Date date) {
+		return new java.sql.Timestamp(date.getTime()).toLocalDateTime();
+	}
 }

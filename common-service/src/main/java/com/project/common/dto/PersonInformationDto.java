@@ -10,44 +10,39 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PersonInformationDto {
-//	
-//	@CreatedBy 
-//	protected String createdBy;  
-//	
-//	@LastModifiedBy
-//	protected String updatedBy;
-
-	protected  String registeredStatus;
-
-	protected  String fullName;
-
-	protected  String englishFullName;
-
-	protected  String gender;
-
-	protected  String birthYear;
 	
-	protected  LocalDate birthDate;
+	protected String createdBy;
 
-	protected  String phones;
+	protected String registeredStatus;
 
-	protected  String emails;
+	protected String fullName;
 
-	protected  String zaloes;
+	protected String englishFullName;
 
-	protected  String fbs;
+	protected String gender;
 
-	protected  String idCardNumber;
+	protected String birthYear;
 
-	protected  String idCardIssuedOn;
-	
-	protected  String avatar;
-	
-	protected  List<String> publicImgs;
+	protected LocalDate birthDate;
 
-	protected  List<String> privateImgs;
-	
-	protected LocalDateTime createdAt;
-	
-	protected LocalDateTime updatedAt;
+	protected String phones;
+
+	protected String emails;
+
+	protected String zaloes;
+
+	protected String fbs;
+
+	protected String idCardNumber;
+
+	protected String idCardIssuedOn;
+
+	protected String avatar;
+
+	protected List<String> publicImgs;
+
+	protected List<String> privateImgs;
+
+	//protected LocalDateTime createdAt;
+
 }

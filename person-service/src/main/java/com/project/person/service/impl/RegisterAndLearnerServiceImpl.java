@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.common.utils.DateConverter;
 import com.project.common.utils.HandleCharacter;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.person.dto.RegisterAndLearnerDto;
@@ -40,6 +41,8 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		registerAndLearner = ObjectMapperUtils.map(dto, RegisterAndLearner.class);
 		registerAndLearner.setFullName(dto.getFullName().toUpperCase());
 		registerAndLearner.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName().toUpperCase()));
+		registerAndLearner.setCreatedBy(dto.getCreatedBy());
+		registerAndLearner.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 		registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
 
 		// register and learner relationship
