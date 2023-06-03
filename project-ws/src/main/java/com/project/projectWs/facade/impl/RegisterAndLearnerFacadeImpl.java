@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -223,7 +224,11 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	@Override
 	public String save(RequestSaveResigterAndLearnerDto dto) {
 		RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
+		
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		
 		registerAndLearnerDto = ObjectMapperUtils.map(dto, RegisterAndLearnerDto.class);
+		dto.setCreatedBy(currentUser);
 		registerAndLearnerDto.setRegisterAndLearnerRelationships(dto.getRegisterAndLearnerRelationships());
 		String idResigterAndLearner = registerAndLearnerService.saveRegisterAndLearner(registerAndLearnerDto);	
 		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = dto.getRegisterAndLearnerAddressDtos();

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,8 +39,13 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public Long saveTutor(RequestSaveTutor request) {
+		
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		
 		TutorDto dto = new TutorDto();
 		dto = ObjectMapperUtils.map(request, TutorDto.class);
+		dto.setCreatedBy(currentUser);
+		dto.setAreaTutorIds(request.getAreaTutorId());
 		Long id = tutorService.saveTutor(dto);
 		return id;
 	}
@@ -240,7 +246,9 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public Long updateSubjetGroupMaybe(RequestUpdateTutorSubjectGroupMaybeDto dto) {
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		TutorDto tutorDto = new TutorDto();
+		tutorDto.setCreatedBy(currentUser);
 		tutorDto.setId(dto.getId());
 		tutorDto.setTutorSubjectGroupMaybeIds(dto.getTutorSubjectGroupMaybeIds());
 		return tutorService.updateSubjetGroupMaybe(tutorDto);
@@ -248,7 +256,9 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public Long updateSubjectGroupForSure(RequestUpdateTutorSubjectGroupForSureDto dto) {
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		TutorDto tutorDto = new TutorDto();
+		tutorDto.setCreatedBy(currentUser);
 		tutorDto.setId(dto.getId());
 		tutorDto.setTutorSubjectGroupForSureIds(dto.getTutorSubjectGroupForSureIds());
 		return tutorService.updateSubjetGroupMaybe(tutorDto);
@@ -256,7 +266,9 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public Long updateNowLevelAndNowUpdateAt(RequestUpdateTutorNowLevelAndUpdateAtDto dto) {
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		TutorDto tutorDto = new TutorDto();
+		tutorDto.setCreatedBy(currentUser);
 		tutorDto.setId(dto.getId());
 		tutorDto.setNowLevel(dto.getNowLevel());
 		tutorDto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());
@@ -265,7 +277,9 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public Long updateCalendar(RequestUpdateTutorCalendarDto dto) {
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		TutorDto tutorDto = new TutorDto();
+		tutorDto.setCreatedBy(currentUser);
 		tutorDto.setId(dto.getId());
 		tutorDto.setCalendars(dto.getCalendars());
 		return tutorService.updateSubjetGroupMaybe(tutorDto);

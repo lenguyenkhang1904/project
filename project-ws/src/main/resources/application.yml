@@ -19,3 +19,7 @@ spring:
     generate-ddl: true #để thằng Hibernate tự nhìn Object và tạo database được
     hibernate: 
       ddl-auto: update
+OAuth:            
+ client: ws-omt
+ secret: cHJvamVjdE9NVFNlY3JldA==
+ expired: 300 # s -> mins

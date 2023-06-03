@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -24,12 +23,6 @@ public class AbstractEntity {
 	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
 	@Column(name = "created_at", nullable = false, updatable = false)
 	protected LocalDateTime createdAt;
-	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@LastModifiedDate 
-	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT)
-	@Column(name = "updated_at", nullable = false)
-	protected LocalDateTime updatedAt;
 
 	protected String createdBy;  
 
