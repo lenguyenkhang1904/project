@@ -1,0 +1,6 @@
+com\project\location\LocationApplication.class
+com\project\location\service\AreaServiceImpl.class
+com\project\location\dto\AreaDto.class
+com\project\location\service\AreaService.class
+com\project\location\repository\AreaRepository.class
+com\project\location\entity\Area.class
