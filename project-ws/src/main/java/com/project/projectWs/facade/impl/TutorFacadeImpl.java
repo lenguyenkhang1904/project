@@ -23,6 +23,7 @@ import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
 import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupMaybeDto;
 import com.project.projectWs.dto.ResponseTutor;
 import com.project.projectWs.facade.TutorFacade;
+import com.project.projectWs.facade.UserFacade;
 import com.project.storage.service.AvatarAndPublicAndPrivateImgsTutorAwsService;
 
 @Service
@@ -36,15 +37,15 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Autowired
 	private AvatarAndPublicAndPrivateImgsTutorAwsService avatarTutorAwsService;
+	
+	@Autowired
+	private UserFacade userFacade;
 
 	@Override
 	public Long saveTutor(RequestSaveTutor request) {
-		
-		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-		
 		TutorDto dto = new TutorDto();
 		dto = ObjectMapperUtils.map(request, TutorDto.class);
-		dto.setCreatedBy(currentUser);
+		dto.setCreatedBy(userFacade.getCurrentUser());
 		dto.setAreaTutorIds(request.getAreaTutorId());
 		Long id = tutorService.saveTutor(dto);
 		return id;
@@ -246,9 +247,8 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public Long updateSubjetGroupMaybe(RequestUpdateTutorSubjectGroupMaybeDto dto) {
-		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		TutorDto tutorDto = new TutorDto();
-		tutorDto.setCreatedBy(currentUser);
+		tutorDto.setCreatedBy(userFacade.getCurrentUser());
 		tutorDto.setId(dto.getId());
 		tutorDto.setTutorSubjectGroupMaybeIds(dto.getTutorSubjectGroupMaybeIds());
 		return tutorService.updateSubjetGroupMaybe(tutorDto);
@@ -256,9 +256,8 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public Long updateSubjectGroupForSure(RequestUpdateTutorSubjectGroupForSureDto dto) {
-		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		TutorDto tutorDto = new TutorDto();
-		tutorDto.setCreatedBy(currentUser);
+		tutorDto.setCreatedBy(userFacade.getCurrentUser());
 		tutorDto.setId(dto.getId());
 		tutorDto.setTutorSubjectGroupForSureIds(dto.getTutorSubjectGroupForSureIds());
 		return tutorService.updateSubjetGroupMaybe(tutorDto);
@@ -266,9 +265,8 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public Long updateNowLevelAndNowUpdateAt(RequestUpdateTutorNowLevelAndUpdateAtDto dto) {
-		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		TutorDto tutorDto = new TutorDto();
-		tutorDto.setCreatedBy(currentUser);
+		tutorDto.setCreatedBy(userFacade.getCurrentUser());
 		tutorDto.setId(dto.getId());
 		tutorDto.setNowLevel(dto.getNowLevel());
 		tutorDto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());
@@ -277,9 +275,8 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public Long updateCalendar(RequestUpdateTutorCalendarDto dto) {
-		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		TutorDto tutorDto = new TutorDto();
-		tutorDto.setCreatedBy(currentUser);
+		tutorDto.setCreatedBy(userFacade.getCurrentUser());
 		tutorDto.setId(dto.getId());
 		tutorDto.setCalendars(dto.getCalendars());
 		return tutorService.updateSubjetGroupMaybe(tutorDto);

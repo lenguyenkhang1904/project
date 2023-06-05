@@ -12,5 +12,7 @@ public class Routes {
 	// user
 	public static final String USER = "/api/v2/user";
 	// login
-	public static final String LOGIN = "/login";
+	public static final String AUTH = "/api/auth";
+	// role
+	public static final String ROLE = "/api/v2/role";
 }

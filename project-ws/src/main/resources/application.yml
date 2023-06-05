@@ -22,4 +22,5 @@ spring:
 OAuth:            
  client: ws-omt
  secret: cHJvamVjdE9NVFNlY3JldA==
- expired: 300 # s -> mins
+ expired: 500 # s 
+ resource: project-omt-ws
