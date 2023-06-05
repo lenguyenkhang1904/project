@@ -2,6 +2,7 @@ package com.project.projectWs.security;
 
 import javax.sql.DataSource;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,27 +17,26 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-@SuppressWarnings("deprecation")
+
 @Configuration
 @EnableAuthorizationServer
 public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAdapter {
-	
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	private DataSource dataSource;
-	
+
 	@Value("${OAuth.client}")
 	private String clientId;
-	
+
 	@Value("${OAuth.secret}")
 	private String secretId;
-	
+
 	@Value("${OAuth.expired}")
 	private int expireToken;
 
@@ -52,8 +52,10 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient(clientId).secret(passwordEncoder.encode(secretId)).accessTokenValiditySeconds(expireToken) // expire
-				.authorizedGrantTypes("password", "refresh_token").scopes("read", "write"); // grant type
+		clients.inMemory().withClient(clientId).secret(passwordEncoder.encode(secretId))
+				.accessTokenValiditySeconds(expireToken)
+				.refreshTokenValiditySeconds(expireToken)
+				.authorizedGrantTypes("password", "refresh_token").scopes("read", "write");
 	}
 
 	@Override

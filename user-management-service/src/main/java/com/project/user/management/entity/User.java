@@ -36,6 +36,9 @@ public class User extends AbstractEntity {
 
 	@Column(name = "phone")
 	private String phone;
+	
+	@Column(name = "status")
+	private String status;
 
 	@OneToOne(mappedBy = "user")
 	private TutorTypeUser tutorTypeUser;

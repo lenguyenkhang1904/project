@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +16,7 @@ import com.project.person.service.RegisterAndLearnerService;
 import com.project.person.utils.RemoveDuplicateElement;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
 import com.project.projectWs.facade.RegisterAndLearnerFacade;
+import com.project.projectWs.facade.UserFacade;
 import com.project.storage.service.AvatarAndPublicAndPrivateRegisterAndLearnerAwsService;
 
 @Service
@@ -30,6 +30,9 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	
 	@Autowired
 	private RegisterAndLearnerAddressService registerAndLearnerAddressService;
+	
+	@Autowired
+	private UserFacade userFacade;
 
 	@Override
 	public String createOrUpdateRegisterAndLearnerAvatar(MultipartFile file, String registerAndLearnerId) {
@@ -224,11 +227,8 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	@Override
 	public String save(RequestSaveResigterAndLearnerDto dto) {
 		RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
-		
-		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-		
 		registerAndLearnerDto = ObjectMapperUtils.map(dto, RegisterAndLearnerDto.class);
-		dto.setCreatedBy(currentUser);
+		dto.setCreatedBy(userFacade.getCurrentUser());
 		registerAndLearnerDto.setRegisterAndLearnerRelationships(dto.getRegisterAndLearnerRelationships());
 		String idResigterAndLearner = registerAndLearnerService.saveRegisterAndLearner(registerAndLearnerDto);	
 		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = dto.getRegisterAndLearnerAddressDtos();

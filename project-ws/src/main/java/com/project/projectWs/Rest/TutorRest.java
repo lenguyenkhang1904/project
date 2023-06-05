@@ -44,7 +44,7 @@ public class TutorRest {
 	@Autowired
 	private StorageFacade storageFacade;
 
-	@PostMapping("/save-tutor")
+	@PostMapping("/create-tutor")
 	public ResponseEntity<Object> saveTutor(@RequestBody final RequestSaveTutor request) {
 		Long id = tutorFacade.saveTutor(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);

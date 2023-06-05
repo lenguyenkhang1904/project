@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.common.utils.ObjectMapperUtils;
 import com.project.user.management.dto.RoleDto;
+import com.project.user.management.entity.Role;
 import com.project.user.management.repository.RoleRepository;
 import com.project.user.management.service.RoleService;
 
@@ -30,6 +32,12 @@ public class RoleServiceImpl implements RoleService {
 
 		});
 		return roleDtos;
+	}
+
+	@Override
+	public List<RoleDto> findAll() {
+		List<Role> roles = roleRepository.findAll();
+		return ObjectMapperUtils.mapAll(roles, RoleDto.class);
 	}
 
 }

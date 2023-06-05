@@ -19,10 +19,14 @@ import lombok.Setter;
 public class AbstractEntity {
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@CreatedDate 
 	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@Column(name = "created_at", nullable = false, updatable = false)
+	@Column(name = "created_at")
 	protected LocalDateTime createdAt;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
+	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
+	@Column(name = "update_at")
+	protected LocalDateTime updatedAt;
 
 	protected String createdBy;  
 

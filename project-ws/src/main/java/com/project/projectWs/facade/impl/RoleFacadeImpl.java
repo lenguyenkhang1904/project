@@ -20,4 +20,9 @@ public class RoleFacadeImpl implements RoleFacade {
 		return roleService.findRolesByUserId(userId);
 	}
 
+	@Override
+	public List<RoleDto> findAll() {
+		return roleService.findAll();
+	}
+
 }
