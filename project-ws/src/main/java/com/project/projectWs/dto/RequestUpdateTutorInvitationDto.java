@@ -1,14 +1,13 @@
-package com.project.person.dto;
+package com.project.projectWs.dto;
 
 import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
-
 @Getter
 @Setter
-public class TutorInvitationDto implements Serializable {
-
+public class RequestUpdateTutorInvitationDto implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
 	private String id;
@@ -18,6 +17,5 @@ public class TutorInvitationDto implements Serializable {
 	private Long tutorId;
 	
 	private String note;
-	
-	private String createBy;
+
 }
