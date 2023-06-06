@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.project.person.entity.TutorInvitation;
 
 @Repository
-public interface TutorIntivationRepository extends JpaRepository<TutorInvitation, String> {
+public interface TutorInvitationRepository extends JpaRepository<TutorInvitation, String> {
 
 }

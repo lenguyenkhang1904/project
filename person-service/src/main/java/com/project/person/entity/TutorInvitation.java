@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "invitation_tutor")
+@Table(name = "tutor_invitation")
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
