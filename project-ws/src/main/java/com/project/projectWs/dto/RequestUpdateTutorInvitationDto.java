@@ -14,8 +14,8 @@ public class RequestUpdateTutorInvitationDto implements Serializable {
 	
 	private String registerAndLearnerId;
 	
-	private Long tutorId;
+	private String learnerAndReqisterPhone;
 	
-	private String note;
+	private Long tutorId;
 
 }

@@ -37,7 +37,7 @@ public class TutorInterest extends AbstractEntity {
 	@Column(name = "learner_and_register_phone")
 	private String learnerAndReqisterPhone;
 
-	@JoinColumn(name = "tutor_id")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tutor_id")
 	private Tutor tutor;
 }

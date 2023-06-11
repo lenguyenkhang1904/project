@@ -31,7 +31,7 @@ public class AuthRest {
 
 	@PostMapping("/login")
 	public ResponseEntity<Object> login(@RequestHeader(value = "client-id") String clientId,
-			@RequestHeader(value = "secret-id") String secretId, @RequestBody RequestLoginDto loginDto,
+			@RequestHeader(value = "client-secret") String secretId, @RequestBody RequestLoginDto loginDto,
 			BindingResult bindingResult) {
 		return ResponseHandler.getResponse(userFacade.login(loginDto, clientId, secretId), HttpStatus.OK);
 	}

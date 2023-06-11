@@ -43,6 +43,6 @@ public class PersonInformationDto {
 
 	protected List<String> privateImgs;
 
-	//protected LocalDateTime createdAt;
+	protected LocalDateTime createdAt;
 
 }

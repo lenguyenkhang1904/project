@@ -44,13 +44,13 @@ public class TutorRest {
 	@Autowired
 	private StorageFacade storageFacade;
 
-	@PostMapping("/create-tutor")
+	@PostMapping("/create")
 	public ResponseEntity<Object> saveTutor(@RequestBody final RequestSaveTutor request) {
 		Long id = tutorFacade.saveTutor(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
-	@GetMapping("/find-all-tutor")
+	@GetMapping("/find-all")
 	public ResponseEntity<Object> findAllTutor() {
 		List<ResponseTutor> tutorDtos = tutorFacade.findAllTutor();
 		return ResponseHandler.getResponse(tutorDtos, HttpStatus.OK);
@@ -118,7 +118,7 @@ public class TutorRest {
 //		return ResponseHandler.getResponse(list, HttpStatus.OK);
 //	}
 
-	@PostMapping("/create-or-update-tutor-avatar/{tutorCode}")
+	@PostMapping("/create-or-updater-avatar/{tutorCode}")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
 			@PathVariable("tutorCode") String tutorCode) throws IOException {
 
@@ -195,7 +195,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Upload files successfully", HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/delete-tutor-avatar/{urlPic}")
+	@DeleteMapping("/delete-avatar/{urlPic}")
 	public ResponseEntity<Object> deleteTutorAvatar(@PathVariable("urlPic") String urlPic) {
 		String tutorAvatarURL = ConstaintInformationStorage.TUTOR_AVATAR_URL;
 		if (!storageFacade.checkExistObjectinS3Tutor(urlPic))
@@ -204,7 +204,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete-tutor-private-img/{urlPic}")
+	@DeleteMapping("/delete-private-img/{urlPic}")
 	public ResponseEntity<Object> deleteTutorPrivateImg(@PathVariable("urlPic") String urlPic) {
 		final String tutorPrivateimgsURL = ConstaintInformationStorage.TUTOR_PRIVATE_IMGS_URL;
 		if (!storageFacade.checkExistObjectPrivateInS3Tutor(urlPic))
@@ -213,7 +213,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete-tutor-public-img/{nameFile}")
+	@DeleteMapping("/delete-public-img/{nameFile}")
 	public ResponseEntity<Object> deleteTutorPublicImg(@PathVariable("urlPic") String urlPic) {
 		final String tutorPublicImgsURL = ConstaintInformationStorage.TUTOR_PUBLIC_IMGS_URL;
 		if (!storageFacade.checkExistObjectPublicInS3Tutor(urlPic))
@@ -222,7 +222,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@PutMapping("/update-tutor-privateImg/{nameFile}")
+	@PutMapping("/update-privateImg/{nameFile}")
 	public ResponseEntity<Object> UpdatePrivateImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -234,7 +234,7 @@ public class TutorRest {
 					HttpStatus.BAD_REQUEST);
 	}
 
-	@PutMapping("/update-tutor-public-img/{nameFile}")
+	@PutMapping("/update-public-img/{nameFile}")
 	public ResponseEntity<Object> updatePublicImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
