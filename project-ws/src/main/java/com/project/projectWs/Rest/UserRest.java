@@ -25,31 +25,31 @@ public class UserRest {
 	@Autowired
 	private UserFacade userFacade;
 
-	@PostMapping("/create-user")
+	@PostMapping("/create")
 	public ResponseEntity<Object> saveUser(@RequestBody final RequestSaveUserDto request) {
 		String id = userFacade.saveUser(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
-	@PutMapping("/update-user")
+	@PutMapping("/update")
 	public ResponseEntity<Object> updateUser(@RequestBody final RequestUpdateUserDto request) {
 		String id = userFacade.updateUser(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
-	@PutMapping("/update-user-role")
+	@PutMapping("/update-role")
 	public ResponseEntity<Object> updateUserRole(@RequestBody final RequestUpdateUserRoleDto request) {
 		String id = userFacade.updateUserRole(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
-	@PutMapping("/update-user-type-tutor")
+	@PutMapping("/update-type-tutor")
 	public ResponseEntity<Object> updateTutorTypeUser(@RequestBody final RequestUpdateUserTypeTutorDto request) {
 		String id = userFacade.updateUserTypeTutor(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
-	@PutMapping("/update-register-and-learner-type-user")
+	@PutMapping("/update-type-register-and-learner")
 	public ResponseEntity<Object> updateRegisterAndLearnerTypeUser(@RequestBody final RequestUpdateRegisterAndLearnerTypeUserDto request) {
 		String id = userFacade.updateRegisterAndLearnerTypeUser(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);

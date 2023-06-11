@@ -7,16 +7,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestSaveTutorInvitationDto implements Serializable {
+public class RequestUpdateTutorInterestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private String id;
 	
 	private String registerAndLearnerId;
 	
 	private String learnerAndReqisterPhone;
 	
 	private Long tutorId;
-	
-	private String note;
-
 }

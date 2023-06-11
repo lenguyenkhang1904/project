@@ -25,9 +25,6 @@ public class RegisterAndLearnerAddressDto implements Serializable {
 	private String yCoo;
 
 	private String areaId;
-
-	protected LocalDateTime createdAt;
-
-	protected LocalDateTime updatedAt;
-
+	
+	private String createdBy;
 }

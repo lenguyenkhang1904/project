@@ -38,7 +38,7 @@ public class RegisterAndLearnerRest {
 	@Autowired
 	private StorageFacade storageFacade;
 
-	@PostMapping("/create-or-update-register-and-learner-avatar/{registerAndLearnerId}")
+	@PostMapping("/create-or-update-avatar/{registerAndLearnerId}")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
 
@@ -118,7 +118,7 @@ public class RegisterAndLearnerRest {
 		return ResponseHandler.getResponse("Upload files successfully", HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/delete-register-and-learner-avatar/{urlPic}")
+	@DeleteMapping("/delete-avatar/{urlPic}")
 	public ResponseEntity<Object> deleteRegisterAndLearnerAvatar(@PathVariable("urlPic") String urlPic) {
 		String registerAndLearnerAvatarURL = ConstaintInformationStorage.REGISTER_AND_LEARNER_AVATAR_URL;
 		if (!storageFacade.checkExistObjectinS3RegisterAndLearner(urlPic))
@@ -138,7 +138,7 @@ public class RegisterAndLearnerRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete-register-and-learner-public-img/{nameFile}")
+	@DeleteMapping("/delete-public-img/{nameFile}")
 	public ResponseEntity<Object> deleteRegisterAndLearnerPublicImg(@PathVariable("urlPic") String urlPic) {
 
 		final String registerAndLearnerPublicImgsURL = ConstaintInformationStorage.REGISTER_AND_LEARNER_PUBLIC_IMGS_URL;
@@ -148,7 +148,7 @@ public class RegisterAndLearnerRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@PutMapping("/update-register-and-learner-privateImg/{nameFile}")
+	@PutMapping("/update-privateImg/{nameFile}")
 	public ResponseEntity<Object> UpdatePrivateImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -163,7 +163,7 @@ public class RegisterAndLearnerRest {
 
 	}
 
-	@PutMapping("/update-register-and-learner-public-img/{nameFile}")
+	@PutMapping("/update-public-img/{nameFile}")
 	public ResponseEntity<Object> updatePublicImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -256,7 +256,7 @@ public class RegisterAndLearnerRest {
 		return ResponseHandler.getResponse(registerAndLearners, HttpStatus.OK);
 	}
 
-	@PostMapping("/create-register-and-learner")
+	@PostMapping("/create")
 	public ResponseEntity<Object> CreateRegisterAndLearner(@RequestBody final RequestSaveResigterAndLearnerDto dto) {
 		String registerAndLearnerId = registerAndLearnerFacade.save(dto);
 		if (registerAndLearnerId == null)

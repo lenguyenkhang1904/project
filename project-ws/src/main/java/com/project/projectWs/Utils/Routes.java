@@ -17,4 +17,6 @@ public class Routes {
 	public static final String ROLE = "/api/v2/role";
 	// TUTOR_INVITATION
 	public static final String TUTOR_INVITATION = "/api/v2/tutor-invitation";
+	// TUTOR INTEREST
+	public static final String TUTOR_INTEREST = "/api/v2/tutor-interest";
 }
