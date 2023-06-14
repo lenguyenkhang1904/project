@@ -53,8 +53,6 @@ public interface TutorFacade {
 
 	TutorDto findById(final Long id);
 
-	Long updateTutor(final TutorDto dto);
-
 	Long updateSubjetGroupMaybe(RequestUpdateTutorSubjectGroupMaybeDto dto);
 
 	Long updateSubjectGroupForSure(RequestUpdateTutorSubjectGroupForSureDto dto);

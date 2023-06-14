@@ -118,7 +118,7 @@ public class TutorRest {
 //		return ResponseHandler.getResponse(list, HttpStatus.OK);
 //	}
 
-	@PostMapping("/create-or-updater-avatar/{tutorCode}")
+	@PostMapping("/create-or-update-avatar/{tutorCode}")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
 			@PathVariable("tutorCode") String tutorCode) throws IOException {
 

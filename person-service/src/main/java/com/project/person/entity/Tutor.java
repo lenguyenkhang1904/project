@@ -112,9 +112,6 @@ public class Tutor extends PersonAbstractInformation {
 	
 	@OneToMany(mappedBy = "tutor")
 	private List<TutorSubjectGroupForSure> tutorSubjectGroupForSures;
-	
-	@OneToMany(mappedBy = "tutor")
-	private List<TutorSubjectGroupFails> tutorSubjectGroupFails;
 
 	@Column(name = "subject")
 	private String subject;

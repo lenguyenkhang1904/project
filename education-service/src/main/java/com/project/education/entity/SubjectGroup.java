@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "subject_group")
-public class SubjectGroup extends AbstractEntity {
+public class SubjectGroup {
 	
 	@Id
 	@GeneratedValue(generator = "uuid")

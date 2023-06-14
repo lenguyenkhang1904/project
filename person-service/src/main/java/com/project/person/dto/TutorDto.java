@@ -65,4 +65,20 @@ public class TutorDto extends PersonInformationDto implements Serializable {
 	private String subjectClass;
 	
 	private List<Calendar> calendars = new LinkedList<>();
+
+	@Override
+	public String toString() {
+		return "TutorDto [id=" + id + ", tutorAddress=" + tutorAddress + ", tutorAddressAreaId=" + tutorAddressAreaId
+				+ ", xRelCoo=" + xRelCoo + ", yRelCoo=" + yRelCoo + ", placeOfBirth=" + placeOfBirth + ", areaTutorIds="
+				+ areaTutorIds + ", expNotices=" + expNotices + ", averageStarNumbers=" + averageStarNumbers
+				+ ", hienDangLa=" + hienDangLa + ", nowLevel=" + nowLevel + ", nowLevelUpdatedAt=" + nowLevelUpdatedAt
+				+ ", studyingInsitution=" + studyingInsitution + ", teachingInstitution=" + teachingInstitution
+				+ ", major=" + major + ", voices=" + voices + ", tutorTag=" + tutorTag + ", tutorNotices="
+				+ tutorNotices + ", advantageNote=" + advantageNote + ", tutorSubjectGroupMaybeIds="
+				+ tutorSubjectGroupMaybeIds + ", tutorSubjectGroupForSureIds=" + tutorSubjectGroupForSureIds
+				+ ", subject=" + subject + ", subjectClass=" + subjectClass + ", calendars=" + calendars + "]";
+	}
+	
+	
+  
 }

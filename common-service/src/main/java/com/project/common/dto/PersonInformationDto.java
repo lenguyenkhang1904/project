@@ -2,6 +2,7 @@ package com.project.common.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Getter;
@@ -39,9 +40,9 @@ public class PersonInformationDto {
 
 	protected String avatar;
 
-	protected List<String> publicImgs;
+	protected List<String> publicImgs = new LinkedList<>();
 
-	protected List<String> privateImgs;
+	protected List<String> privateImgs = new LinkedList<>();
 
 	protected LocalDateTime createdAt;
 
