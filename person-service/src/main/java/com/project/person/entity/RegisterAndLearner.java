@@ -7,6 +7,8 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -22,6 +24,7 @@ import lombok.Setter;
 @Table(name = "register_and_learner")
 @Getter
 @Setter
+
 public class RegisterAndLearner extends PersonAbstractInformation {
 
 	@Id
@@ -55,12 +58,14 @@ public class RegisterAndLearner extends PersonAbstractInformation {
 	private String note;
 
 	@OneToMany(mappedBy = "registerAndLearner")
+	@JsonIgnore
 	private List<TutorInvitation> tutorInvitations;
 
 	@OneToMany(mappedBy = "registerAndLearner")
+	@JsonIgnore
 	private List<TutorInterest> tutorInterests;
 
-	@OneToMany(mappedBy = "registerAndLearnerBy") 
+	@OneToMany(mappedBy = "registerAndLearnerBy")
 	private List<RegisterAndLearnerRelationship> relationshipBy;
 
 	@OneToMany(mappedBy = "registerAndLearnerWith")

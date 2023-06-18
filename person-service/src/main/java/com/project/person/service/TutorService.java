@@ -36,5 +36,7 @@ public interface TutorService {
 	Long updateNowLevelAndNowUpdateAt(TutorDto dto);
 
 	Long updateCalendar(TutorDto dto);
+	
+	Long update(TutorDto dto);
 
 }

@@ -156,27 +156,27 @@ public class TutorServiceImpl implements TutorService {
 			dto.setAvatar(!StringUtils.isEmpty((String) objectList[21]) ? (String) objectList[21] : "");
 
 			dto.setCreatedBy(!StringUtils.isEmpty((String) objectList[22]) ? (String) objectList[22] : "");
-			
+
 			dto.setUpdatedBy(!StringUtils.isEmpty((String) objectList[23]) ? (String) objectList[23] : "");
-			
+
 			String relAreas = !StringUtils.isEmpty((String) objectList[24]) ? (String) objectList[24] : "";
 			dto.setRelArea(Arrays.asList(relAreas.split(", ")));
-			
+
 			String privateImgs = !StringUtils.isEmpty((String) objectList[25]) ? (String) objectList[25] : "";
 			dto.setPrivateImgs(new LinkedList<>(new HashSet<>(Arrays.asList(privateImgs.split(", ")))));
-			
+
 			String publicImgs = !StringUtils.isEmpty((String) objectList[26]) ? (String) objectList[26] : "";
 			dto.setPublicImgs(new LinkedList<>(new HashSet<>(Arrays.asList(publicImgs.split(", ")))));
-			
+
 			String subjectGroupMaybes = !StringUtils.isEmpty((String) objectList[27]) ? (String) objectList[27] : "";
 			dto.setSubjectGroupMaybeIds(Arrays.asList(subjectGroupMaybes.split(", ")));
-			
+
 			String subjectGroupForsures = !StringUtils.isEmpty((String) objectList[28]) ? (String) objectList[28] : "";
 			dto.setSubjectGroupForsureIds(Arrays.asList(subjectGroupForsures.split(", ")));
-	
+
 			String calendarStr = !StringUtils.isEmpty((String) objectList[29]) ? (String) objectList[29] : "";
-			
-			if(!StringUtils.isEmpty(calendarStr)) {
+
+			if (!StringUtils.isEmpty(calendarStr)) {
 				List<String> calendarStrs = new LinkedList<>(new HashSet<>(Arrays.asList(calendarStr.split(", "))));
 				List<Calendar> calendars = new LinkedList<>();
 				calendarStrs.forEach(ca -> {
@@ -184,7 +184,7 @@ public class TutorServiceImpl implements TutorService {
 				});
 				dto.setCalendars(calendars);
 			}
-			
+
 			tutorDtos.add(dto);
 		});
 
@@ -319,6 +319,31 @@ public class TutorServiceImpl implements TutorService {
 			return tutor.getId();
 		}
 		return null;
+	}
+
+	@Override
+	public Long update(TutorDto dto) {
+		// tutor
+		Optional<Tutor> tutorOpt = tutorRepository.findById(dto.getId());
+		if (!tutorOpt.isEmpty()) {
+			Tutor tutor = tutorOpt.get();
+			tutor = ObjectMapperUtils.map(dto, Tutor.class);
+			Long id = Long.parseLong(generateTutorCode());
+			tutor.setId(id);
+			tutor.setFullName(dto.getFullName().toUpperCase());
+			tutor.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName()).toUpperCase());
+			tutor.setUpdatedBy(dto.getCreatedBy());
+			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+			tutor = tutorRepository.save(tutor);
+			// Area Tutor
+			List<String> areaTutorIds = dto.getAreaTutorIds();
+			if (!areaTutorIds.isEmpty()) {
+				saveAllAreaTutor(areaTutorIds, tutor);
+			}
+			return tutor.getId();
+		}
+		return null;
+
 	}
 
 }

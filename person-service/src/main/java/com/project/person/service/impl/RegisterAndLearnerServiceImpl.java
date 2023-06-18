@@ -36,7 +36,7 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 	private SchoolerRepository schoolerRepository;
 
 	@Override
-	public String saveRegisterAndLearner(final RegisterAndLearnerDto dto) {
+	public String saveRegisterAndLearner(RegisterAndLearnerDto dto) {
 		RegisterAndLearner registerAndLearner = new RegisterAndLearner();
 		registerAndLearner = ObjectMapperUtils.map(dto, RegisterAndLearner.class);
 		registerAndLearner.setFullName(dto.getFullName().toUpperCase());
@@ -46,10 +46,9 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
 
 		// register and learner relationship
-		List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationshipDtos = new LinkedList<>();
+		List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationshipDtos = dto.getRegisterAndLearnerRelationships();
 		List<RegisterAndLearnerRelationship> registerAndLearnerRelationships = new LinkedList<>();
 		for (RegisterAndLearnerRelationshipDto registerAndLearnerRelationshipDto : registerAndLearnerRelationshipDtos) {
-			if (StringUtils.isBlank(registerAndLearnerRelationshipDto.getIdPersonBy())) {
 				RegisterAndLearnerRelationship registerAndLearnerRelationship = new RegisterAndLearnerRelationship();
 				registerAndLearnerRelationship = ObjectMapperUtils.map(registerAndLearnerRelationshipDto,
 						RegisterAndLearnerRelationship.class);
@@ -57,12 +56,8 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 						registerAndLearnerRepository.findById(registerAndLearnerRelationshipDto.getIdPersonBy()).get());
 				registerAndLearnerRelationship.setRegisterAndLearnerWith(registerAndLearner);
 				registerAndLearnerRelationships.add(registerAndLearnerRelationship);
-			}
 		}
-
-		if (!registerAndLearnerRelationships.isEmpty()) {
-			registerAndLearnerRelationshipRepository.saveAll(registerAndLearnerRelationships);
-		}
+		registerAndLearnerRelationshipRepository.saveAll(registerAndLearnerRelationships);
 
 		// Schooler
 		List<SchoolerDto> schoolerDtos = dto.getSchoolerDtos();
@@ -70,6 +65,8 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		for (SchoolerDto schoolerDto : schoolerDtos) {
 			Schooler schooler = new Schooler();
 			schooler = ObjectMapperUtils.map(schoolerDto, Schooler.class);
+			schooler.setCreatedBy(dto.getCreatedBy());
+			schooler.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 			schooler.setRegisterAndLearner(registerAndLearner);
 			schoolers.add(schooler);
 		}
@@ -80,8 +77,16 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 
 	@Override
 	public List<RegisterAndLearnerDto> findAllRegisterAndLearner() {
-		// TODO Auto-generated method stub
-		return null;
+		List<RegisterAndLearnerDto> dtos = new LinkedList<>();
+		List<RegisterAndLearner> registerAndLearners = registerAndLearnerRepository.findAll();
+		registerAndLearners.forEach(item -> {
+			RegisterAndLearnerDto dto = new RegisterAndLearnerDto();
+			dto = ObjectMapperUtils.map(item, RegisterAndLearnerDto.class);
+			dto.setRegisterAndLearnerRelationships(ObjectMapperUtils.mapAll(item.getRelationshipBy(), RegisterAndLearnerRelationshipDto.class));
+			dto.setSchoolerDtos(ObjectMapperUtils.mapAll(item.getSchoolers(), SchoolerDto.class));
+			dtos.add(dto);
+		});
+		return dtos;
 	}
 
 	@Override
