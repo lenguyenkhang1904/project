@@ -2,7 +2,9 @@ package com.project.projectWs.facade.impl;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +17,7 @@ import com.project.person.dto.TutorDto;
 import com.project.person.service.RegisterAndLearnerService;
 import com.project.person.utils.RemoveDuplicateElement;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
+import com.project.projectWs.dto.ResponseRegisterAndLearnerDto;
 import com.project.projectWs.facade.RegisterAndLearnerFacade;
 import com.project.projectWs.facade.UserFacade;
 import com.project.storage.service.AvatarAndPublicAndPrivateRegisterAndLearnerAwsService;
@@ -33,6 +36,7 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	
 	@Autowired
 	private UserFacade userFacade;
+	
 
 	@Override
 	public String createOrUpdateRegisterAndLearnerAvatar(MultipartFile file, String registerAndLearnerId) {
@@ -80,10 +84,10 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 				fileName);
 		RegisterAndLearnerDto registerAndLearnerDto = registerAndLearnerService
 				.findById(fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("Public")));
-		List<String> urlPublicImgs = registerAndLearnerDto.getPrivateImgs();
+		List<String> urlPublicImgs = registerAndLearnerDto.getPublicImgs();
 		urlPublicImgs.add(url);
 		List<String> converter = new LinkedList<>(urlPublicImgs);
-		converter = RemoveDuplicateElement.removeDuplicateElemet(converter);
+		converter = RemoveDuplicateElement.removeDuplicateElemet(converter); 
 		registerAndLearnerDto.setPublicImgs(urlPublicImgs);
 		String tutorUpdatedId = registerAndLearnerService.updateRegisterAndLearner(registerAndLearnerDto);
 		return tutorUpdatedId != null ? "Insert PublicImgs successfully" : "";
@@ -228,15 +232,32 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	public String save(RequestSaveResigterAndLearnerDto dto) {
 		RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
 		registerAndLearnerDto = ObjectMapperUtils.map(dto, RegisterAndLearnerDto.class);
-		dto.setCreatedBy(userFacade.getCurrentUser());
+		registerAndLearnerDto.setCreatedBy(userFacade.getCurrentUser());
 		registerAndLearnerDto.setRegisterAndLearnerRelationships(dto.getRegisterAndLearnerRelationships());
 		String idResigterAndLearner = registerAndLearnerService.saveRegisterAndLearner(registerAndLearnerDto);	
 		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = dto.getRegisterAndLearnerAddressDtos();
 		if(!registerAndLearnerAddressDtos.isEmpty()) {
-			registerAndLearnerAddressService.saveAll(registerAndLearnerAddressDtos, idResigterAndLearner);
+			registerAndLearnerAddressService.saveAll(registerAndLearnerAddressDtos, idResigterAndLearner, userFacade.getCurrentUser());
 			return idResigterAndLearner;
 		}
-		return null;
+		return StringUtils.EMPTY;
+	}
+
+	@Override
+	public List<ResponseRegisterAndLearnerDto> findAll() {
+		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = registerAndLearnerAddressService.findAll();
+		
+		List<RegisterAndLearnerDto> registerAndLearnerDtos = registerAndLearnerService.findAllRegisterAndLearner();
+		
+		List<ResponseRegisterAndLearnerDto> responseRegisterAndLearnerDtos = new LinkedList<>();
+		registerAndLearnerDtos.forEach(item -> {
+			ResponseRegisterAndLearnerDto dto = new ResponseRegisterAndLearnerDto();
+			dto = ObjectMapperUtils.map(item, ResponseRegisterAndLearnerDto.class);
+			dto.setRegisterAndLearnerAddressDtos(registerAndLearnerAddressDtos.stream().filter(re -> re.getRegisterAndLearnerId().equals(item.getId())).collect(Collectors.toList()));		
+			responseRegisterAndLearnerDtos.add(dto);
+		});
+		
+		return responseRegisterAndLearnerDtos;
 	}
 
 }

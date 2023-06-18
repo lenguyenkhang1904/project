@@ -49,8 +49,6 @@ public class RequestSaveResigterAndLearnerDto implements Serializable {
 	protected  String idCardNumber;
 
 	protected  String idCardIssuedOn;
-	
-	private String createdBy;
 
 	private List<SchoolerDto> schoolerDtos = new LinkedList<>();
 

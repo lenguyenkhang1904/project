@@ -19,6 +19,7 @@ import com.project.person.dto.TutorForFindAllDto;
 import com.project.person.entity.Tutor;
 import com.project.person.service.TutorService;
 import com.project.projectWs.dto.RequestSaveTutor;
+import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.RequestUpdateTutorCalendarDto;
 import com.project.projectWs.dto.RequestUpdateTutorNowLevelAndUpdateAtDto;
 import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
@@ -290,6 +291,16 @@ public class TutorFacadeImpl implements TutorFacade {
 		tutorDto.setId(dto.getId());
 		tutorDto.setCalendars(dto.getCalendars());
 		return tutorService.updateCalendar(tutorDto);
+	}
+
+	@Override
+	public Long updateTutor(RequestUpdateTutor request) {
+		TutorDto dto = new TutorDto();
+		dto = ObjectMapperUtils.map(request, TutorDto.class);
+		dto.setCreatedBy(userFacade.getCurrentUser());
+		dto.setAreaTutorIds(request.getAreaTutorId());
+		Long id = tutorService.update(dto);
+		return id;
 	}
 
 }

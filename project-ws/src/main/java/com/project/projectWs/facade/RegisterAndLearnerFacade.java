@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.person.dto.RegisterAndLearnerDto;
 import com.project.person.dto.TutorDto;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
+import com.project.projectWs.dto.ResponseRegisterAndLearnerDto;
 
 public interface RegisterAndLearnerFacade {
 
@@ -55,5 +56,7 @@ public interface RegisterAndLearnerFacade {
 	List<RegisterAndLearnerDto> findByVocativeAndFullName(String vocative, String fullName);
 	
 	String save(RequestSaveResigterAndLearnerDto dto);
+	
+	List<ResponseRegisterAndLearnerDto> findAll();
 
 }

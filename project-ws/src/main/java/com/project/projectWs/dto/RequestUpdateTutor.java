@@ -2,7 +2,6 @@ package com.project.projectWs.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,9 +10,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestSaveTutor implements Serializable {
+public class RequestUpdateTutor implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private Long id;
 
 	private String registeredStatus;
 
