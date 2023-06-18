@@ -3,15 +3,16 @@ package com.project.person.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
+
+import com.project.common.utils.Calendar;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AreaTutorDto implements Serializable  {
+public class TutorForFindAllDto implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -20,12 +21,10 @@ public class AreaTutorDto implements Serializable  {
 	private LocalDateTime createdAt;
 	
 	private LocalDateTime updatedAt;
-//	
-//	@CreatedBy 
-//	protected String createdBy;  
-//	
-//	@LastModifiedBy
-//	protected String updatedBy;
+
+	private String createdBy;  
+
+	private String updatedBy;
 
 	private String registeredStatus;
 
@@ -61,5 +60,19 @@ public class AreaTutorDto implements Serializable  {
     
     private String placeOfBirth;
 	
+    private String avatar;
+    
 	private List<String> relArea;
+	
+	private List<String> privateImgs;
+	
+	private List<String> publicImgs;
+	
+	private List<String> subjectGroupForsureIds;
+	
+	private List<String> subjectGroupMaybeIds;
+	
+	private List<Calendar> calendars;
+	
+	
 }

@@ -23,6 +23,8 @@ import com.project.common.utils.ResponseHandler;
 import com.project.person.dto.RegisterAndLearnerDto;
 import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
+import com.project.projectWs.dto.ResponseRegisterAndLearnerDto;
+import com.project.projectWs.dto.ResponseTutor;
 import com.project.projectWs.facade.RegisterAndLearnerFacade;
 import com.project.projectWs.facade.StorageFacade;
 
@@ -273,4 +275,12 @@ public class RegisterAndLearnerRest {
 //		}
 //		return ResponseHandler.getResponse(registerAndLearnerId, HttpStatus.OK);
 //	}
+	
+	@GetMapping("/find-all")
+	public ResponseEntity<Object> findAllTutor() {
+		List<ResponseRegisterAndLearnerDto> dtos = registerAndLearnerFacade.findAll();
+		return ResponseHandler.getResponse(dtos, HttpStatus.OK);
+	}
+	
+	
 }

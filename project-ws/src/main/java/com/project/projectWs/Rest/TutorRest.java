@@ -24,6 +24,7 @@ import com.project.common.utils.ResponseHandler;
 import com.project.person.dto.TutorDto;
 import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveTutor;
+import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.RequestUpdateTutorCalendarDto;
 import com.project.projectWs.dto.RequestUpdateTutorNowLevelAndUpdateAtDto;
 import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
@@ -118,7 +119,7 @@ public class TutorRest {
 //		return ResponseHandler.getResponse(list, HttpStatus.OK);
 //	}
 
-	@PostMapping("/create-or-updater-avatar/{tutorCode}")
+	@PostMapping("/create-or-update-avatar/{tutorCode}")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
 			@PathVariable("tutorCode") String tutorCode) throws IOException {
 
@@ -290,6 +291,12 @@ public class TutorRest {
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 		}
 		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
+	}
+	
+	@PutMapping("/update")
+	public ResponseEntity<Object> updateTutor(@RequestBody final RequestUpdateTutor request) {
+		Long id = tutorFacade.updateTutor(request);
+		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
 }

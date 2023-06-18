@@ -15,6 +15,8 @@ public class TutorInvitationDto implements Serializable {
 	
 	private String registerAndLearnerId;
 	
+    private String learnerAndReqisterPhone;
+	
 	private Long tutorId;
 	
 	private String note;

@@ -3,10 +3,14 @@ package com.project.person.service.impl;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +19,7 @@ import com.project.common.utils.DateConverter;
 import com.project.common.utils.HandleCharacter;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.common.utils.TypeOfSubjectGroup;
-import com.project.person.dto.AreaTutorDto;
+import com.project.person.dto.TutorForFindAllDto;
 import com.project.person.dto.TutorDto;
 import com.project.person.entity.AreaTutor;
 import com.project.person.entity.Tutor;
@@ -121,12 +125,12 @@ public class TutorServiceImpl implements TutorService {
 	}
 
 	@Override
-	public List<AreaTutorDto> findAllTutor() {
-		List<AreaTutorDto> tutorDtos = new LinkedList<>();
+	public List<TutorForFindAllDto> findAllTutor() {
+		List<TutorForFindAllDto> tutorDtos = new LinkedList<>();
 
 		tutorRepository.findAllTutor().stream().forEach(item -> {
 			Object[] objectList = (Object[]) item;
-			AreaTutorDto dto = new AreaTutorDto();
+			TutorForFindAllDto dto = new TutorForFindAllDto();
 			String convertToStringId = (String) objectList[0].toString();
 			Long id = Long.parseLong(convertToStringId);
 			dto.setId(id);
@@ -149,9 +153,38 @@ public class TutorServiceImpl implements TutorService {
 			dto.setTutorAddressAreaId((String) objectList[17]);
 			dto.setCreatedAt(DateConverter.convertDateToLocalDateTime((Timestamp) objectList[18]));
 
-			String relAreas = (String) objectList[26];
-			List<String> realAreaIds = Arrays.asList(relAreas.split(", "));
-			dto.setRelArea(realAreaIds);
+			dto.setAvatar(!StringUtils.isEmpty((String) objectList[21]) ? (String) objectList[21] : "");
+
+			dto.setCreatedBy(!StringUtils.isEmpty((String) objectList[22]) ? (String) objectList[22] : "");
+
+			dto.setUpdatedBy(!StringUtils.isEmpty((String) objectList[23]) ? (String) objectList[23] : "");
+
+			String relAreas = !StringUtils.isEmpty((String) objectList[24]) ? (String) objectList[24] : "";
+			dto.setRelArea(Arrays.asList(relAreas.split(", ")));
+
+			String privateImgs = !StringUtils.isEmpty((String) objectList[25]) ? (String) objectList[25] : "";
+			dto.setPrivateImgs(new LinkedList<>(new HashSet<>(Arrays.asList(privateImgs.split(", ")))));
+
+			String publicImgs = !StringUtils.isEmpty((String) objectList[26]) ? (String) objectList[26] : "";
+			dto.setPublicImgs(new LinkedList<>(new HashSet<>(Arrays.asList(publicImgs.split(", ")))));
+
+			String subjectGroupMaybes = !StringUtils.isEmpty((String) objectList[27]) ? (String) objectList[27] : "";
+			dto.setSubjectGroupMaybeIds(Arrays.asList(subjectGroupMaybes.split(", ")));
+
+			String subjectGroupForsures = !StringUtils.isEmpty((String) objectList[28]) ? (String) objectList[28] : "";
+			dto.setSubjectGroupForsureIds(Arrays.asList(subjectGroupForsures.split(", ")));
+
+			String calendarStr = !StringUtils.isEmpty((String) objectList[29]) ? (String) objectList[29] : "";
+
+			if (!StringUtils.isEmpty(calendarStr)) {
+				List<String> calendarStrs = new LinkedList<>(new HashSet<>(Arrays.asList(calendarStr.split(", "))));
+				List<Calendar> calendars = new LinkedList<>();
+				calendarStrs.forEach(ca -> {
+					calendars.add(Calendar.valueOf(ca));
+				});
+				dto.setCalendars(calendars);
+			}
+
 			tutorDtos.add(dto);
 		});
 
@@ -203,25 +236,25 @@ public class TutorServiceImpl implements TutorService {
 			tutorDto = ObjectMapperUtils.map(tutor, TutorDto.class);
 			tutorDto.setPublicImgs(tutor.getPublicImgs());
 			tutorDto.setPrivateImgs(tutor.getPrivateImgs());
+			tutorDto.setAvatar(tutor.getAvatar());
 			return tutorDto;
 		}
 		return null;
 	}
 
 	@Override
-	public Long updateTutor(TutorDto dto) {
-		Tutor tutor = ObjectMapperUtils.map(dto, Tutor.class);
-		tutor = tutorRepository.save(tutor);
-		return tutor.getId();
+	public Long updateTutor(Tutor tutor) {
+		return tutorRepository.save(tutor).getId();
 	}
 
 	@Override
+	@Transactional
 	public Long updateSubjetGroupMaybe(TutorDto dto) {
 		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
 			tutor.setUpdatedBy(dto.getCreatedBy());
-			tutor.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 			tutorSubjectGroupMaybeRepository.deleteByTutorId(dto.getId());
 			// Subject Group Maybe
 			List<String> tutorSubjectGroupMaybeIds = dto.getTutorSubjectGroupMaybeIds();
@@ -234,11 +267,13 @@ public class TutorServiceImpl implements TutorService {
 	}
 
 	@Override
+	@Transactional
 	public Long updateSubjectGroupForSure(TutorDto dto) {
 		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
 			tutor.setUpdatedBy(dto.getCreatedBy());
+			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 			tutorSubjectGroupForSureRepository.deleteByTutorId(dto.getId());
 			// Subject Group ForSure
 			List<String> tutorSubjectGroupForSureIds = dto.getTutorSubjectGroupForSureIds();
@@ -261,7 +296,7 @@ public class TutorServiceImpl implements TutorService {
 			Tutor tutor = tutorOpt.get();
 			tutor.setUpdatedBy(dto.getCreatedBy());
 			tutor.setNowLevel(dto.getNowLevel());
-			tutor.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 			tutor = tutorRepository.save(tutor);
 			return tutor.getId();
 		}
@@ -274,7 +309,7 @@ public class TutorServiceImpl implements TutorService {
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
 			tutor.setUpdatedBy(dto.getCreatedBy());
-			tutor.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 			List<Calendar> calendars = new LinkedList<>();
 			for (Calendar calendar : dto.getCalendars()) {
 				calendars.add(calendar);
@@ -284,6 +319,31 @@ public class TutorServiceImpl implements TutorService {
 			return tutor.getId();
 		}
 		return null;
+	}
+
+	@Override
+	public Long update(TutorDto dto) {
+		// tutor
+		Optional<Tutor> tutorOpt = tutorRepository.findById(dto.getId());
+		if (!tutorOpt.isEmpty()) {
+			Tutor tutor = tutorOpt.get();
+			tutor = ObjectMapperUtils.map(dto, Tutor.class);
+			Long id = Long.parseLong(generateTutorCode());
+			tutor.setId(id);
+			tutor.setFullName(dto.getFullName().toUpperCase());
+			tutor.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName()).toUpperCase());
+			tutor.setUpdatedBy(dto.getCreatedBy());
+			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+			tutor = tutorRepository.save(tutor);
+			// Area Tutor
+			List<String> areaTutorIds = dto.getAreaTutorIds();
+			if (!areaTutorIds.isEmpty()) {
+				saveAllAreaTutor(areaTutorIds, tutor);
+			}
+			return tutor.getId();
+		}
+		return null;
+
 	}
 
 }

@@ -7,7 +7,7 @@ import com.project.person.dto.TutorDto;
 
 public interface RegisterAndLearnerService {
 	
-	String saveRegisterAndLearner(final RegisterAndLearnerDto dto);
+	String saveRegisterAndLearner(RegisterAndLearnerDto dto);
 
 	List<RegisterAndLearnerDto> findAllRegisterAndLearner();
 

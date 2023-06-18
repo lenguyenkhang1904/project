@@ -24,10 +24,9 @@ import com.project.db.dto.AreaDto;
 public class GenerateLocationData {
 
 	private static final String DIR_ORIGINAL_DATA = "./original_data.xlsx";
-	private static final String DIR_DATA_LOCATION = "./postgeSQL/sqlscript/update_data_location.sql";
+	private static final String DIR_DATA_LOCATION = "./postgresql/sql_script/update_data_location.sql";
 
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
 		List<AreaDto> areaDto = importLocationData(DIR_ORIGINAL_DATA);
 		gennerateSQLScript(areaDto);
 

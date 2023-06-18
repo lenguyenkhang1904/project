@@ -23,7 +23,9 @@ public class RegisterAndLearnerDto extends PersonInformationDto implements Seria
 
 	private String registerAndLearnerTag;
 
-	private List<SchoolerDto> schoolerDtos  = new LinkedList<>();
+	private List<SchoolerDto> schoolerDtos = new LinkedList<>();
 
-	private List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationships  = new LinkedList<>();
+	private List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationships = new LinkedList<>();
+	
+	
 }

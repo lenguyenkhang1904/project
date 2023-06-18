@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.person.dto.TutorDto;
 import com.project.projectWs.dto.RequestSaveTutor;
+import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.RequestUpdateTutorCalendarDto;
 import com.project.projectWs.dto.RequestUpdateTutorNowLevelAndUpdateAtDto;
 import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
@@ -53,8 +54,6 @@ public interface TutorFacade {
 
 	TutorDto findById(final Long id);
 
-	Long updateTutor(final TutorDto dto);
-
 	Long updateSubjetGroupMaybe(RequestUpdateTutorSubjectGroupMaybeDto dto);
 
 	Long updateSubjectGroupForSure(RequestUpdateTutorSubjectGroupForSureDto dto);
@@ -63,4 +62,6 @@ public interface TutorFacade {
 
 	Long updateCalendar(RequestUpdateTutorCalendarDto dto);
 
+	Long updateTutor(final RequestUpdateTutor request);
+	
 }

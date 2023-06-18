@@ -15,6 +15,6 @@ public class RegisterAndLearnerRelationshipDto implements Serializable {
 
 	private String relationshipType;
 	
-	private String idPersonBy;//B tồn tại trong DB
+	private String registerAndLearnerById;//B tồn tại trong DB
 
 }

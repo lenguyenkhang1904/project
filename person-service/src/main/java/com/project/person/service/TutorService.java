@@ -2,13 +2,14 @@ package com.project.person.service;
 
 import java.util.List;
 
-import com.project.person.dto.AreaTutorDto;
+import com.project.person.dto.TutorForFindAllDto;
+import com.project.person.entity.Tutor;
 import com.project.person.dto.TutorDto;
 
 public interface TutorService {
 	Long saveTutor(final TutorDto dto);
 
-	List<AreaTutorDto> findAllTutor();
+	List<TutorForFindAllDto> findAllTutor();
 
 	TutorDto findByTutorCode(final Long tutorCode);
 
@@ -26,7 +27,7 @@ public interface TutorService {
     
     TutorDto findById(final Long id);
     
-    Long updateTutor(final TutorDto dto);
+    Long updateTutor(Tutor tutor);
     
     Long updateSubjetGroupMaybe(TutorDto dto);
 
@@ -35,5 +36,7 @@ public interface TutorService {
 	Long updateNowLevelAndNowUpdateAt(TutorDto dto);
 
 	Long updateCalendar(TutorDto dto);
+	
+	Long update(TutorDto dto);
 
 }

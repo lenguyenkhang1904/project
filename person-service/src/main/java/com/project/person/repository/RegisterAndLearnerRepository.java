@@ -2,6 +2,7 @@ package com.project.person.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,4 +37,8 @@ public interface RegisterAndLearnerRepository extends JpaRepository<RegisterAndL
 	
 	@Query("SELECT r FROM RegisterAndLearner r WHERE r.avatar IS NOT NULL")
 	List<RegisterAndLearner> findTutorBeforeSynchronize();
+	
+	@EntityGraph(value = "registerAndLearner")
+	@Query("SELECT ral FROM RegisterAndLearner ral")
+	List<RegisterAndLearner> findAllMe();
 }

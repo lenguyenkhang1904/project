@@ -8,6 +8,8 @@ public interface RegisterAndLearnerAddressService {
 	
 	String save(RegisterAndLearnerAddressDto dto);
 	
-	void saveAll(List<RegisterAndLearnerAddressDto> dtos, String registerAndLearnerId);
+	void saveAll(List<RegisterAndLearnerAddressDto> dtos, String registerAndLearnerId, String currentUser);
+	
+	List<RegisterAndLearnerAddressDto> findAll();
 
 }

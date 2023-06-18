@@ -1,5 +1,6 @@
 package com.project.projectWs.facade.impl;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,13 +10,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.common.utils.ObjectMapperUtils;
+import com.project.education.dto.SubjectGroupDto;
+import com.project.education.service.SubjectGroupService;
 import com.project.location.dto.AreaDto;
 import com.project.location.service.AreaService;
-import com.project.person.dto.AreaTutorDto;
 import com.project.person.dto.TutorDto;
+import com.project.person.dto.TutorForFindAllDto;
+import com.project.person.entity.Tutor;
 import com.project.person.service.TutorService;
-import com.project.person.utils.RemoveDuplicateElement;
 import com.project.projectWs.dto.RequestSaveTutor;
+import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.RequestUpdateTutorCalendarDto;
 import com.project.projectWs.dto.RequestUpdateTutorNowLevelAndUpdateAtDto;
 import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
@@ -36,9 +40,12 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Autowired
 	private AvatarAndPublicAndPrivateImgsTutorAwsService avatarTutorAwsService;
-	
+
 	@Autowired
 	private UserFacade userFacade;
+
+	@Autowired
+	private SubjectGroupService subjectGroupService;
 
 	@Override
 	public Long saveTutor(RequestSaveTutor request) {
@@ -52,9 +59,10 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Override
 	public List<ResponseTutor> findAllTutor() {
-		List<AreaTutorDto> dtos = tutorService.findAllTutor();
+		List<TutorForFindAllDto> dtos = tutorService.findAllTutor();
 		List<ResponseTutor> tutors = new LinkedList<>();
 		List<AreaDto> areas = areaService.findAll();
+		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
 
 		dtos.stream().forEach(item -> {
 			ResponseTutor responseTutor = new ResponseTutor();
@@ -69,6 +77,16 @@ public class TutorFacadeImpl implements TutorFacade {
 			responseTutor.setAreaTutorId(
 					areas.stream().filter(area -> item.getRelArea().stream().anyMatch(it -> it.equals(area.getId())))
 							.collect(Collectors.toList()));
+
+			responseTutor.setSubjectGroupForsures(subjectGroups.stream()
+					.filter(sub -> item.getSubjectGroupForsureIds().stream().anyMatch(it -> it.equals(sub.getId())))
+					.collect(Collectors.toList()));
+
+			responseTutor.setSubjectGroupMaybes(subjectGroups.stream()
+					.filter(sub -> item.getSubjectGroupMaybeIds().stream().anyMatch(it -> it.equals(sub.getId())))
+					.collect(Collectors.toList()));
+			
+			
 			tutors.add(responseTutor);
 		});
 		return tutors;
@@ -130,17 +148,18 @@ public class TutorFacadeImpl implements TutorFacade {
 				Long.parseLong(fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("Private"))));
 		List<String> urlPrivateImgs = tutorDto.getPrivateImgs();
 		urlPrivateImgs.add(url);
-		List<String> converter = new LinkedList<>(urlPrivateImgs);
-		converter = RemoveDuplicateElement.removeDuplicateElemet(converter);
+		urlPrivateImgs = new LinkedList<>(new HashSet<>(urlPrivateImgs));
 		tutorDto.setPrivateImgs(urlPrivateImgs);
-		Long tutorUpdatedId = tutorService.updateTutor(tutorDto);
+		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
+		Long tutorUpdatedId = tutorService.updateTutor(tutor);
 		return tutorUpdatedId != null ? "Insert PrivateImgs successfully" : "";
 	}
 
 	private Long handleAvatarOfTutor(final String tutorCode, final String urlParameter) {
 		TutorDto tutorDto = tutorService.findById(Long.parseLong(tutorCode));
 		tutorDto.setAvatar(urlParameter);
-		Long tutorUpdatedId = tutorService.updateTutor(tutorDto);
+		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
+		Long tutorUpdatedId = tutorService.updateTutor(tutor);
 		return tutorUpdatedId;
 	}
 
@@ -149,12 +168,12 @@ public class TutorFacadeImpl implements TutorFacade {
 		String url = avatarTutorAwsService.uploadImageToAmazonPubclicImgs(file, fileName);
 		TutorDto tutorDto = tutorService.findById(
 				Long.parseLong(fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("Public"))));
-		List<String> urlPublicImgs = tutorDto.getPrivateImgs();
+		List<String> urlPublicImgs = tutorDto.getPublicImgs();
 		urlPublicImgs.add(url);
-		List<String> converter = new LinkedList<>(urlPublicImgs);
-		converter = RemoveDuplicateElement.removeDuplicateElemet(converter);
+		urlPublicImgs = new LinkedList<>(new HashSet<>(urlPublicImgs));
 		tutorDto.setPublicImgs(urlPublicImgs);
-		Long tutorUpdatedId = tutorService.updateTutor(tutorDto);
+		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
+		Long tutorUpdatedId = tutorService.updateTutor(tutor);
 		return tutorUpdatedId != null ? "Insert PublicImgs successfully" : "";
 	}
 
@@ -166,7 +185,8 @@ public class TutorFacadeImpl implements TutorFacade {
 		List<String> urlPrivateImgs = tutorDto.getPrivateImgs();
 		urlPrivateImgs.remove(urlFile);
 		tutorDto.setPrivateImgs(urlPrivateImgs);
-		tutorService.updateTutor(tutorDto);
+		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
+		tutorService.updateTutor(tutor);
 	}
 
 	@Override
@@ -177,7 +197,8 @@ public class TutorFacadeImpl implements TutorFacade {
 		List<String> urlPublicImgs = tutorDto.getPrivateImgs();
 		urlPublicImgs.remove(urlFile);
 		tutorDto.setPublicImgs(urlPublicImgs);
-		tutorService.updateTutor(tutorDto);
+		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
+		tutorService.updateTutor(tutor);
 	}
 
 	@Override
@@ -190,13 +211,11 @@ public class TutorFacadeImpl implements TutorFacade {
 		} else {
 			String lastURL = avatarTutorAwsService.findAllByNameContainer(tutorCode + "Public", listOject);
 			if (lastURL == null) {
-				awsAvatarURL = uploadImageToAmazonPubclicImgs(file,
-						tutorCode + "Public" + String.valueOf(1));
+				awsAvatarURL = uploadImageToAmazonPubclicImgs(file, tutorCode + "Public" + String.valueOf(1));
 				return awsAvatarURL;
 			} else {
 				int count = Integer.parseInt(lastURL.substring(lastURL.lastIndexOf("c") + 1));
-				awsAvatarURL = uploadImageToAmazonPubclicImgs(file,
-						tutorCode + "Public" + String.valueOf(count + 1));
+				awsAvatarURL = uploadImageToAmazonPubclicImgs(file, tutorCode + "Public" + String.valueOf(count + 1));
 				return awsAvatarURL;
 			}
 		}
@@ -212,13 +231,11 @@ public class TutorFacadeImpl implements TutorFacade {
 		} else {
 			String lastURL = avatarTutorAwsService.findAllByNameContainer(tutorCode + "Private", listOject);
 			if (lastURL == null) {
-				awsAvatarURL = uploadImageToAmazonPrivateImgs(file,
-						tutorCode + "Private" + String.valueOf(1));
+				awsAvatarURL = uploadImageToAmazonPrivateImgs(file, tutorCode + "Private" + String.valueOf(1));
 				return awsAvatarURL;
 			} else {
 				int count = Integer.parseInt(lastURL.substring(lastURL.lastIndexOf("e") + 1));
-				awsAvatarURL = uploadImageToAmazonPrivateImgs(file,
-						tutorCode + "Private" + String.valueOf(count + 1));
+				awsAvatarURL = uploadImageToAmazonPrivateImgs(file, tutorCode + "Private" + String.valueOf(count + 1));
 				return awsAvatarURL;
 			}
 		}
@@ -240,11 +257,6 @@ public class TutorFacadeImpl implements TutorFacade {
 	}
 
 	@Override
-	public Long updateTutor(TutorDto dto) {
-		return tutorService.updateTutor(dto);
-	}
-
-	@Override
 	public Long updateSubjetGroupMaybe(RequestUpdateTutorSubjectGroupMaybeDto dto) {
 		TutorDto tutorDto = new TutorDto();
 		tutorDto.setCreatedBy(userFacade.getCurrentUser());
@@ -259,7 +271,7 @@ public class TutorFacadeImpl implements TutorFacade {
 		tutorDto.setCreatedBy(userFacade.getCurrentUser());
 		tutorDto.setId(dto.getId());
 		tutorDto.setTutorSubjectGroupForSureIds(dto.getTutorSubjectGroupForSureIds());
-		return tutorService.updateSubjetGroupMaybe(tutorDto);
+		return tutorService.updateSubjectGroupForSure(tutorDto);
 	}
 
 	@Override
@@ -278,8 +290,17 @@ public class TutorFacadeImpl implements TutorFacade {
 		tutorDto.setCreatedBy(userFacade.getCurrentUser());
 		tutorDto.setId(dto.getId());
 		tutorDto.setCalendars(dto.getCalendars());
-		return tutorService.updateSubjetGroupMaybe(tutorDto);
+		return tutorService.updateCalendar(tutorDto);
 	}
 
+	@Override
+	public Long updateTutor(RequestUpdateTutor request) {
+		TutorDto dto = new TutorDto();
+		dto = ObjectMapperUtils.map(request, TutorDto.class);
+		dto.setCreatedBy(userFacade.getCurrentUser());
+		dto.setAreaTutorIds(request.getAreaTutorId());
+		Long id = tutorService.update(dto);
+		return id;
+	}
 
 }

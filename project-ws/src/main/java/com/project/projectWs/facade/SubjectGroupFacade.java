@@ -1,10 +1,10 @@
-package com.project.education.service;
+package com.project.projectWs.facade;
 
 import java.util.List;
 
 import com.project.education.dto.SubjectGroupDto;
 
-public interface SubjectGroupService {
+public interface SubjectGroupFacade {
 
 	List<SubjectGroupDto> findAll();
 	
