@@ -37,4 +37,8 @@ public interface RegisterAndLearnerRepository extends JpaRepository<RegisterAndL
 	
 	@Query("SELECT r FROM RegisterAndLearner r WHERE r.avatar IS NOT NULL")
 	List<RegisterAndLearner> findTutorBeforeSynchronize();
+	
+	@EntityGraph(value = "registerAndLearner")
+	@Query("SELECT ral FROM RegisterAndLearner ral")
+	List<RegisterAndLearner> findAllMe();
 }

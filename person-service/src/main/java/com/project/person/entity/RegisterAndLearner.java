@@ -1,10 +1,13 @@
 package com.project.person.entity;
 
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedAttributeNode;
@@ -24,7 +27,11 @@ import lombok.Setter;
 @Table(name = "register_and_learner")
 @Getter
 @Setter
-
+@NamedEntityGraph(name = "registerAndLearner", attributeNodes = { 
+		@NamedAttributeNode("schoolers"),
+		@NamedAttributeNode("publicImgs"), 
+		@NamedAttributeNode("privateImgs"),
+		@NamedAttributeNode("relationshipBy") })
 public class RegisterAndLearner extends PersonAbstractInformation {
 
 	@Id
@@ -41,15 +48,15 @@ public class RegisterAndLearner extends PersonAbstractInformation {
 
 	@Column(name = "public_imgs")
 	@ElementCollection
-	private List<String> publicImgs;
+	private Set<String> publicImgs;
 
 	@Column(name = "private_imgs")
 	@ElementCollection
-	private List<String> privateImgs;
+	private Set<String> privateImgs;
 
 	// HIỆN ĐANG LÀ
 	@OneToMany(mappedBy = "registerAndLearner")
-	private List<Schooler> schoolers;
+	private Set<Schooler> schoolers;
 
 	@Column(name = "register_and_learner_tag")
 	private String registerAndLearnerTag;
@@ -66,10 +73,10 @@ public class RegisterAndLearner extends PersonAbstractInformation {
 	private List<TutorInterest> tutorInterests;
 
 	@OneToMany(mappedBy = "registerAndLearnerBy")
-	private List<RegisterAndLearnerRelationship> relationshipBy;
+	private Set<RegisterAndLearnerRelationship> relationshipBy;
 
 	@OneToMany(mappedBy = "registerAndLearnerWith")
 	@JsonIgnore
-	private List<RegisterAndLearnerRelationship> relationshipWith;
+	private Set<RegisterAndLearnerRelationship> relationshipWith;
 
 }
