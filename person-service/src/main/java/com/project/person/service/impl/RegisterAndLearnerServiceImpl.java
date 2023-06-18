@@ -1,10 +1,13 @@
 package com.project.person.service.impl;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +46,9 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		registerAndLearner.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName().toUpperCase()));
 		registerAndLearner.setCreatedBy(dto.getCreatedBy());
 		registerAndLearner.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+		registerAndLearner.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+		registerAndLearner.setPublicImgs(new HashSet<>(dto.getPublicImgs()));
+		registerAndLearner.setPrivateImgs(new HashSet<>(dto.getPublicImgs()));
 		registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
 
 		// register and learner relationship
@@ -53,7 +59,7 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 				registerAndLearnerRelationship = ObjectMapperUtils.map(registerAndLearnerRelationshipDto,
 						RegisterAndLearnerRelationship.class);
 				registerAndLearnerRelationship.setRegisterAndLearnerBy(
-						registerAndLearnerRepository.findById(registerAndLearnerRelationshipDto.getIdPersonBy()).get());
+						registerAndLearnerRepository.findById(registerAndLearnerRelationshipDto.getRegisterAndLearnerById()).get());
 				registerAndLearnerRelationship.setRegisterAndLearnerWith(registerAndLearner);
 				registerAndLearnerRelationships.add(registerAndLearnerRelationship);
 		}
@@ -78,11 +84,21 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 	@Override
 	public List<RegisterAndLearnerDto> findAllRegisterAndLearner() {
 		List<RegisterAndLearnerDto> dtos = new LinkedList<>();
-		List<RegisterAndLearner> registerAndLearners = registerAndLearnerRepository.findAll();
+		List<RegisterAndLearner> registerAndLearners = registerAndLearnerRepository.findAllMe();
 		registerAndLearners.forEach(item -> {
 			RegisterAndLearnerDto dto = new RegisterAndLearnerDto();
 			dto = ObjectMapperUtils.map(item, RegisterAndLearnerDto.class);
-			dto.setRegisterAndLearnerRelationships(ObjectMapperUtils.mapAll(item.getRelationshipBy(), RegisterAndLearnerRelationshipDto.class));
+			Set<RegisterAndLearnerRelationship> relas = item.getRelationshipBy();
+			
+			List<RegisterAndLearnerRelationshipDto> relationshipDtos = 	relas.stream().map(re -> {
+				RegisterAndLearnerRelationshipDto relationshipDto = new RegisterAndLearnerRelationshipDto();
+				relationshipDto.setId(re.getId());
+				relationshipDto.setRelationshipType(re.getRelationshipType());
+				relationshipDto.setRegisterAndLearnerById(re.getRegisterAndLearnerBy().getId());
+				return relationshipDto;
+			}).collect(Collectors.toList());
+
+			dto.setRegisterAndLearnerRelationships(relationshipDtos);
 			dto.setSchoolerDtos(ObjectMapperUtils.mapAll(item.getSchoolers(), SchoolerDto.class));
 			dtos.add(dto);
 		});
@@ -130,8 +146,8 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 			RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
 			RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
 			registerAndLearnerDto = ObjectMapperUtils.map(registerAndLearner, RegisterAndLearnerDto.class);
-			registerAndLearnerDto.setPublicImgs(registerAndLearner.getPublicImgs());
-			registerAndLearnerDto.setPrivateImgs(registerAndLearner.getPrivateImgs());
+			registerAndLearnerDto.setPublicImgs(registerAndLearner.getPublicImgs().stream().toList());
+			registerAndLearnerDto.setPrivateImgs(registerAndLearner.getPublicImgs().stream().toList());
 			return registerAndLearnerDto;
 		}
 		return null;
