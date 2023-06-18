@@ -27,4 +27,7 @@ public class RegisterAndLearnerAddressDto implements Serializable {
 	private String areaId;
 	
 	private String createdBy;
+	
+	private String registerAndLearnerId;
+	
 }
