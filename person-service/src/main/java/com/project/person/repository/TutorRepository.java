@@ -23,7 +23,7 @@ public interface TutorRepository extends JpaRepository<Tutor, Long> {
 			+ ", STRING_AGG(tp.public_imgs, ', ') AS public_imgs "
 			+ ", STRING_AGG(tsgmb.subject_group_id, ', ') AS tutor_subject_group_maybe_ids "
 			+ ", STRING_AGG(tsffs.subject_group_id, ', ') AS tutor_subject_group_for_sure_ids "
-			+ ", STRING_AGG(tca.calendars, ', ') AS calendars "
+			+ ", STRING_AGG(tca.calendars, ', ') AS calendars, t.average_start_numbers "
 			+ "FROM tutor t "
 			+ "LEFT JOIN area_tutor art ON t.id = art.tutor_id "
 			+ "LEFT JOIN tutor_private_imgs tpr ON tpr.tutor_id = t.id "

@@ -59,7 +59,7 @@ public class TutorRest {
 
 	@GetMapping("/find-by-tutor-code/{tutorCode}")
 	public ResponseEntity<Object> findByTutorCode(@RequestParam("tutorCode") Long tutorCode) {
-		TutorDto tutor = tutorFacade.findByTutorCode(tutorCode);
+		ResponseTutor tutor = tutorFacade.findByTutorCode(tutorCode);
 		if (tutor == null)
 			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
 		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
@@ -67,7 +67,7 @@ public class TutorRest {
 
 	@GetMapping("/find-by-phone-number/{phoneNumber}")
 	public ResponseEntity<Object> findByPhones(@RequestParam("phoneNumber") String phoneNumber) {
-		List<TutorDto> tutors = tutorFacade.findByPhoneNumber(phoneNumber);
+		List<ResponseTutor> tutors = tutorFacade.findByPhoneNumber(phoneNumber);
 		if (tutors.isEmpty())
 			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
 		return ResponseHandler.getResponse(tutors, HttpStatus.OK);
@@ -75,7 +75,7 @@ public class TutorRest {
 
 	@GetMapping("/find-by-end-phone-number/{endPhoneNumber}")
 	public ResponseEntity<Object> findByEndPhone(@RequestParam("endPhoneNumber") String endPhoneNumber) {
-		List<TutorDto> tutors = tutorFacade.findByEndPhoneNumber(endPhoneNumber);
+		List<ResponseTutor> tutors = tutorFacade.findByEndPhoneNumber(endPhoneNumber);
 		if (tutors.isEmpty())
 			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
 		return ResponseHandler.getResponse(tutors, HttpStatus.OK);
@@ -83,9 +83,9 @@ public class TutorRest {
 
 	@GetMapping("/find-by-full-name/{fullName}")
 	public ResponseEntity<Object> findByFullnameAndReturnObject(@RequestParam("fullName") String fullName) {
-		List<TutorDto> tutors = tutorFacade.findByFullNameContain(fullName.toUpperCase());
+		List<ResponseTutor> tutors = tutorFacade.findByFullNameContain(fullName.toUpperCase());
 		if (tutors.isEmpty()) {
-			List<TutorDto> tutorsByEngName = tutorFacade
+			List<ResponseTutor> tutorsByEngName = tutorFacade
 					.findByEnglishFullName(HandleCharacter.removeAccent(fullName.toUpperCase()));
 			if (tutorsByEngName.isEmpty())
 				return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);

@@ -3,6 +3,7 @@ package com.project.projectWs.facade.impl;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,55 +67,85 @@ public class TutorFacadeImpl implements TutorFacade {
 
 		dtos.stream().forEach(item -> {
 			ResponseTutor responseTutor = new ResponseTutor();
-
-			responseTutor = ObjectMapperUtils.map(item, ResponseTutor.class);
-
-			AreaDto areaDto = areas.stream().filter(area -> area.getId().equals(item.getTutorAddressAreaId()))
-					.collect(Collectors.toList()).get(0);
-
-			responseTutor.setTutorAddressAreaId(areaDto);
-
-			responseTutor.setAreaTutorId(
-					areas.stream().filter(area -> item.getRelArea().stream().anyMatch(it -> it.equals(area.getId())))
-							.collect(Collectors.toList()));
-
-			responseTutor.setSubjectGroupForsures(subjectGroups.stream()
-					.filter(sub -> item.getSubjectGroupForsureIds().stream().anyMatch(it -> it.equals(sub.getId())))
-					.collect(Collectors.toList()));
-
-			responseTutor.setSubjectGroupMaybes(subjectGroups.stream()
-					.filter(sub -> item.getSubjectGroupMaybeIds().stream().anyMatch(it -> it.equals(sub.getId())))
-					.collect(Collectors.toList()));
-			
-			
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
 			tutors.add(responseTutor);
 		});
 		return tutors;
 	}
 
 	@Override
-	public TutorDto findByTutorCode(final Long tutorCode) {
-		return tutorService.findByTutorCode(tutorCode);
+	public ResponseTutor findByTutorCode(final Long tutorCode) {
+		TutorForFindAllDto item = tutorService.findByTutorCode(tutorCode);
+		if (item != null) {
+			List<AreaDto> areas = areaService.findAll();
+			List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
+
+			ResponseTutor responseTutor = new ResponseTutor();
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			return Optional.of(responseTutor).get();
+		}
+		return null;
+
 	}
 
 	@Override
-	public List<TutorDto> findByPhoneNumber(final String phoneNumber) {
-		return tutorService.findByPhoneNumber(phoneNumber);
+	public List<ResponseTutor> findByPhoneNumber(final String phoneNumber) {
+		List<TutorForFindAllDto> dtos = tutorService.findByPhoneNumber(phoneNumber);
+		List<ResponseTutor> tutors = new LinkedList<>();
+		List<AreaDto> areas = areaService.findAll();
+		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
+
+		dtos.stream().forEach(item -> {
+			ResponseTutor responseTutor = new ResponseTutor();
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			tutors.add(responseTutor);
+		});
+		return tutors;
 	}
 
 	@Override
-	public List<TutorDto> findByEndPhoneNumber(final String endPhoneNumber) {
-		return tutorService.findByEndPhoneNumber(endPhoneNumber);
+	public List<ResponseTutor> findByEndPhoneNumber(String endPhoneNumber) {
+		List<TutorForFindAllDto> dtos = tutorService.findByEndPhoneNumber(endPhoneNumber);
+		List<ResponseTutor> tutors = new LinkedList<>();
+		List<AreaDto> areas = areaService.findAll();
+		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
+
+		dtos.stream().forEach(item -> {
+			ResponseTutor responseTutor = new ResponseTutor();
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			tutors.add(responseTutor);
+		});
+		return tutors;
 	}
 
 	@Override
-	public List<TutorDto> findByFullNameContain(final String fullName) {
-		return tutorService.findByFullNameContain(fullName);
+	public List<ResponseTutor> findByFullNameContain(final String fullName) {
+		List<TutorForFindAllDto> dtos = tutorService.findByFullNameContain(fullName);
+		List<ResponseTutor> tutors = new LinkedList<>();
+		List<AreaDto> areas = areaService.findAll();
+		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
+
+		dtos.stream().forEach(item -> {
+			ResponseTutor responseTutor = new ResponseTutor();
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			tutors.add(responseTutor);
+		});
+		return tutors;
 	}
 
 	@Override
-	public List<TutorDto> findByEnglishFullName(final String fullname) {
-		return tutorService.findByEnglishFullName(fullname);
+	public List<ResponseTutor> findByEnglishFullName(final String fullname) {
+		List<TutorForFindAllDto> dtos = tutorService.findByEnglishFullName(fullname);
+		List<ResponseTutor> tutors = new LinkedList<>();
+		List<AreaDto> areas = areaService.findAll();
+		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
+
+		dtos.stream().forEach(item -> {
+			ResponseTutor responseTutor = new ResponseTutor();
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			tutors.add(responseTutor);
+		});
+		return tutors;
 	}
 
 	@Override
@@ -301,6 +332,30 @@ public class TutorFacadeImpl implements TutorFacade {
 		dto.setAreaTutorIds(request.getAreaTutorId());
 		Long id = tutorService.update(dto);
 		return id;
+	}
+
+	private ResponseTutor convertObjectFrSerToObjectFacade(ResponseTutor responseTutor, TutorForFindAllDto item,
+			List<AreaDto> areas, List<SubjectGroupDto> subjectGroups) {
+
+		responseTutor = ObjectMapperUtils.map(item, ResponseTutor.class);
+
+		AreaDto areaDto = areas.stream().filter(area -> area.getId().equals(item.getTutorAddressAreaId()))
+				.collect(Collectors.toList()).get(0);
+
+		responseTutor.setTutorAddressAreaId(areaDto);
+
+		responseTutor.setAreaTutorId(
+				areas.stream().filter(area -> item.getRelArea().stream().anyMatch(it -> it.equals(area.getId())))
+						.collect(Collectors.toList()));
+
+		responseTutor.setSubjectGroupForsures(subjectGroups.stream()
+				.filter(sub -> item.getSubjectGroupForsureIds().stream().anyMatch(it -> it.equals(sub.getId())))
+				.collect(Collectors.toList()));
+
+		responseTutor.setSubjectGroupMaybes(subjectGroups.stream()
+				.filter(sub -> item.getSubjectGroupMaybeIds().stream().anyMatch(it -> it.equals(sub.getId())))
+				.collect(Collectors.toList()));
+		return responseTutor;
 	}
 
 }

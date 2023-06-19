@@ -3,7 +3,6 @@ package com.project.person.service;
 import java.util.List;
 
 import com.project.person.dto.RegisterAndLearnerDto;
-import com.project.person.dto.TutorDto;
 
 public interface RegisterAndLearnerService {
 	
@@ -11,7 +10,7 @@ public interface RegisterAndLearnerService {
 
 	List<RegisterAndLearnerDto> findAllRegisterAndLearner();
 
-	TutorDto findByRegisterAndLearnerCode(final String registerAndLearnerId);
+	RegisterAndLearnerDto findByRegisterAndLearnerCode(final String registerAndLearnerId);
 
 	List<RegisterAndLearnerDto> findByPhoneNumber(final String phoneNumber);
 

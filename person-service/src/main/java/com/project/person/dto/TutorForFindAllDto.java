@@ -74,5 +74,7 @@ public class TutorForFindAllDto implements Serializable  {
 	
 	private List<Calendar> calendars;
 	
+    private Double averageStarNumbers;
+	
 	
 }

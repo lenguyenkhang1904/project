@@ -18,15 +18,15 @@ public interface TutorFacade {
 
 	List<ResponseTutor> findAllTutor();
 
-	TutorDto findByTutorCode(final Long tutorCode);
+	ResponseTutor findByTutorCode(final Long tutorCode);
 
-	List<TutorDto> findByPhoneNumber(final String phoneNumber);
+	List<ResponseTutor> findByPhoneNumber(final String phoneNumber);
 
-	List<TutorDto> findByEndPhoneNumber(final String endPhoneNumber);
+	List<ResponseTutor> findByEndPhoneNumber(String endPhoneNumber);
 
-	List<TutorDto> findByFullNameContain(final String fullName);
+	List<ResponseTutor> findByFullNameContain(final String fullName);
 
-	List<TutorDto> findByEnglishFullName(final String fullname);
+	List<ResponseTutor> findByEnglishFullName(final String fullname);
 
 	List<String> findByEngfullnameAndShowFullName(final String fullname);
 

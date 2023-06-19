@@ -11,15 +11,15 @@ public interface TutorService {
 
 	List<TutorForFindAllDto> findAllTutor();
 
-	TutorDto findByTutorCode(final Long tutorCode);
+	TutorForFindAllDto findByTutorCode(final Long tutorCode);
 
-	List<TutorDto> findByPhoneNumber(final String phoneNumber);
+	List<TutorForFindAllDto> findByPhoneNumber(final String phoneNumber);
 
-	List<TutorDto> findByEndPhoneNumber(final String endPhoneNumber);
+	List<TutorForFindAllDto> findByEndPhoneNumber(String endPhoneNumber);
 
-	List<TutorDto> findByFullNameContain(final String fullName);
+	List<TutorForFindAllDto> findByFullNameContain(final String fullName);
 	
-	List<TutorDto> findByEnglishFullName(final String fullname) ;
+	List<TutorForFindAllDto> findByEnglishFullName(final String fullname) ;
    
 	List<String> findByEngfullnameAndShowFullName(final String fullname);
  

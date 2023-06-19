@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.person.dto.RegisterAndLearnerDto;
-import com.project.person.dto.TutorDto;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
 import com.project.projectWs.dto.ResponseRegisterAndLearnerDto;
 
@@ -31,15 +30,15 @@ public interface RegisterAndLearnerFacade {
 
 	String updatePublicImageToAmazon(final MultipartFile file, final String tutorCode);
 	
-	TutorDto findByRegisterAndLearnerCode(final String registerAndLearnerId);
+	ResponseRegisterAndLearnerDto findByRegisterAndLearnerCode(final String registerAndLearnerId);
 
-	List<RegisterAndLearnerDto> findByPhoneNumber(final String phoneNumber);
+	List<ResponseRegisterAndLearnerDto> findByPhoneNumber(final String phoneNumber);
 
-	List<RegisterAndLearnerDto> findByEndPhoneNumber(String endPhoneNumber);
+	List<ResponseRegisterAndLearnerDto> findByEndPhoneNumber(String endPhoneNumber);
 
-	List<RegisterAndLearnerDto> findByFullNameContain(final String fullName);
+	List<ResponseRegisterAndLearnerDto> findByFullNameContain(final String fullName);
 	
-	List<RegisterAndLearnerDto> findByEnglishFullNameContaining(String englishFullName);
+	List<ResponseRegisterAndLearnerDto> findByEnglishFullNameContaining(String englishFullName);
 
 	List<String> findByEnglishNameAndShowEngLishFullName(String englishFullName);
    
@@ -49,11 +48,11 @@ public interface RegisterAndLearnerFacade {
 
 	List<String> findByVocativeAndFullNameAndShowFullName(String vocative, String fullName);
     
-    List<RegisterAndLearnerDto> findByVocativeAndEnglishFullNameContaining(String vocative, String englishName);
+    List<ResponseRegisterAndLearnerDto> findByVocativeAndEnglishFullNameContaining(String vocative, String englishName);
 
 	List<String> findByVocativeAndEnglishFullNameAndShowFullName(String vocative, String englishName);
 
-	List<RegisterAndLearnerDto> findByVocativeAndFullName(String vocative, String fullName);
+	List<ResponseRegisterAndLearnerDto> findByVocativeAndFullName(String vocative, String fullName);
 	
 	String save(RequestSaveResigterAndLearnerDto dto);
 	
