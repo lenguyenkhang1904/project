@@ -2,7 +2,9 @@ package com.project.projectWs.facade.impl;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,10 +13,10 @@ import com.project.common.utils.ObjectMapperUtils;
 import com.project.location.dto.RegisterAndLearnerAddressDto;
 import com.project.location.service.RegisterAndLearnerAddressService;
 import com.project.person.dto.RegisterAndLearnerDto;
-import com.project.person.dto.TutorDto;
 import com.project.person.service.RegisterAndLearnerService;
 import com.project.person.utils.RemoveDuplicateElement;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
+import com.project.projectWs.dto.ResponseRegisterAndLearnerDto;
 import com.project.projectWs.facade.RegisterAndLearnerFacade;
 import com.project.projectWs.facade.UserFacade;
 import com.project.storage.service.AvatarAndPublicAndPrivateRegisterAndLearnerAwsService;
@@ -27,10 +29,10 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 
 	@Autowired
 	private AvatarAndPublicAndPrivateRegisterAndLearnerAwsService avatarAndPublicAndPrivateRegisterAndLearnerAwsService;
-	
+
 	@Autowired
 	private RegisterAndLearnerAddressService registerAndLearnerAddressService;
-	
+
 	@Autowired
 	private UserFacade userFacade;
 
@@ -80,7 +82,7 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 				fileName);
 		RegisterAndLearnerDto registerAndLearnerDto = registerAndLearnerService
 				.findById(fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("Public")));
-		List<String> urlPublicImgs = registerAndLearnerDto.getPrivateImgs();
+		List<String> urlPublicImgs = registerAndLearnerDto.getPublicImgs();
 		urlPublicImgs.add(url);
 		List<String> converter = new LinkedList<>(urlPublicImgs);
 		converter = RemoveDuplicateElement.removeDuplicateElemet(converter);
@@ -165,28 +167,36 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	}
 
 	@Override
-	public TutorDto findByRegisterAndLearnerCode(String registerAndLearnerId) {
-		return registerAndLearnerService.findByRegisterAndLearnerCode(registerAndLearnerId);
+	public ResponseRegisterAndLearnerDto findByRegisterAndLearnerCode(String registerAndLearnerId) {
+		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = registerAndLearnerAddressService.findAll();
+		RegisterAndLearnerDto registerAndLearnerDto = registerAndLearnerService.findByRegisterAndLearnerCode(registerAndLearnerId);
+		if(registerAndLearnerDto != null) {
+			ResponseRegisterAndLearnerDto dto = new ResponseRegisterAndLearnerDto();
+			dto = ObjectMapperUtils.map(registerAndLearnerDto, ResponseRegisterAndLearnerDto.class);
+			dto.setRegisterAndLearnerAddressDtos(registerAndLearnerAddressDtos.stream().filter(re -> re.getRegisterAndLearnerId().equals(registerAndLearnerDto.getId())).collect(Collectors.toList()));		
+			return dto;
+		}
+		return null;
 	}
 
 	@Override
-	public List<RegisterAndLearnerDto> findByPhoneNumber(String phoneNumber) {
-		return registerAndLearnerService.findByPhoneNumber(phoneNumber);
+	public List<ResponseRegisterAndLearnerDto> findByPhoneNumber(String phoneNumber) {
+		return convertObjectSerToObjectFaca(registerAndLearnerService.findByPhoneNumber(phoneNumber));
 	}
 
 	@Override
-	public List<RegisterAndLearnerDto> findByEndPhoneNumber(String endPhoneNumber) {
-		return registerAndLearnerService.findByEndPhoneNumber(endPhoneNumber);
+	public List<ResponseRegisterAndLearnerDto> findByEndPhoneNumber(String endPhoneNumber) {
+		return convertObjectSerToObjectFaca(registerAndLearnerService.findByEndPhoneNumber(endPhoneNumber));
 	}
 
 	@Override
-	public List<RegisterAndLearnerDto> findByFullNameContain(String fullName) {
-		return registerAndLearnerService.findByFullNameContain(fullName);
+	public List<ResponseRegisterAndLearnerDto> findByFullNameContain(String fullName) {
+		return convertObjectSerToObjectFaca(registerAndLearnerService.findByFullNameContain(fullName));
 	}
 
 	@Override
-	public List<RegisterAndLearnerDto> findByEnglishFullNameContaining(String englishFullName) {
-		return registerAndLearnerService.findByEnglishFullNameContaining(englishFullName);
+	public List<ResponseRegisterAndLearnerDto> findByEnglishFullNameContaining(String englishFullName) {
+		return convertObjectSerToObjectFaca(registerAndLearnerService.findByEnglishFullNameContaining(englishFullName));
 	}
 
 	@Override
@@ -205,8 +215,8 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	}
 
 	@Override
-	public List<RegisterAndLearnerDto> findByVocativeAndEnglishFullNameContaining(String vocative, String englishName) {
-		return registerAndLearnerService.findByVocativeAndEnglishFullNameContaining(vocative, englishName);
+	public List<ResponseRegisterAndLearnerDto> findByVocativeAndEnglishFullNameContaining(String vocative, String englishName) {
+		return convertObjectSerToObjectFaca(registerAndLearnerService.findByVocativeAndEnglishFullNameContaining(vocative, englishName));
 	}
 
 	@Override
@@ -215,8 +225,8 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	}
 
 	@Override
-	public List<RegisterAndLearnerDto> findByVocativeAndFullName(String vocative, String fullName) {
-		return registerAndLearnerService.findByVocativeAndFullName(vocative, fullName);
+	public List<ResponseRegisterAndLearnerDto> findByVocativeAndFullName(String vocative, String fullName) {
+		return convertObjectSerToObjectFaca(registerAndLearnerService.findByVocativeAndFullName(vocative, fullName));
 	}
 
 	@Override
@@ -228,15 +238,34 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	public String save(RequestSaveResigterAndLearnerDto dto) {
 		RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
 		registerAndLearnerDto = ObjectMapperUtils.map(dto, RegisterAndLearnerDto.class);
-		dto.setCreatedBy(userFacade.getCurrentUser());
+		registerAndLearnerDto.setCreatedBy(userFacade.getCurrentUser());
 		registerAndLearnerDto.setRegisterAndLearnerRelationships(dto.getRegisterAndLearnerRelationships());
-		String idResigterAndLearner = registerAndLearnerService.saveRegisterAndLearner(registerAndLearnerDto);	
+		String idResigterAndLearner = registerAndLearnerService.saveRegisterAndLearner(registerAndLearnerDto);
 		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = dto.getRegisterAndLearnerAddressDtos();
-		if(!registerAndLearnerAddressDtos.isEmpty()) {
-			registerAndLearnerAddressService.saveAll(registerAndLearnerAddressDtos, idResigterAndLearner);
+		if (!registerAndLearnerAddressDtos.isEmpty()) {
+			registerAndLearnerAddressService.saveAll(registerAndLearnerAddressDtos, idResigterAndLearner,
+					userFacade.getCurrentUser());
 			return idResigterAndLearner;
 		}
-		return null;
+		return StringUtils.EMPTY;
+	}
+
+	@Override
+	public List<ResponseRegisterAndLearnerDto> findAll() {
+		return convertObjectSerToObjectFaca(registerAndLearnerService.findAllRegisterAndLearner());
+	}
+
+	private List<ResponseRegisterAndLearnerDto> convertObjectSerToObjectFaca(List<RegisterAndLearnerDto> registerAndLearnerDtos) {
+		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = registerAndLearnerAddressService.findAll();
+		List<ResponseRegisterAndLearnerDto> responseRegisterAndLearnerDtos = new LinkedList<>();
+		registerAndLearnerDtos.forEach(item -> {
+			ResponseRegisterAndLearnerDto dto = new ResponseRegisterAndLearnerDto();
+			dto = ObjectMapperUtils.map(item, ResponseRegisterAndLearnerDto.class);
+			dto.setRegisterAndLearnerAddressDtos(registerAndLearnerAddressDtos.stream().filter(re -> re.getRegisterAndLearnerId().equals(item.getId())).collect(Collectors.toList()));		
+			responseRegisterAndLearnerDtos.add(dto);
+		});
+		
+		return responseRegisterAndLearnerDtos;
 	}
 
 }

@@ -11,7 +11,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.common.entity.AbstractEntity;
 
 import lombok.Getter;

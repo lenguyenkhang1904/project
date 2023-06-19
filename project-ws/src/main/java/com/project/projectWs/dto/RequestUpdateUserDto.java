@@ -1,8 +1,6 @@
 package com.project.projectWs.dto;
 
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;

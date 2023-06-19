@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.common.utils.DateConverter;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.location.dto.RegisterAndLearnerAddressDto;
 import com.project.location.entity.Area;
@@ -31,17 +32,24 @@ public class RegisterAndLearnerAddressServiceImpl implements RegisterAndLearnerA
 	}
 
 	@Override
-	public void saveAll(List<RegisterAndLearnerAddressDto> dtos, String registerAndLearnerId) {
+	public void saveAll(List<RegisterAndLearnerAddressDto> dtos, String registerAndLearnerId, String currentUser) {
 		List<RegisterAndLearnerAddress> registerAndLearnerAddresses = new LinkedList<>();
 		for(RegisterAndLearnerAddressDto dto : dtos) {
 			RegisterAndLearnerAddress registerAndLearnerAddress = new RegisterAndLearnerAddress();
 			registerAndLearnerAddress = ObjectMapperUtils.map(dto, RegisterAndLearnerAddress.class);
 			registerAndLearnerAddress.setRegisterAndLearnerId(registerAndLearnerId);
+			registerAndLearnerAddress.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+			registerAndLearnerAddress.setCreatedBy(currentUser);
 			Area area = areaRepository.findById(dto.getAreaId()).get();
 			registerAndLearnerAddress.setArea(area);
 			registerAndLearnerAddresses.add(registerAndLearnerAddress);
 		}
 		registerAndLearnerAddressRepository.saveAll(registerAndLearnerAddresses);
+	}
+
+	@Override
+	public List<RegisterAndLearnerAddressDto> findAll() {
+		return ObjectMapperUtils.mapAll(registerAndLearnerAddressRepository.findAll(), RegisterAndLearnerAddressDto.class);
 	}
 
 }

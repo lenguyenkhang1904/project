@@ -30,8 +30,6 @@ public class SchoolerDto implements Serializable  {
 
 	private String institutionType;
 	
-	protected LocalDateTime createdAt;
-	
-	protected LocalDateTime updatedAt;
+	private String createdBy;
 
 }

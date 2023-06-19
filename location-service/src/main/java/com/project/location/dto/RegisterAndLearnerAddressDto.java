@@ -3,13 +3,15 @@ package com.project.location.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.project.location.entity.Area;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class RegisterAndLearnerAddressDto implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private String addType;
@@ -26,8 +28,10 @@ public class RegisterAndLearnerAddressDto implements Serializable {
 
 	private String areaId;
 
-	protected LocalDateTime createdAt;
+	private String createdBy;
 
-	protected LocalDateTime updatedAt;
+	private Area area;
+
+	private String registerAndLearnerId;
 
 }

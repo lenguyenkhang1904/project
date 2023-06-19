@@ -14,8 +14,6 @@ import lombok.Setter;
 public class RequestSaveTutor implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
-	private LocalDateTime createdAt;
 
 	private String registeredStatus;
 

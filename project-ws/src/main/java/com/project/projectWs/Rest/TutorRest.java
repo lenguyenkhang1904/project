@@ -24,6 +24,7 @@ import com.project.common.utils.ResponseHandler;
 import com.project.person.dto.TutorDto;
 import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveTutor;
+import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.RequestUpdateTutorCalendarDto;
 import com.project.projectWs.dto.RequestUpdateTutorNowLevelAndUpdateAtDto;
 import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
@@ -44,13 +45,13 @@ public class TutorRest {
 	@Autowired
 	private StorageFacade storageFacade;
 
-	@PostMapping("/create-tutor")
+	@PostMapping("/create")
 	public ResponseEntity<Object> saveTutor(@RequestBody final RequestSaveTutor request) {
 		Long id = tutorFacade.saveTutor(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
-	@GetMapping("/find-all-tutor")
+	@GetMapping("/find-all")
 	public ResponseEntity<Object> findAllTutor() {
 		List<ResponseTutor> tutorDtos = tutorFacade.findAllTutor();
 		return ResponseHandler.getResponse(tutorDtos, HttpStatus.OK);
@@ -58,7 +59,7 @@ public class TutorRest {
 
 	@GetMapping("/find-by-tutor-code/{tutorCode}")
 	public ResponseEntity<Object> findByTutorCode(@RequestParam("tutorCode") Long tutorCode) {
-		TutorDto tutor = tutorFacade.findByTutorCode(tutorCode);
+		ResponseTutor tutor = tutorFacade.findByTutorCode(tutorCode);
 		if (tutor == null)
 			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
 		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
@@ -66,7 +67,7 @@ public class TutorRest {
 
 	@GetMapping("/find-by-phone-number/{phoneNumber}")
 	public ResponseEntity<Object> findByPhones(@RequestParam("phoneNumber") String phoneNumber) {
-		List<TutorDto> tutors = tutorFacade.findByPhoneNumber(phoneNumber);
+		List<ResponseTutor> tutors = tutorFacade.findByPhoneNumber(phoneNumber);
 		if (tutors.isEmpty())
 			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
 		return ResponseHandler.getResponse(tutors, HttpStatus.OK);
@@ -74,7 +75,7 @@ public class TutorRest {
 
 	@GetMapping("/find-by-end-phone-number/{endPhoneNumber}")
 	public ResponseEntity<Object> findByEndPhone(@RequestParam("endPhoneNumber") String endPhoneNumber) {
-		List<TutorDto> tutors = tutorFacade.findByEndPhoneNumber(endPhoneNumber);
+		List<ResponseTutor> tutors = tutorFacade.findByEndPhoneNumber(endPhoneNumber);
 		if (tutors.isEmpty())
 			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
 		return ResponseHandler.getResponse(tutors, HttpStatus.OK);
@@ -82,9 +83,9 @@ public class TutorRest {
 
 	@GetMapping("/find-by-full-name/{fullName}")
 	public ResponseEntity<Object> findByFullnameAndReturnObject(@RequestParam("fullName") String fullName) {
-		List<TutorDto> tutors = tutorFacade.findByFullNameContain(fullName.toUpperCase());
+		List<ResponseTutor> tutors = tutorFacade.findByFullNameContain(fullName.toUpperCase());
 		if (tutors.isEmpty()) {
-			List<TutorDto> tutorsByEngName = tutorFacade
+			List<ResponseTutor> tutorsByEngName = tutorFacade
 					.findByEnglishFullName(HandleCharacter.removeAccent(fullName.toUpperCase()));
 			if (tutorsByEngName.isEmpty())
 				return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
@@ -118,7 +119,7 @@ public class TutorRest {
 //		return ResponseHandler.getResponse(list, HttpStatus.OK);
 //	}
 
-	@PostMapping("/create-or-update-tutor-avatar/{tutorCode}")
+	@PostMapping("/create-or-update-avatar/{tutorCode}")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
 			@PathVariable("tutorCode") String tutorCode) throws IOException {
 
@@ -195,7 +196,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Upload files successfully", HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/delete-tutor-avatar/{urlPic}")
+	@DeleteMapping("/delete-avatar/{urlPic}")
 	public ResponseEntity<Object> deleteTutorAvatar(@PathVariable("urlPic") String urlPic) {
 		String tutorAvatarURL = ConstaintInformationStorage.TUTOR_AVATAR_URL;
 		if (!storageFacade.checkExistObjectinS3Tutor(urlPic))
@@ -204,7 +205,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete-tutor-private-img/{urlPic}")
+	@DeleteMapping("/delete-private-img/{urlPic}")
 	public ResponseEntity<Object> deleteTutorPrivateImg(@PathVariable("urlPic") String urlPic) {
 		final String tutorPrivateimgsURL = ConstaintInformationStorage.TUTOR_PRIVATE_IMGS_URL;
 		if (!storageFacade.checkExistObjectPrivateInS3Tutor(urlPic))
@@ -213,7 +214,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete-tutor-public-img/{nameFile}")
+	@DeleteMapping("/delete-public-img/{nameFile}")
 	public ResponseEntity<Object> deleteTutorPublicImg(@PathVariable("urlPic") String urlPic) {
 		final String tutorPublicImgsURL = ConstaintInformationStorage.TUTOR_PUBLIC_IMGS_URL;
 		if (!storageFacade.checkExistObjectPublicInS3Tutor(urlPic))
@@ -222,7 +223,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@PutMapping("/update-tutor-privateImg/{nameFile}")
+	@PutMapping("/update-privateImg/{nameFile}")
 	public ResponseEntity<Object> UpdatePrivateImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -234,7 +235,7 @@ public class TutorRest {
 					HttpStatus.BAD_REQUEST);
 	}
 
-	@PutMapping("/update-tutor-public-img/{nameFile}")
+	@PutMapping("/update-public-img/{nameFile}")
 	public ResponseEntity<Object> updatePublicImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -290,6 +291,12 @@ public class TutorRest {
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 		}
 		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
+	}
+	
+	@PutMapping("/update")
+	public ResponseEntity<Object> updateTutor(@RequestBody final RequestUpdateTutor request) {
+		Long id = tutorFacade.updateTutor(request);
+		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
 }
