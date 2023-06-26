@@ -1,0 +1,82 @@
+package com.project.projectWs.facade.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.project.person.service.TutorService;
+import com.project.projectWs.dto.RequestSaveApplicationDto;
+import com.project.projectWs.dto.RequestUpdateApplicationDto;
+import com.project.projectWs.facade.ApplicationFacade;
+import com.project.projectWs.facade.UserFacade;
+import com.project.task.dto.ApplicationDto;
+import com.project.task.service.ApplicationService;
+import com.project.task.service.TaskService;
+
+import software.amazon.ion.NullValueException;
+
+@Service
+public class ApplicationFacadeImpl implements ApplicationFacade {
+
+	@Autowired
+	private TutorService tutorService;
+
+	@Autowired
+	private ApplicationService applicationService;
+
+	@Autowired
+	private TaskService taskService;
+
+	@Autowired
+	private UserFacade userFacade;
+
+	@Override
+	public String createApplication(RequestSaveApplicationDto dto) {
+
+		boolean checkExistTasks = applicationService.checkExistTaskInApplication(dto.getTutorId(), dto.getTaskId());
+		if (!checkExistTasks) {
+			saveAllSubjectGroup(dto.getTaskId(), dto.getTutorId());
+			ApplicationDto applicationDto = new ApplicationDto();
+			applicationDto.setTaskId(dto.getTaskId());
+			applicationDto.setTutorId(dto.getTutorId());
+			applicationDto.setCreatedBy(userFacade.getCurrentUser());
+			return applicationService.createApplication(applicationDto);
+		}
+		throw new NullValueException("We can not create because Tutor had existed application for this task ");
+	}
+
+	@Override
+	public String updateApplication(RequestUpdateApplicationDto dto) {
+
+		boolean checkExistTasks = applicationService.checkExistTaskInApplication(dto.getTutorId(), dto.getTaskId());
+		if (!checkExistTasks) {
+			tutorService.deleteSubjectGroupMaybeByTutorId(dto.getTutorId());
+			saveAllSubjectGroup(dto.getTaskId(), dto.getTutorId());
+			ApplicationDto applicationDto = new ApplicationDto();
+			applicationDto.setTaskId(dto.getTaskId());
+			applicationDto.setTutorId(dto.getTutorId());
+			applicationDto.setCreatedBy(userFacade.getCurrentUser());
+
+			return applicationService.updateApllication(applicationDto);
+		}
+		throw new NullValueException("We can not update because Tutor had existed application for this task ");
+	}
+
+	private void saveAllSubjectGroup(String taskId, Long tutorId) {
+		List<String> subjectGroupOfTask = taskService.getSubjectGroupsByTaskId(taskId);
+		List<String> subjectGroupOfTutor = tutorService.getSubjectGroupsByTutorId(tutorId);
+
+		if (!subjectGroupOfTutor.isEmpty() && !subjectGroupOfTask.isEmpty()) {
+			subjectGroupOfTask.stream()
+					.filter(subjectGtask -> subjectGroupOfTutor.stream()
+							.anyMatch(subjectGTutor -> !subjectGTutor.equals(subjectGtask)))
+					.forEach(taskSubjectG -> subjectGroupOfTutor.add(taskSubjectG));
+			tutorService.saveAllSubjectGroup(subjectGroupOfTutor, tutorId);
+		} else if (subjectGroupOfTutor.isEmpty() && !subjectGroupOfTask.isEmpty()) {
+			subjectGroupOfTutor.addAll(subjectGroupOfTask);
+			tutorService.saveAllSubjectGroup(subjectGroupOfTutor, tutorId);
+		}
+	}
+
+}

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,10 +24,6 @@ import com.project.person.dto.TutorDto;
 import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveTutor;
 import com.project.projectWs.dto.RequestUpdateTutor;
-import com.project.projectWs.dto.RequestUpdateTutorCalendarDto;
-import com.project.projectWs.dto.RequestUpdateTutorNowLevelAndUpdateAtDto;
-import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
-import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupMaybeDto;
 import com.project.projectWs.dto.ResponseTutor;
 import com.project.projectWs.facade.StorageFacade;
 import com.project.projectWs.facade.TutorFacade;
@@ -251,45 +246,6 @@ public class TutorRest {
 	@GetMapping("/find-by-id/{id}")
 	public ResponseEntity<Object> findByid(@PathVariable("id") final Long id) {
 		TutorDto tutor = tutorFacade.findById(id);
-		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
-	}
-
-	@PutMapping("/update-subject-group-for-sure")
-	public ResponseEntity<Object> updateSubjectGroupForSure(@RequestBody RequestUpdateTutorSubjectGroupForSureDto dto,
-			BindingResult errors) {
-		Long tutor = tutorFacade.updateSubjectGroupForSure(dto);
-		if (errors.hasErrors()) {
-			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
-		}
-		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
-	}
-
-	@PutMapping("/update-subject-group-maybe")
-	public ResponseEntity<Object> updateSubjectGroupMaybe(@RequestBody RequestUpdateTutorSubjectGroupMaybeDto dto,
-			BindingResult errors) {
-		Long tutor = tutorFacade.updateSubjetGroupMaybe(dto);
-		if (errors.hasErrors()) {
-			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
-		}
-		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
-	}
-
-	@PutMapping("/update-now-level-and-now-update-at")
-	public ResponseEntity<Object> updateNowLevelAndNowUpdateAt(
-			@RequestBody RequestUpdateTutorNowLevelAndUpdateAtDto dto, BindingResult errors) {
-		Long tutor = tutorFacade.updateNowLevelAndNowUpdateAt(dto);
-		if (errors.hasErrors()) {
-			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
-		}
-		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
-	}
-
-	@PutMapping("/update-calendar")
-	public ResponseEntity<Object> updateCalendar(@RequestBody RequestUpdateTutorCalendarDto dto, BindingResult errors) {
-		Long tutor = tutorFacade.updateCalendar(dto);
-		if (errors.hasErrors()) {
-			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
-		}
 		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
 	}
 	

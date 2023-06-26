@@ -20,5 +20,11 @@ public class Routes {
 	// TUTOR INTEREST
 	public static final String TUTOR_INTEREST = "/api/v2/tutor-interest";
 	// subject group
-	public static final String SUBJECT_GROUP = "/api/v2/subjectgroup";
+	public static final String SUBJECT_GROUP = "/api/v2/subject-group";
+	// task
+	public static final String TASK = "/api/v2/task";
+	// application
+	public static final String APPLICATION = "/api/v2/application";
+	// registration
+	public static final String REGISTRATION = "/api/v2/registration";
 }

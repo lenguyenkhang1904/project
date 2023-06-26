@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ComponentScan("com.project")
 @EnableJpaRepositories({ "com.project.location.repository", "com.project.person.repository",
-"com.project.education.repository", "com.project.user.management.repository"})
+"com.project.education.repository", "com.project.user.management.repository", "com.project.task.repository"})
 public class AppConfig {
 
 	

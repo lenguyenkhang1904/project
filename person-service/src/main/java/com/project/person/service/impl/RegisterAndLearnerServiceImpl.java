@@ -46,7 +46,6 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		registerAndLearner.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName().toUpperCase()));
 		registerAndLearner.setCreatedBy(dto.getCreatedBy());
 		registerAndLearner.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
-		registerAndLearner.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 		registerAndLearner.setPublicImgs(new HashSet<>(dto.getPublicImgs()));
 		registerAndLearner.setPrivateImgs(new HashSet<>(dto.getPublicImgs()));
 		registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
@@ -222,6 +221,12 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		dto.setRegisterAndLearnerRelationships(relationshipDtos);
 		dto.setSchoolerDtos(ObjectMapperUtils.mapAll(item.getSchoolers(), SchoolerDto.class));
 		return dto;
+	}
+
+	@Override
+	public String update(RegisterAndLearnerDto registerAndLearnerDto) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

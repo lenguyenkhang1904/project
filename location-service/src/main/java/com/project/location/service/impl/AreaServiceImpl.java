@@ -52,7 +52,7 @@ public class AreaServiceImpl implements AreaService {
 		final String commune = areaDto.getCommune();
 		final String district = areaDto.getDistrict();
 		final String provincialLevel = areaDto.getProvincialLevel();
-		final String state = areaDto.getState();
+//		final String state = areaDto.getState();
 		List<AreaDto> areaDtos = new LinkedList<>();
 		if (provincialLevel != null && district != null && commune != null) {
 			List<Area> areas = areaRepository.findByNationAndProvincialLevelAndDistrictAndCommune(nation,

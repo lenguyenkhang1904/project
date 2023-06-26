@@ -2,11 +2,9 @@ package com.project.common.entity;
 
 import java.time.LocalDateTime;
 
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -29,7 +27,9 @@ public class AbstractEntity {
 	@Column(name = "update_at")
 	protected LocalDateTime updatedAt;
 
+	@Column(name = "created_by")
 	protected String createdBy;  
 
+	@Column(name = "update_by")
 	protected String updatedBy;
 }
