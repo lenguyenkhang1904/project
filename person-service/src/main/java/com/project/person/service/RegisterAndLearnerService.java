@@ -38,4 +38,6 @@ public interface RegisterAndLearnerService {
 
 	String updateRegisterAndLearner(RegisterAndLearnerDto registerAndLearnerDto);
 
+	String update(RegisterAndLearnerDto registerAndLearnerDto);
+
 }

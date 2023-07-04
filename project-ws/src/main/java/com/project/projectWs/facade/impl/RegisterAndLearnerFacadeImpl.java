@@ -16,6 +16,7 @@ import com.project.person.dto.RegisterAndLearnerDto;
 import com.project.person.service.RegisterAndLearnerService;
 import com.project.person.utils.RemoveDuplicateElement;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
+import com.project.projectWs.dto.RequestUpdateResigterAndLearnerDto;
 import com.project.projectWs.dto.ResponseRegisterAndLearnerDto;
 import com.project.projectWs.facade.RegisterAndLearnerFacade;
 import com.project.projectWs.facade.UserFacade;
@@ -240,12 +241,12 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 		registerAndLearnerDto = ObjectMapperUtils.map(dto, RegisterAndLearnerDto.class);
 		registerAndLearnerDto.setCreatedBy(userFacade.getCurrentUser());
 		registerAndLearnerDto.setRegisterAndLearnerRelationships(dto.getRegisterAndLearnerRelationships());
-		String idResigterAndLearner = registerAndLearnerService.saveRegisterAndLearner(registerAndLearnerDto);
+		String resigterAndLearnerId = registerAndLearnerService.saveRegisterAndLearner(registerAndLearnerDto);
 		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = dto.getRegisterAndLearnerAddressDtos();
 		if (!registerAndLearnerAddressDtos.isEmpty()) {
-			registerAndLearnerAddressService.saveAll(registerAndLearnerAddressDtos, idResigterAndLearner,
+			registerAndLearnerAddressService.saveAll(registerAndLearnerAddressDtos, resigterAndLearnerId,
 					userFacade.getCurrentUser());
-			return idResigterAndLearner;
+			return resigterAndLearnerId;
 		}
 		return StringUtils.EMPTY;
 	}
@@ -266,6 +267,22 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 		});
 		
 		return responseRegisterAndLearnerDtos;
+	}
+
+	@Override
+	public String update(RequestUpdateResigterAndLearnerDto dto) {
+		RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
+		registerAndLearnerDto = ObjectMapperUtils.map(dto, RegisterAndLearnerDto.class);
+		registerAndLearnerDto.setCreatedBy(userFacade.getCurrentUser());
+		registerAndLearnerDto.setRegisterAndLearnerRelationships(dto.getRegisterAndLearnerRelationships());
+		String resigterAndLearnerId = registerAndLearnerService.update(registerAndLearnerDto);
+		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = dto.getRegisterAndLearnerAddressDtos();
+		if (!registerAndLearnerAddressDtos.isEmpty()) {
+			registerAndLearnerAddressService.saveAll(registerAndLearnerAddressDtos, resigterAndLearnerId,
+					userFacade.getCurrentUser());
+			return resigterAndLearnerId;
+		}
+		return StringUtils.EMPTY;
 	}
 
 }

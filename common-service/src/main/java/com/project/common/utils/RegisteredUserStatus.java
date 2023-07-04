@@ -1,7 +1,7 @@
 package com.project.common.utils;
 
 public enum RegisteredUserStatus {
-	UN_ACTIVE,
+	INACTIVE,
 	ACTIVE,
 	TEMPORARY_BLOCKED,
 	PERNAMENT_BLOCKED

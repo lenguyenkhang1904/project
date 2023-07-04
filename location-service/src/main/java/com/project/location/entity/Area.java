@@ -8,8 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.project.common.entity.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +44,11 @@ public class Area {
 	private String yRelCoo;
 	
 	@OneToMany(mappedBy = "area")
+	@JsonIgnore
+	private List<RegisterAndLearnerAddress> registerAndLearnerAddresses;
+	
+	@OneToMany(mappedBy = "area")
+	@JsonIgnore
 	private List<TaskPlaceAddress> taskPlaceAddresses;
 
 }

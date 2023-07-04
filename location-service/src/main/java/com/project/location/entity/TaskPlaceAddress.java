@@ -3,13 +3,14 @@ package com.project.location.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.project.common.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "task_place_address")
-public class TaskPlaceAddress {
+public class TaskPlaceAddress extends AbstractEntity  {
 	
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -52,6 +53,9 @@ public class TaskPlaceAddress {
 	@ManyToOne
 	@JoinColumn(name = "area_id")
 	private Area area;
+	
+	@Column(name = "task_id")
+	private String taskId;
 	
 
 	@Override

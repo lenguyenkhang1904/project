@@ -6,13 +6,15 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.project.common.utils.Calendar;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class RequestSaveTutor implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private String registeredStatus;
@@ -24,7 +26,7 @@ public class RequestSaveTutor implements Serializable {
 	private String gender;
 
 	private String birthYear;
-	
+
 	private LocalDate birthDate;
 
 	private String phones;
@@ -46,7 +48,17 @@ public class RequestSaveTutor implements Serializable {
 	private String xRelCoo;
 
 	private String yRelCoo;
-	
+
 	private List<String> areaTutorId = new LinkedList<>();
+
+	private List<String> tutorSubjectGroupMaybeIds = new LinkedList<>();
+
+	private List<Calendar> calendars = new LinkedList<>();
+
+	private LocalDateTime nowLevelUpdatedAt;
+
+	private String nowLevel;
+
+	private List<String> tutorSubjectGroupForSureIds = new LinkedList<>();
 
 }

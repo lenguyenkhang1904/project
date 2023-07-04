@@ -21,10 +21,6 @@ import com.project.person.entity.Tutor;
 import com.project.person.service.TutorService;
 import com.project.projectWs.dto.RequestSaveTutor;
 import com.project.projectWs.dto.RequestUpdateTutor;
-import com.project.projectWs.dto.RequestUpdateTutorCalendarDto;
-import com.project.projectWs.dto.RequestUpdateTutorNowLevelAndUpdateAtDto;
-import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
-import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupMaybeDto;
 import com.project.projectWs.dto.ResponseTutor;
 import com.project.projectWs.facade.TutorFacade;
 import com.project.projectWs.facade.UserFacade;
@@ -54,6 +50,11 @@ public class TutorFacadeImpl implements TutorFacade {
 		dto = ObjectMapperUtils.map(request, TutorDto.class);
 		dto.setCreatedBy(userFacade.getCurrentUser());
 		dto.setAreaTutorIds(request.getAreaTutorId());
+		dto.setCalendars(dto.getCalendars());
+		dto.setNowLevel(dto.getNowLevel());
+		dto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());
+		dto.setTutorSubjectGroupMaybeIds(dto.getTutorSubjectGroupMaybeIds());
+		dto.setTutorSubjectGroupForSureIds(dto.getTutorSubjectGroupForSureIds());
 		Long id = tutorService.saveTutor(dto);
 		return id;
 	}
@@ -288,48 +289,16 @@ public class TutorFacadeImpl implements TutorFacade {
 	}
 
 	@Override
-	public Long updateSubjetGroupMaybe(RequestUpdateTutorSubjectGroupMaybeDto dto) {
-		TutorDto tutorDto = new TutorDto();
-		tutorDto.setCreatedBy(userFacade.getCurrentUser());
-		tutorDto.setId(dto.getId());
-		tutorDto.setTutorSubjectGroupMaybeIds(dto.getTutorSubjectGroupMaybeIds());
-		return tutorService.updateSubjetGroupMaybe(tutorDto);
-	}
-
-	@Override
-	public Long updateSubjectGroupForSure(RequestUpdateTutorSubjectGroupForSureDto dto) {
-		TutorDto tutorDto = new TutorDto();
-		tutorDto.setCreatedBy(userFacade.getCurrentUser());
-		tutorDto.setId(dto.getId());
-		tutorDto.setTutorSubjectGroupForSureIds(dto.getTutorSubjectGroupForSureIds());
-		return tutorService.updateSubjectGroupForSure(tutorDto);
-	}
-
-	@Override
-	public Long updateNowLevelAndNowUpdateAt(RequestUpdateTutorNowLevelAndUpdateAtDto dto) {
-		TutorDto tutorDto = new TutorDto();
-		tutorDto.setCreatedBy(userFacade.getCurrentUser());
-		tutorDto.setId(dto.getId());
-		tutorDto.setNowLevel(dto.getNowLevel());
-		tutorDto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());
-		return tutorService.updateNowLevelAndNowUpdateAt(tutorDto);
-	}
-
-	@Override
-	public Long updateCalendar(RequestUpdateTutorCalendarDto dto) {
-		TutorDto tutorDto = new TutorDto();
-		tutorDto.setCreatedBy(userFacade.getCurrentUser());
-		tutorDto.setId(dto.getId());
-		tutorDto.setCalendars(dto.getCalendars());
-		return tutorService.updateCalendar(tutorDto);
-	}
-
-	@Override
 	public Long updateTutor(RequestUpdateTutor request) {
 		TutorDto dto = new TutorDto();
 		dto = ObjectMapperUtils.map(request, TutorDto.class);
 		dto.setCreatedBy(userFacade.getCurrentUser());
 		dto.setAreaTutorIds(request.getAreaTutorId());
+		dto.setCalendars(dto.getCalendars());
+		dto.setNowLevel(dto.getNowLevel());
+		dto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());
+		dto.setTutorSubjectGroupMaybeIds(dto.getTutorSubjectGroupMaybeIds());
+		dto.setTutorSubjectGroupForSureIds(dto.getTutorSubjectGroupForSureIds());
 		Long id = tutorService.update(dto);
 		return id;
 	}
