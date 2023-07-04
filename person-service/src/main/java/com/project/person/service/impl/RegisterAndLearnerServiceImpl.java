@@ -1,15 +1,16 @@
 package com.project.person.service.impl;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;import java.util.stream.Collector;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.project.common.utils.DateConverter;
 import com.project.common.utils.HandleCharacter;
@@ -17,7 +18,6 @@ import com.project.common.utils.ObjectMapperUtils;
 import com.project.person.dto.RegisterAndLearnerDto;
 import com.project.person.dto.RegisterAndLearnerRelationshipDto;
 import com.project.person.dto.SchoolerDto;
-import com.project.person.dto.TutorDto;
 import com.project.person.entity.RegisterAndLearner;
 import com.project.person.entity.RegisterAndLearnerRelationship;
 import com.project.person.entity.Schooler;
@@ -224,9 +224,55 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 	}
 
 	@Override
-	public String update(RegisterAndLearnerDto registerAndLearnerDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public String update(RegisterAndLearnerDto dto) {
+		
+		Optional<RegisterAndLearner> registerAndLearnerOpt = registerAndLearnerRepository.findById(dto.getId());
+		if(!registerAndLearnerOpt.isEmpty()) {
+			RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
+			registerAndLearner = ObjectMapperUtils.map(dto, RegisterAndLearner.class);
+			registerAndLearner.setFullName(dto.getFullName().toUpperCase());
+			registerAndLearner.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName().toUpperCase()));
+			registerAndLearner.setCreatedBy(dto.getCreatedBy());
+			registerAndLearner.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+			registerAndLearner.setPublicImgs(new HashSet<>(dto.getPublicImgs()));
+			registerAndLearner.setPrivateImgs(new HashSet<>(dto.getPublicImgs()));
+			registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
+
+			// register and learner relationship
+			List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationshipDtos = dto.getRegisterAndLearnerRelationships();
+			List<RegisterAndLearnerRelationship> registerAndLearnerRelationships = new LinkedList<>();
+			if(!CollectionUtils.isEmpty(registerAndLearnerRelationshipDtos)) {
+				for (RegisterAndLearnerRelationshipDto registerAndLearnerRelationshipDto : registerAndLearnerRelationshipDtos) {
+					RegisterAndLearnerRelationship registerAndLearnerRelationship = new RegisterAndLearnerRelationship();
+					registerAndLearnerRelationship = ObjectMapperUtils.map(registerAndLearnerRelationshipDto,
+							RegisterAndLearnerRelationship.class);
+					registerAndLearnerRelationship.setRegisterAndLearnerBy(
+							registerAndLearnerRepository.findById(registerAndLearnerRelationshipDto.getRegisterAndLearnerById()).get());
+					registerAndLearnerRelationship.setRegisterAndLearnerWith(registerAndLearner);
+					registerAndLearnerRelationships.add(registerAndLearnerRelationship);
+			}
+			registerAndLearnerRelationshipRepository.saveAll(registerAndLearnerRelationships);
+			}
+ 
+			// Schooler
+			List<SchoolerDto> schoolerDtos = dto.getSchoolerDtos();
+			List<Schooler> schoolers = new LinkedList<>();
+			if(!CollectionUtils.isEmpty(schoolers)) {
+				for (SchoolerDto schoolerDto : schoolerDtos) {
+					Schooler schooler = new Schooler();
+					schooler = ObjectMapperUtils.map(schoolerDto, Schooler.class);
+					schooler.setCreatedBy(dto.getCreatedBy());
+					schooler.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+					schooler.setRegisterAndLearner(registerAndLearner);
+					schoolers.add(schooler);
+				}
+				schoolerRepository.saveAll(schoolers);
+			}
+		
+
+			return registerAndLearner.getId();
+		}
+		return StringUtils.EMPTY;
 	}
 
 }

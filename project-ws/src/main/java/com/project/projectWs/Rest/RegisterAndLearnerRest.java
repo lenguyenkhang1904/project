@@ -22,6 +22,7 @@ import com.project.common.utils.HandleCharacter;
 import com.project.common.utils.ResponseHandler;
 import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
+import com.project.projectWs.dto.RequestUpdateResigterAndLearnerDto;
 import com.project.projectWs.dto.ResponseRegisterAndLearnerDto;
 import com.project.projectWs.facade.RegisterAndLearnerFacade;
 import com.project.projectWs.facade.StorageFacade;
@@ -258,7 +259,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<Object> CreateRegisterAndLearner(@RequestBody final RequestSaveResigterAndLearnerDto dto) {
+	public ResponseEntity<Object> createRegisterAndLearner(@RequestBody final RequestSaveResigterAndLearnerDto dto) {
 		String registerAndLearnerId = registerAndLearnerFacade.save(dto);
 		if (registerAndLearnerId == null)
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
@@ -287,6 +288,14 @@ public class RegisterAndLearnerRest {
 		if (dto == null)
 			return ResponseHandler.getResponse("cant find any Register and Learner", HttpStatus.OK);
 		return ResponseHandler.getResponse(dto, HttpStatus.OK);
+	}
+
+	@PutMapping("/update")
+	public ResponseEntity<Object> updateRegisterAndLearner(@RequestBody final RequestUpdateResigterAndLearnerDto dto) {
+		String registerAndLearnerId = registerAndLearnerFacade.update(dto);
+		if (registerAndLearnerId == null)
+			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+		return ResponseHandler.getResponse(registerAndLearnerId, HttpStatus.OK);
 	}
 
 }

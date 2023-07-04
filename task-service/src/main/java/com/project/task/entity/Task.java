@@ -1,6 +1,7 @@
 package com.project.task.entity;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -18,7 +19,6 @@ import com.project.common.entity.AbstractEntity;
 import com.project.common.utils.AmoutPerTime;
 import com.project.common.utils.DateTimeUtils;
 import com.project.common.utils.PercentageOfMoney;
-import com.project.common.utils.TaskSign;
 import com.project.common.utils.TaskStatus;
 import com.project.common.utils.TypeOfFee;
 import com.project.common.utils.UnitOfMoney;
@@ -44,7 +44,7 @@ public class Task extends AbstractEntity {
 	private String taskPlaceType;
 
 	@OneToMany(mappedBy = "task")
-	private Set<SubjectGroupTask> subjectGroupTask;
+	private Set<SubjectGroupTask> subjectGroupTask = new HashSet<>();
 
 	@Column(name = "subject_note")
 	private String subjectNote;
@@ -128,11 +128,11 @@ public class Task extends AbstractEntity {
 
 	// NGƯỜI ĐĂNG KÝ/HỌC VIÊN
 	@OneToMany(mappedBy = "task")
-	private Set<Registration> registrations;
+	private Set<Registration> registrations = new HashSet<>();
 
 	// ỨNG VIÊN ĐĂNG KÝ
 	@OneToMany(mappedBy = "task")
-	private Set<Application> applications;
+	private Set<Application> applications = new HashSet<>();
 	// GIAO JOB
 //		@OneToMany(mappedBy = "task")
 //		private Set<Job> jobs = new HashSet<>();

@@ -10,5 +10,9 @@ public interface TaskService {
 	String updateTask(TaskDto dto);
 	
 	List<String> getSubjectGroupsByTaskId(String taskId);
+	
+	List<TaskDto> findAllTask();
+	
+	TaskDto findByTaskId(String taskId);
 
 }

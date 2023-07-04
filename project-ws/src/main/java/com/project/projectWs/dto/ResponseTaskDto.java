@@ -1,4 +1,4 @@
-package com.project.task.dto;
+package com.project.projectWs.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -11,14 +11,18 @@ import com.project.common.utils.TaskSign;
 import com.project.common.utils.TaskStatus;
 import com.project.common.utils.TypeOfFee;
 import com.project.common.utils.UnitOfMoney;
+import com.project.education.dto.SubjectGroupDto;
+import com.project.location.dto.TaskPlaceAddressDto;
+import com.project.task.dto.ApplicationDto;
+import com.project.task.dto.RegistrationDto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskDto implements Serializable {
-
+public class ResponseTaskDto implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	private String id;
@@ -29,7 +33,7 @@ public class TaskDto implements Serializable {
 
 	private String subjectNote;
 
-	private Set<String> subjectGroupIds;
+	private Set<SubjectGroupDto> subjectGroups;
 
 	private String requireNote;
 
@@ -87,11 +91,12 @@ public class TaskDto implements Serializable {
 	private String hienDangLaRequired;
 
 	private Integer nowLevelRequired;
-	
+
 	private String createdBy;
 
 	private Set<RegistrationDto> registrations = new HashSet<>();
 
 	private Set<ApplicationDto> applications = new HashSet<>();
 	
+	private Set<TaskPlaceAddressDto> taskPlaceAddressDtos = new HashSet<>();
 }

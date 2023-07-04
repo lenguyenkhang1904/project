@@ -1,8 +1,12 @@
 package com.project.task.service.impl;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +60,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	}
 
 	@Override
-	public String updateApllication(ApplicationDto dto) {
+	public String updateApplication(ApplicationDto dto) {
 		
 		Optional<Application> applicationOpt = applicationRepository.findById(dto.getId());
 		if(!applicationOpt.isEmpty()) {
@@ -89,6 +93,45 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	public boolean checkExistTaskInApplication(Long tutorId, String taskId) {
 		return applicationRepository.countByTaskIdAndTutorId(taskId, tutorId) == 1;
+	}
+
+	@Override
+	public List<ApplicationDto> findAllApplication() {
+		List<ApplicationDto> applicationDtos = new LinkedList<>();
+		List<Application> entites = applicationRepository.findAllAppication();
+		if(!CollectionUtils.isEmpty(entites)) {
+			applicationDtos = entites.stream().map(item -> {
+				ApplicationDto dto = new ApplicationDto();
+				dto = convertEntityToObject(dto, item);
+				return dto;
+			}).collect(Collectors.toList());
+		}
+		return applicationDtos;
+	}
+	
+	private ApplicationDto convertEntityToObject(ApplicationDto dto, Application application) {
+		dto = ObjectMapperUtils.map(application, ApplicationDto.class);
+		String signStr = application.getApplicationSigns();
+		if (!StringUtils.isEmpty(signStr)) {
+			Set<ApplicationSign> applicationSigns = Arrays.asList(signStr.split(",")).stream().map(item -> {
+				ApplicationSign sign = ApplicationSign.valueOf(item);
+				return sign;
+			}).collect(Collectors.toSet());
+			dto.setApplicationSigns(applicationSigns);
+		}
+		return dto;
+	}
+
+	@Override
+	public ApplicationDto findByid(String applicationId) {
+		Optional<Application> applicationOpt = applicationRepository.findById(applicationId);
+		if(!applicationOpt.isEmpty()) {
+			ApplicationDto dto = new ApplicationDto();
+			Application application = applicationOpt.get();
+			dto = convertEntityToObject(dto, application);
+			return dto;
+		}
+		return null;
 	}
 
 }

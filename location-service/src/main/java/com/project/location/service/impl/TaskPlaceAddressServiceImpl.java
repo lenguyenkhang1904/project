@@ -13,10 +13,10 @@ import com.project.location.entity.Area;
 import com.project.location.entity.TaskPlaceAddress;
 import com.project.location.repository.AreaRepository;
 import com.project.location.repository.TaskPlaceAddressRepository;
-import com.project.location.service.TaskPlaceAdressService;
+import com.project.location.service.TaskPlaceAddressService;
 
 @Service
-public class TaskPlaceAdressServiceImpl implements TaskPlaceAdressService {
+public class TaskPlaceAddressServiceImpl implements TaskPlaceAddressService {
 
 	@Autowired
 	private TaskPlaceAddressRepository taskPlaceAddressRepository;
@@ -51,5 +51,11 @@ public class TaskPlaceAdressServiceImpl implements TaskPlaceAdressService {
 	@Override
 	public List<TaskPlaceAddressDto> findAll() {
 		return ObjectMapperUtils.mapAll(taskPlaceAddressRepository.findAll(), TaskPlaceAddressDto.class);
+	}
+
+	@Override
+	public List<TaskPlaceAddressDto> findByTaskId(String taskId) {
+		List<TaskPlaceAddress> entities = taskPlaceAddressRepository.findByTaskId(taskId);
+		return ObjectMapperUtils.mapAll(entities, TaskPlaceAddressDto.class);
 	}
 }
