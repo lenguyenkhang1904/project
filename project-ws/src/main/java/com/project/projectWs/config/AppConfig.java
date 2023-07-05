@@ -11,19 +11,17 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ComponentScan("com.project")
 @EnableJpaRepositories({ "com.project.location.repository", "com.project.person.repository",
-"com.project.education.repository", "com.project.user.management.repository", "com.project.task.repository"})
+		"com.project.education.repository", "com.project.user.management.repository", "com.project.task.repository",
+		"com.project.job.repository", "com.project.finance.repository" })
 public class AppConfig {
 
-	
-	
-	
 	@Bean
 	public PasswordEncoder getPassword() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public RestTemplate restTemplate() {
-	    return new RestTemplate();
+		return new RestTemplate();
 	}
 }
