@@ -1,8 +1,12 @@
 package com.project.projectWs.facade.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,10 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.project.common.utils.ObjectMapperUtils;
-import com.project.projectWs.Utils.GenerateToken;
+import com.project.projectWs.dto.RequestEmail;
 import com.project.projectWs.dto.RequestLoginDto;
 import com.project.projectWs.dto.RequestOauth;
 import com.project.projectWs.dto.RequestSaveUserDto;
+import com.project.projectWs.dto.RequestUpdatePassword;
 import com.project.projectWs.dto.RequestUpdateRegisterAndLearnerTypeUserDto;
 import com.project.projectWs.dto.RequestUpdateUserDto;
 import com.project.projectWs.dto.RequestUpdateUserRoleDto;
@@ -25,6 +30,9 @@ import com.project.projectWs.dto.RequestUpdateUserTypeTutorDto;
 import com.project.projectWs.dto.ResponseLoginDto;
 import com.project.projectWs.dto.ResponseToken;
 import com.project.projectWs.facade.UserFacade;
+import com.project.projectWs.mail.EmailUtils;
+import com.project.projectWs.utils.GenerateAuthenticationalCode;
+import com.project.projectWs.utils.GenerateToken;
 import com.project.user.management.dto.RoleDto;
 import com.project.user.management.dto.UserDto;
 import com.project.user.management.service.RoleService;
@@ -47,6 +55,12 @@ public class UserFacadeImpl implements UserFacade {
 
 	@Autowired
 	private RoleService roleService;
+
+	@Autowired
+	private GenerateAuthenticationalCode generateCode;
+
+	@Autowired
+	private EmailUtils emailUtils;
 
 	@Override
 	public Optional<UserDto> findByPhonesOrEmailOrUsername(String parameter) {
@@ -108,13 +122,13 @@ public class UserFacadeImpl implements UserFacade {
 
 	@Override
 	public String saveUser(final RequestSaveUserDto request) {
-		
+
 		UserDto userDto = new UserDto();
 		userDto = ObjectMapperUtils.map(request, UserDto.class);
 		userDto.setCreatedBy(getCurrentUser());
 		return userService.saveUser(userDto, passwordEncoder.encode(request.getPassword()), request.getRoleIds());
 	}
-	
+
 	public String getCurrentUser() {
 		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
@@ -139,7 +153,40 @@ public class UserFacadeImpl implements UserFacade {
 
 	@Override
 	public String updateRegisterAndLearnerTypeUser(RequestUpdateRegisterAndLearnerTypeUserDto request) {
-		return userService.updateTypeRegisterAndLearner(request.getId(), request.getRegisterAndLearnerId(), getCurrentUser());
+		return userService.updateTypeRegisterAndLearner(request.getId(), request.getRegisterAndLearnerId(),
+				getCurrentUser());
+	}
+
+	@Override
+	public String forgotPassword(RequestEmail request) throws UnsupportedEncodingException, MessagingException {
+		Optional<UserDto> userOpt = findByPhonesOrEmailOrUsername(request.getEmail());
+		if (!userOpt.isEmpty()) {
+			UserDto userDto = userOpt.get();
+
+			final String email = userDto.getEmail();
+			final String username = userDto.getUsername();
+			final String code = generateCode.generateCode(username);
+
+			emailUtils.sendEmail(email, username, code);
+			return "Token is sent";
+		}
+		return StringUtils.EMPTY;
+	}
+
+	@Override
+	public String changePassword(RequestUpdatePassword request) {
+		final String tokenRequest = request.getToken();
+		final Optional<UserDto> userOpt = findByPhonesOrEmailOrUsername(request.getUsername());
+		final String tokenCache = generateCode.getOtp(request.getUsername());
+		if (tokenRequest.equals(tokenCache) && !userOpt.isEmpty()) {
+			UserDto userDto = userOpt.get();
+			String userId = userService.save(userDto);
+			if (!StringUtils.isEmpty(userId)) {
+				generateCode.clearOTP(request.getUsername());
+				return userId;
+			}
+		}
+		return StringUtils.EMPTY;
 	}
 
 }

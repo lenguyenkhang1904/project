@@ -142,4 +142,10 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
+	@Override
+	public String save(UserDto dto) {
+		User entity = ObjectMapperUtils.map(dto, User.class);
+		return userRepository.save(entity).getId();
+	}
+
 }

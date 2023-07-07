@@ -1,4 +1,4 @@
-package com.project.projectWs.Rest;
+package com.project.projectWs.rest;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,12 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.common.utils.HandleCharacter;
 import com.project.common.utils.ResponseHandler;
-import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
 import com.project.projectWs.dto.RequestUpdateResigterAndLearnerDto;
 import com.project.projectWs.dto.ResponseRegisterAndLearnerDto;
 import com.project.projectWs.facade.RegisterAndLearnerFacade;
 import com.project.projectWs.facade.StorageFacade;
+import com.project.projectWs.utils.Routes;
 
 import come.project.storage.utils.ConstaintInformationStorage;
 

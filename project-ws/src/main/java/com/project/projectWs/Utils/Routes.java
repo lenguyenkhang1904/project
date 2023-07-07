@@ -1,4 +1,4 @@
-package com.project.projectWs.Utils;
+package com.project.projectWs.utils;
 
 public class Routes {
 	// location
@@ -27,4 +27,6 @@ public class Routes {
 	public static final String APPLICATION = "/api/v2/application";
 	// registration
 	public static final String REGISTRATION = "/api/v2/registration";
+	// tutor-request
+	public static final String TUTOR_REQUEST = "/api/v2/tutor-request";
 }

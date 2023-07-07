@@ -1,4 +1,4 @@
-package com.project.projectWs.Rest;
+package com.project.projectWs.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.common.utils.ResponseHandler;
-import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveUserDto;
 import com.project.projectWs.dto.RequestUpdateRegisterAndLearnerTypeUserDto;
 import com.project.projectWs.dto.RequestUpdateUserDto;
 import com.project.projectWs.dto.RequestUpdateUserRoleDto;
 import com.project.projectWs.dto.RequestUpdateUserTypeTutorDto;
 import com.project.projectWs.facade.UserFacade;
+import com.project.projectWs.utils.Routes;
  	
 @RestController
 @RequestMapping(value = Routes.USER)
