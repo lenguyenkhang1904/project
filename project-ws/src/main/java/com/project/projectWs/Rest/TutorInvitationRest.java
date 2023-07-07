@@ -1,4 +1,4 @@
-package com.project.projectWs.Rest;
+package com.project.projectWs.rest;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.common.utils.ResponseHandler;
-import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveTutorInvitationDto;
 import com.project.projectWs.dto.RequestUpdateTutorInvitationDto;
 import com.project.projectWs.dto.ResponseTutorInvitationDto;
 import com.project.projectWs.facade.TutorInvitationFacade;
+import com.project.projectWs.utils.Routes;
 
 @RestController
 @RequestMapping(value = Routes.TUTOR_INVITATION)

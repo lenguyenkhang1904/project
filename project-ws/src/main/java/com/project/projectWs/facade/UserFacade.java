@@ -1,9 +1,14 @@
 package com.project.projectWs.facade;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+
+import com.project.projectWs.dto.RequestEmail;
 import com.project.projectWs.dto.RequestLoginDto;
 import com.project.projectWs.dto.RequestSaveUserDto;
+import com.project.projectWs.dto.RequestUpdatePassword;
 import com.project.projectWs.dto.RequestUpdateRegisterAndLearnerTypeUserDto;
 import com.project.projectWs.dto.RequestUpdateUserDto;
 import com.project.projectWs.dto.RequestUpdateUserRoleDto;
@@ -28,4 +33,8 @@ public interface UserFacade {
 	String updateUserTypeTutor(RequestUpdateUserTypeTutorDto request);
 
 	String updateRegisterAndLearnerTypeUser(RequestUpdateRegisterAndLearnerTypeUserDto request);
+	
+	String forgotPassword(RequestEmail request)  throws UnsupportedEncodingException, MessagingException ;
+	
+	String changePassword(RequestUpdatePassword request);
 }

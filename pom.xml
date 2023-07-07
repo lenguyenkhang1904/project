@@ -62,5 +62,6 @@
 		<module>education-service</module>
 		<module>user-management-service</module>
 		<module>task-service</module>
+		<module>request-service</module>
 	</modules>
 </project>

@@ -1,4 +1,4 @@
-package com.project.projectWs.Rest;
+package com.project.projectWs.rest;
 
 import java.util.List;
 
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.common.utils.ResponseHandler;
-import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveApplicationDto;
 import com.project.projectWs.dto.RequestUpdateApplicationDto;
 import com.project.projectWs.dto.ResponseApplicationDto;
 import com.project.projectWs.facade.ApplicationFacade;
+import com.project.projectWs.utils.Routes;
 
 @RestController
 @RequestMapping(value = Routes.APPLICATION)

@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.web.cors.CorsConfiguration;
 
-import com.project.projectWs.Utils.Routes;
+import com.project.projectWs.utils.Routes;
 
 @SuppressWarnings("deprecation")
 @Configuration

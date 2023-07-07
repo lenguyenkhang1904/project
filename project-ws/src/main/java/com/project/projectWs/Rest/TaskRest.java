@@ -1,4 +1,4 @@
-package com.project.projectWs.Rest;
+package com.project.projectWs.rest;
 
 import java.util.List;
 
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.common.utils.ResponseHandler;
-import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestSaveTaskDto;
 import com.project.projectWs.dto.RequestUpdateTaskDto;
 import com.project.projectWs.dto.ResponseTaskDto;
 import com.project.projectWs.facade.TaskFacade;
+import com.project.projectWs.utils.Routes;
 
 @RestController
 @RequestMapping(value = Routes.TASK)
