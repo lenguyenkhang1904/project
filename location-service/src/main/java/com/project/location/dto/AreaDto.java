@@ -2,27 +2,28 @@ package com.project.location.dto;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class AreaDto implements Serializable {
-
 
 	private static final long serialVersionUID = 1L;
 
 	private String id;
 
-	protected String nation;
+	private String nation;
 
-	protected String state;	
+	private String state;	
 
-	protected String provincialLevel;
+	private String provincialLevel;
 
-	protected String district;
+	private String district;
 
-	protected String commune;
+	private String commune;
 	
-	protected String xRelCoo;
+	private String xRelCoo;
 
-	protected String yRelCoo;
+	private String yRelCoo;
 }

@@ -9,10 +9,9 @@ spring:
   #Data Configuration  
   datasource:
     #url:  jdbc:postgresql://112.78.1.62/databasecentral jdbc:postgresql://host.docker.internal:49153/giasuomt
-    url:   jdbc:postgresql://112.78.3.43/giasuOMT 
+    url:   jdbc:postgresql://localhost:5432/OMTDev
     username: postgres
-    password: anhhungemkhang
-   
+    password: postgres
     #password: khangdeptrai anhhungemkhang48@
   #JPA Configuration 
   jpa:
@@ -20,3 +19,19 @@ spring:
     generate-ddl: true #để thằng Hibernate tự nhìn Object và tạo database được
     hibernate: 
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    username: khangle190401@gmail.com
+    password: uycrdarvxtdiayss  
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true 
+OAuth:            
+ client: ws-omt
+ secret: cHJvamVjdE9NVFNlY3JldA==
+ expired: 50000 # s 
+ resource: project-omt-ws

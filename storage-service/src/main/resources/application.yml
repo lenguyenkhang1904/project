@@ -1,0 +1,52 @@
+app:
+  host: localhost
+spring:
+  #Data Configuration  
+  datasource:
+    #url:  jdbc:postgresql://112.78.1.62/databasecentral jdbc:postgresql://host.docker.internal:49153/giasuomt
+    url:   jdbc:postgresql://${app.host}:5432/OMTDev
+    username: postgres
+    password: postgres
+    #password: khangdeptrai anhhungemkhang48@
+  #JPA Configuration 
+  jpa:
+    show-sql: true #để xem câu sql mà nó tự sinh
+    generate-ddl: true #để thằng Hibernate tự nhìn Object và tạo database được
+    hibernate: 
+      ddl-auto: update
+amazon:
+  accessKeyKhangAdmin: V61PV4PFI9CO5SDX0FVW                #tạo user
+  secretkeyKhangAdmin: wzbD58XR7odCJoR6XDC1t7EIa83QNYfVYjY2PHAq
+  #avatar     #   
+  avatarURL: https://hn.ss.bfcplatform.vn/avatargsomt/
+  bucketnameAvatar: avatargsomt
+#billimage  
+  billImageURL: https://hn.ss.bfcplatform.vn/billimagegsomt/
+  bucketnamebillImage: billimagegsomt 
+#retainedrmgsrdentification  
+  retainedimgsidentificationURL: https://hn.ss.bfcplatform.vn/retainedimgsidentificationgsomt/
+  bucketnameretainedimgsidentification: retainedimgsidentificationgsomt 
+#tutorAvatar 
+  tutorAvatarURL: https://hn.ss.bfcplatform.vn/tutorgsomt/
+  bucketnametutorAvatar: tutorgsomt
+#privateimgsTutor
+  tutorPrivateimgsURL: https://hn.ss.bfcplatform.vn/privateimgstutor/
+  bucketnamePrivateimgs: privateimgstutor
+#publicimgsTutor
+  tutorPublicimgsURL: https://hn.ss.bfcplatform.vn/publicimgstutor/
+  bucketnamePublicimgs: publicimgstutor  
+#registerandlearner
+  registerandlearnerURL: https://hn.ss.bfcplatform.vn/registerandlearner/
+  bucketnameregisterandlearner: registerandlearner
+#privateimgsRegisterandlearner
+  registerandlearnerPrivateimgsURL: https://hn.ss.bfcplatform.vn/privateimgsregisterandlearner/
+  bucketnameRegisterandlearners: privateimgsregisterandlearner
+#publicimgsRegisterandlearner
+  registerandlearnerPublicimgsURL: https://hn.ss.bfcplatform.vn/publicimgsregisterandlearner/
+  bucketnameRegisterandlearner: publicimgsregisterandlearner    
+ #privateimgsRegisterandlearner
+  privateFeedBackTutorReviewURL: https://hn.ss.bfcplatform.vn/feedbacktutorreview/
+  bucketnamePrivateFeedBackTutorReview: feedbacktutorreview
+#publicimgsRegisterandlearner
+  publicFeedBackTutorReviewURL: https://hn.ss.bfcplatform.vn/feedbacktutorreview/
+  bucketnamePublicFeedBackTutorReview: feedbacktutorreview  
