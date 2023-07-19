@@ -28,7 +28,7 @@ import com.project.projectWs.facade.StorageFacade;
 import com.project.projectWs.facade.TutorFacade;
 import com.project.projectWs.utils.Routes;
 
-import come.project.storage.utils.ConstaintInformationStorage;
+import come.project.storage.utils.ConstantInformationStorage;
 
 @RestController
 @RequestMapping(value = Routes.TUTOR)
@@ -193,7 +193,7 @@ public class TutorRest {
 
 	@DeleteMapping("/delete-avatar/{urlPic}")
 	public ResponseEntity<Object> deleteTutorAvatar(@PathVariable("urlPic") String urlPic) {
-		String tutorAvatarURL = ConstaintInformationStorage.TUTOR_AVATAR_URL;
+		String tutorAvatarURL = ConstantInformationStorage.TUTOR_AVATAR_URL;
 		if (!storageFacade.checkExistObjectinS3Tutor(urlPic))
 			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
 		tutorFacade.deleteAvatarOfTutor(tutorAvatarURL + urlPic);
@@ -202,7 +202,7 @@ public class TutorRest {
 
 	@DeleteMapping("/delete-private-img/{urlPic}")
 	public ResponseEntity<Object> deleteTutorPrivateImg(@PathVariable("urlPic") String urlPic) {
-		final String tutorPrivateimgsURL = ConstaintInformationStorage.TUTOR_PRIVATE_IMGS_URL;
+		final String tutorPrivateimgsURL = ConstantInformationStorage.TUTOR_PRIVATE_IMGS_URL;
 		if (!storageFacade.checkExistObjectPrivateInS3Tutor(urlPic))
 			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
 		tutorFacade.deleteByFileNameAndIDPrivateImgs(tutorPrivateimgsURL + urlPic);
@@ -211,7 +211,7 @@ public class TutorRest {
 
 	@DeleteMapping("/delete-public-img/{nameFile}")
 	public ResponseEntity<Object> deleteTutorPublicImg(@PathVariable("urlPic") String urlPic) {
-		final String tutorPublicImgsURL = ConstaintInformationStorage.TUTOR_PUBLIC_IMGS_URL;
+		final String tutorPublicImgsURL = ConstantInformationStorage.TUTOR_PUBLIC_IMGS_URL;
 		if (!storageFacade.checkExistObjectPublicInS3Tutor(urlPic))
 			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
 		tutorFacade.deleteByFileNameAndIDPublicImgs(tutorPublicImgsURL + urlPic);

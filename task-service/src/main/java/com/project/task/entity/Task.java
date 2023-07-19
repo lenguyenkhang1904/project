@@ -155,5 +155,7 @@ public class Task extends AbstractEntity {
 
 	@Column(name = "now_level_required")
 	private Integer nowLevelRequired;
+	
+	private String jobId;
 
 }

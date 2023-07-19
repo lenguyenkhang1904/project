@@ -27,7 +27,7 @@ import com.project.projectWs.facade.RegisterAndLearnerFacade;
 import com.project.projectWs.facade.StorageFacade;
 import com.project.projectWs.utils.Routes;
 
-import come.project.storage.utils.ConstaintInformationStorage;
+import come.project.storage.utils.ConstantInformationStorage;
 
 @RestController
 @RequestMapping(value = Routes.REGISTER_AND_LEARNER)
@@ -121,7 +121,7 @@ public class RegisterAndLearnerRest {
 
 	@DeleteMapping("/delete-avatar/{urlPic}")
 	public ResponseEntity<Object> deleteRegisterAndLearnerAvatar(@PathVariable("urlPic") String urlPic) {
-		String registerAndLearnerAvatarURL = ConstaintInformationStorage.REGISTER_AND_LEARNER_AVATAR_URL;
+		String registerAndLearnerAvatarURL = ConstantInformationStorage.REGISTER_AND_LEARNER_AVATAR_URL;
 		if (!storageFacade.checkExistObjectinS3RegisterAndLearner(urlPic))
 			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
 
@@ -132,7 +132,7 @@ public class RegisterAndLearnerRest {
 
 	@DeleteMapping("/delete-register-and-learner-private-img/{urlPic}")
 	public ResponseEntity<Object> deleteRegisterAndLearnerPrivateImg(@PathVariable("urlPic") String urlPic) {
-		final String registerAndLearnerPrivateimgsURL = ConstaintInformationStorage.REGISTER_AND_LEARNER_PRIVATE_IMGS_URL;
+		final String registerAndLearnerPrivateimgsURL = ConstantInformationStorage.REGISTER_AND_LEARNER_PRIVATE_IMGS_URL;
 		if (!storageFacade.checkExistObjectinS3RegisterAndLearner(urlPic))
 			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
 		registerAndLearnerFacade.deleteByFileNameAndIDPrivateImgs(registerAndLearnerPrivateimgsURL + urlPic);
@@ -142,7 +142,7 @@ public class RegisterAndLearnerRest {
 	@DeleteMapping("/delete-public-img/{nameFile}")
 	public ResponseEntity<Object> deleteRegisterAndLearnerPublicImg(@PathVariable("urlPic") String urlPic) {
 
-		final String registerAndLearnerPublicImgsURL = ConstaintInformationStorage.REGISTER_AND_LEARNER_PUBLIC_IMGS_URL;
+		final String registerAndLearnerPublicImgsURL = ConstantInformationStorage.REGISTER_AND_LEARNER_PUBLIC_IMGS_URL;
 		if (!storageFacade.checkExistObjectPublicInS3RegisterAndLearner(urlPic))
 			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
 		registerAndLearnerFacade.deleteByFileNameAndIDPublicImgs(registerAndLearnerPublicImgsURL + urlPic);
