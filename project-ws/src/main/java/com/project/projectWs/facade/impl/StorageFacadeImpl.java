@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.project.projectWs.facade.StorageFacade;
 import com.project.storage.service.AvatarAndPublicAndPrivateImgsTutorAwsService;
 import com.project.storage.service.AvatarAndPublicAndPrivateRegisterAndLearnerAwsService;
+import com.project.storage.service.BillImageAwsService;
 
 @Service
 public class StorageFacadeImpl implements StorageFacade {
@@ -17,6 +18,9 @@ public class StorageFacadeImpl implements StorageFacade {
 	
 	@Autowired
 	private AvatarAndPublicAndPrivateRegisterAndLearnerAwsService avatarAndPublicAndPrivateRegisterAndLearnerAwsService;
+	
+	@Autowired
+	private BillImageAwsService billImageAwsSecrvie;
 	
 	@Override
 	public List<String> findAllTutor() {
@@ -76,6 +80,11 @@ public class StorageFacadeImpl implements StorageFacade {
 	@Override
 	public boolean checkExistObjectPublicInS3RegisterAndLearner(String nameFile) {
 		return avatarAndPublicAndPrivateRegisterAndLearnerAwsService.checkExistObjectPublicInS3(nameFile);
+	}
+
+	@Override
+	public boolean checkExistObjectBillImage(String nameFile) {
+		return billImageAwsSecrvie.checkExistObjectinS3(nameFile);
 	}
 
 }

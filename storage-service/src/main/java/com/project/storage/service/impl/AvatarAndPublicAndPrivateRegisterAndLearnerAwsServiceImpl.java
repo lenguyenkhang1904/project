@@ -16,23 +16,23 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.project.storage.service.AvatarAndPublicAndPrivateRegisterAndLearnerAwsService;
 
-import come.project.storage.utils.ConstaintInformationStorage;
+import come.project.storage.utils.ConstantInformationStorage;
 import come.project.storage.utils.FileUtils;
 
 @Service
 public class AvatarAndPublicAndPrivateRegisterAndLearnerAwsServiceImpl extends AwsClientS3Impl implements AvatarAndPublicAndPrivateRegisterAndLearnerAwsService {
 	
-	private static final String registerAndLearnerAvatarURL = ConstaintInformationStorage.REGISTER_AND_LEARNER_AVATAR_URL;
+	private static final String registerAndLearnerAvatarURL = ConstantInformationStorage.REGISTER_AND_LEARNER_AVATAR_URL;
 
-	private static final String bucketNameRegisterAndLearnerAvatar = ConstaintInformationStorage.BUCKET_NAME_REGISTER_AND_LEARNER_AVATAR;
+	private static final String bucketNameRegisterAndLearnerAvatar = ConstantInformationStorage.BUCKET_NAME_REGISTER_AND_LEARNER_AVATAR;
 
-	private static final String registerAndLearnerPrivateimgsURL = ConstaintInformationStorage.REGISTER_AND_LEARNER_PRIVATE_IMGS_URL;
+	private static final String registerAndLearnerPrivateimgsURL = ConstantInformationStorage.REGISTER_AND_LEARNER_PRIVATE_IMGS_URL;
 
-	private static final String bucketnamePrivateimgs = ConstaintInformationStorage.BUCKET_NAME_PRIVATE_IMGS_REGISTER_AND_LEARNER_AVATAR;
+	private static final String bucketnamePrivateimgs = ConstantInformationStorage.BUCKET_NAME_PRIVATE_IMGS_REGISTER_AND_LEARNER_AVATAR;
 
-	private static final String registerAndLearnerPublicimgsURL = ConstaintInformationStorage.REGISTER_AND_LEARNER_PUBLIC_IMGS_URL;
+	private static final String registerAndLearnerPublicimgsURL = ConstantInformationStorage.REGISTER_AND_LEARNER_PUBLIC_IMGS_URL;
 
-	private static final String bucketnamePublicimgs = ConstaintInformationStorage.BUCKET_NAME_PUBLIC_IMGS_REGISTER_AND_LEARNER_AVATAR;
+	private static final String bucketnamePublicimgs = ConstantInformationStorage.BUCKET_NAME_PUBLIC_IMGS_REGISTER_AND_LEARNER_AVATAR;
 
 	private void upploadPublicFile(String filename, File file, String bucketName) {
 		client.putObject(

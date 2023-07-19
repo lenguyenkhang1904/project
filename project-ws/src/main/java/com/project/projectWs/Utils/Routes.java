@@ -29,4 +29,10 @@ public class Routes {
 	public static final String REGISTRATION = "/api/v2/registration";
 	// tutor-request
 	public static final String TUTOR_REQUEST = "/api/v2/tutor-request";
+	// job
+	public static final String JOB = "/api/v2/job";
+	// job progress
+	public static final String JOB_PROGRESS = "/api/v2/job-progress";
+	// job finance
+	public static final String JOB_FINANCE = "/api/v2/job-finance";
 }

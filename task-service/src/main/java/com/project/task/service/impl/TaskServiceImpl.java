@@ -169,7 +169,7 @@ public class TaskServiceImpl implements TaskService {
 		// Task sign
 		String signStr = task.getSigns();
 		if (!StringUtils.isEmpty(signStr)) {
-			Set<TaskSign> taskSigns = Arrays.asList(signStr.split(",")).stream().map(item -> {
+			Set<TaskSign> taskSigns = Arrays.asList(signStr.split(", ")).stream().map(item -> {
 				TaskSign sign = TaskSign.valueOf(item);
 				return sign;
 			}).collect(Collectors.toSet());
@@ -179,7 +179,7 @@ public class TaskServiceImpl implements TaskService {
 		// gender requires
 		String genderRequiredStr = task.getGenderRequired();
 		if (!StringUtils.isEmpty(genderRequiredStr)) {
-			Set<String> genderRequires = new HashSet<String>(Arrays.asList(genderRequiredStr.split(",")));
+			Set<String> genderRequires = new HashSet<String>(Arrays.asList(genderRequiredStr.split(", ")));
 			dto.setGenderRequired(genderRequires);
 		}
 

@@ -28,5 +28,7 @@ public interface StorageFacade {
 	boolean checkExistObjectPrivateInS3RegisterAndLearner(final String nameFile);
 
 	boolean checkExistObjectPublicInS3RegisterAndLearner(final String nameFile);
+	
+	boolean checkExistObjectBillImage(final String nameFile);
 
 }
