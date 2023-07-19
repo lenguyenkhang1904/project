@@ -63,5 +63,8 @@
 		<module>user-management-service</module>
 		<module>task-service</module>
 		<module>request-service</module>
+		<module>job-service</module>
+		<module>review-service</module>
+		<module>finance-service</module>
 	</modules>
 </project>
