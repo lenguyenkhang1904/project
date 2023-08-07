@@ -31,4 +31,10 @@ public interface StorageFacade {
 	
 	boolean checkExistObjectBillImage(final String nameFile);
 
+	String findAllByNameContainerRetain(String string, List<String> listOject);
+
+	List<String> findAllRetainIdentifications();
+
+	boolean checkExistRetain(String nameFile);
+
 }

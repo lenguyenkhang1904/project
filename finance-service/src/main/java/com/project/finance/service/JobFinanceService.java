@@ -9,5 +9,7 @@ public interface JobFinanceService {
 	String updateJobFinance(JobFinanceDto dto);
 	
 	JobFinanceDto findById(String id);
+	
+	java.util.List<JobFinanceDto> findAll();
 
 }

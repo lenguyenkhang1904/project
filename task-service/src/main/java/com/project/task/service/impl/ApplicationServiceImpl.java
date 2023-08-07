@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,8 +38,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	public String createApplication(ApplicationDto dto) {
         Application application = new Application();
-        application.setId(dto.getTaskId().concat("-").concat(String.valueOf(dto.getTutorId()).concat(ConstantApplication.APPLICATION_SUFFIX_ID)));
         application = ObjectMapperUtils.map(dto, Application.class);
+        application.setId(dto.getTaskId().concat("-").concat(String.valueOf(dto.getTutorId()).concat(ConstantApplication.APPLICATION_SUFFIX_ID)));
         application.setCreatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
         application.setCreatedBy(dto.getCreatedBy());
         
@@ -65,7 +67,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 		Optional<Application> applicationOpt = applicationRepository.findById(dto.getId());
 		if(!applicationOpt.isEmpty()) {
 			Application application = applicationOpt.get();
-	        application = ObjectMapperUtils.map(dto, Application.class);
 	        application.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
 	        application.setUpdatedBy(dto.getCreatedBy());
 	        
@@ -113,7 +114,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		dto = ObjectMapperUtils.map(application, ApplicationDto.class);
 		String signStr = application.getApplicationSigns();
 		if (!StringUtils.isEmpty(signStr)) {
-			Set<ApplicationSign> applicationSigns = Arrays.asList(signStr.split(",")).stream().map(item -> {
+			Set<ApplicationSign> applicationSigns = Arrays.asList(signStr.split(", ")).stream().map(item -> {
 				ApplicationSign sign = ApplicationSign.valueOf(item);
 				return sign;
 			}).collect(Collectors.toSet());

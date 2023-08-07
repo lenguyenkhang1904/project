@@ -1,7 +1,6 @@
 package com.project.person.dto;
 
 import java.io.Serializable;
-
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,6 +64,10 @@ public class TutorDto extends PersonInformationDto implements Serializable {
 	private String subjectClass;
 	
 	private List<Calendar> calendars = new LinkedList<>();
+	
+	private Double exp;
+	
+	private Integer successJobsNumbers;
 
 	@Override
 	public String toString() {

@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.education.dto.SubjectGroupDto;
 import com.project.education.service.SubjectGroupService;
+import com.project.job.dto.JobDto;
+import com.project.job.service.JobService;
 import com.project.location.dto.AreaDto;
 import com.project.location.service.AreaService;
 import com.project.person.dto.TutorDto;
@@ -43,6 +45,9 @@ public class TutorFacadeImpl implements TutorFacade {
 
 	@Autowired
 	private SubjectGroupService subjectGroupService;
+
+	@Autowired
+	JobService jobService;
 
 	@Override
 	public Long saveTutor(RequestSaveTutor request) {
@@ -306,6 +311,8 @@ public class TutorFacadeImpl implements TutorFacade {
 	private ResponseTutor convertObjectFrSerToObjectFacade(ResponseTutor responseTutor, TutorForFindAllDto item,
 			List<AreaDto> areas, List<SubjectGroupDto> subjectGroups) {
 
+		List<JobDto> jobsByTutorIds = jobService.findAll();
+
 		responseTutor = ObjectMapperUtils.map(item, ResponseTutor.class);
 
 		AreaDto areaDto = areas.stream().filter(area -> area.getId().equals(item.getTutorAddressAreaId()))
@@ -324,6 +331,10 @@ public class TutorFacadeImpl implements TutorFacade {
 		responseTutor.setSubjectGroupMaybes(subjectGroups.stream()
 				.filter(sub -> item.getSubjectGroupMaybeIds().stream().anyMatch(it -> it.equals(sub.getId())))
 				.collect(Collectors.toList()));
+
+		responseTutor.setJobDtos(
+				jobsByTutorIds.stream().filter(it -> it.getTutorId().equals(item.getId())).collect(Collectors.toSet()));
+
 		return responseTutor;
 	}
 

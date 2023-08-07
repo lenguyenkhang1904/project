@@ -29,7 +29,7 @@ public class TutorReview extends PersonAbstractInformation  {
 	private String feedbackContent;
 	
 	@Column(name = "tutor_id")
-	private String tutorId;
+	private Long tutorId;
 	
 	@Column(name = "job_id")
 	private String jobId;

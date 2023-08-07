@@ -10,13 +10,11 @@ public class RequestSaveJob implements Serializable  {
 
 	private static final long serialVersionUID = 1L;
 	
-	private String taskId;
-
-	private Long tutorId;
-	
 	private String applicationId;
 	
 	private String verifiedTutorInfo;
 	
 	private String adviceToTutor;
+	
+	
 }

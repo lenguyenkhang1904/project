@@ -21,9 +21,11 @@ import come.project.storage.utils.FileUtils;
 @Service
 public class FeedbackImgServiceImpl extends AwsClientS3Impl implements FeedbackImgService {
 
-	private static final String feedBackURL = ConstantInformationStorage.FEED_BACK_URL;
+	private static final String feedBackPrivateURL = ConstantInformationStorage.PRIVATE_FEEDBACK_TUTOR_REVIEW_URL;
 
-	private static final String bucketFeedBackImg = ConstantInformationStorage.BUCKET_FEED_BACK;
+	private static final String feedBackPublicURL = ConstantInformationStorage.PUBLIC_FEEDBACK_TUTOR_REVIEW_URL;
+
+	private static final String bucketFeedBackImg = ConstantInformationStorage.BUCKET_NAME_PRIVATE_FEEDBACK_TUTOR_REVIEW;
 
 	private void uploadPublicFile(String filename, File file, String bucketName) {
 		client.putObject(new PutObjectRequest(bucketFeedBackImg, filename, file)
@@ -56,7 +58,11 @@ public class FeedbackImgServiceImpl extends AwsClientS3Impl implements FeedbackI
 		List<String> listObject = new LinkedList<>();
 		ObjectListing iterables = client.listObjects(bucketFeedBackImg);
 		for (S3ObjectSummary os : iterables.getObjectSummaries()) {
-			listObject.add(feedBackURL + os.getKey());
+			if (os.getKey().contains("Private")) {
+				listObject.add(feedBackPrivateURL + os.getKey());
+			} else {
+				listObject.add(feedBackPublicURL + os.getKey());
+			}
 		}
 		return listObject;
 	}
@@ -69,20 +75,20 @@ public class FeedbackImgServiceImpl extends AwsClientS3Impl implements FeedbackI
 
 	@Override
 	public String updatePrivateImageToAmazon(MultipartFile multipartFile, String filename) {
-		String url = uploadMultipartFile(multipartFile, filename, bucketFeedBackImg, feedBackURL);
+		String url = uploadMultipartFile(multipartFile, filename, bucketFeedBackImg, feedBackPrivateURL);
 		return url;
 	}
 
 	@Override
 	public String updatePublicImageToAmazon(MultipartFile multipartFile, String filename) {
-		String url = uploadMultipartFile(multipartFile, filename, bucketFeedBackImg, feedBackURL);
+		String url = uploadMultipartFile(multipartFile, filename, bucketFeedBackImg, feedBackPublicURL);
 		return url;
 
 	}
 
 	@Override
 	public String uploadImageToAmazonPubclicImgs(MultipartFile multipartFile, String filename) {
-		String url = uploadMultipartFile(multipartFile, filename, bucketFeedBackImg, feedBackURL);
+		String url = uploadMultipartFile(multipartFile, filename, bucketFeedBackImg, feedBackPublicURL);
 		return url;
 	}
 

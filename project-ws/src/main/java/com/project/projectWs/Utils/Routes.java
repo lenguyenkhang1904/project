@@ -35,4 +35,6 @@ public class Routes {
 	public static final String JOB_PROGRESS = "/api/v2/job-progress";
 	// job finance
 	public static final String JOB_FINANCE = "/api/v2/job-finance";
+	// tutor review
+	public static final String TUTOR_REVIEW = "/api/v2/tutor-review";
 }

@@ -47,7 +47,6 @@ public class JobFinance extends AbstractEntity  {
 	@Column(name = "job_id")
 	private String jobId;
 	
-	//STK (nếu có) - thường dùng cho yêu cầu hoàn phí
 	private String accountNumber;
 	
 	private String accoundBank;

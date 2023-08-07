@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -46,6 +48,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 		if (!checkExistTasks) {
 			saveAllSubjectGroup(dto.getTaskId(), dto.getTutorId());
 			ApplicationDto applicationDto = new ApplicationDto();
+			applicationDto.setApplicationSigns(dto.getApplicationSigns());
 			applicationDto.setTaskId(dto.getTaskId());
 			applicationDto.setTutorId(dto.getTutorId());
 			applicationDto.setCreatedBy(userFacade.getCurrentUser());
@@ -54,21 +57,20 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 		throw new NullValueException("We can not create because Tutor had existed application for this task ");
 	}
 
+	@Transactional
 	@Override
 	public String updateApplication(RequestUpdateApplicationDto dto) {
 
-		boolean checkExistTasks = applicationService.checkExistTaskInApplication(dto.getTutorId(), dto.getTaskId());
-		if (!checkExistTasks) {
-			tutorService.deleteSubjectGroupMaybeByTutorId(dto.getTutorId());
-			saveAllSubjectGroup(dto.getTaskId(), dto.getTutorId());
-			ApplicationDto applicationDto = new ApplicationDto();
-			applicationDto.setTaskId(dto.getTaskId());
-			applicationDto.setTutorId(dto.getTutorId());
-			applicationDto.setCreatedBy(userFacade.getCurrentUser());
+		tutorService.deleteSubjectGroupMaybeByTutorId(dto.getTutorId());
+		saveAllSubjectGroup(dto.getTaskId(), dto.getTutorId());
+		ApplicationDto applicationDto = new ApplicationDto();
+		applicationDto.setId(dto.getId());
+		applicationDto.setApplicationSigns(dto.getApplicationSigns());
+		applicationDto.setTaskId(dto.getTaskId());
+		applicationDto.setTutorId(dto.getTutorId());
+		applicationDto.setCreatedBy(userFacade.getCurrentUser());
 
-			return applicationService.updateApplication(applicationDto);
-		}
-		throw new NullValueException("We can not update because Tutor had existed application for this task ");
+		return applicationService.updateApplication(applicationDto);
 	}
 
 	private void saveAllSubjectGroup(String taskId, Long tutorId) {
