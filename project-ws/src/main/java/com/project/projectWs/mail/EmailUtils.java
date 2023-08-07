@@ -25,7 +25,6 @@ public class EmailUtils {
 		String content = "<p>Dear," + username + "</p>" + "<p>You have requested to reset your password.</p>"
 				+ "<p>Here is token and  the link below to authenticate your token: </p>" + "<p> <b>" + token + " </p>"
 				+ "<br>" + "<p><a href=\""
-			//	+ urlUpdatePassword.concat("/swagger-ui.html".concat("#!/user45controller/updatePasswordUsingPUT"))
 				+ "\">link to change password</a></p>" + "<br>"
 
 				+ "<p>Ignore this email if you do remember your password, " + "or you have not made the request.</p>"

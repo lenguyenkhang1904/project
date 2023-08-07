@@ -28,8 +28,8 @@ public class Application extends AbstractEntity  {
 	@JsonIgnore
 	private Task task;
 	
-	@Column(name = "tutor_Id")
-	private Long TutorId;
+	@Column(name = "tutor_id")
+	private Long tutorId;
 	
 	// save many applicationSigns
 	@Column(name = "application_signs")

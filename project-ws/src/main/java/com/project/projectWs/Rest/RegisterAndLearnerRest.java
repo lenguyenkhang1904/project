@@ -130,7 +130,7 @@ public class RegisterAndLearnerRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete-register-and-learner-private-img/{urlPic}")
+	@DeleteMapping("/delete-private-img/{urlPic}")
 	public ResponseEntity<Object> deleteRegisterAndLearnerPrivateImg(@PathVariable("urlPic") String urlPic) {
 		final String registerAndLearnerPrivateimgsURL = ConstantInformationStorage.REGISTER_AND_LEARNER_PRIVATE_IMGS_URL;
 		if (!storageFacade.checkExistObjectinS3RegisterAndLearner(urlPic))
@@ -149,7 +149,7 @@ public class RegisterAndLearnerRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@PutMapping("/update-privateImg/{nameFile}")
+	@PutMapping("/update-private-img/{nameFile}")
 	public ResponseEntity<Object> UpdatePrivateImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());

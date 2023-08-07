@@ -7,15 +7,21 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestUpdateJobDto implements Serializable {
+public class RequestUpdateTutorReviewDto implements Serializable {
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	private String id;
 
-	private String applicationId;
+	private Double starNumber;
 
-	private String verifiedTutorInfo;
+	private String feedbackContent;
 
-	private String adviceToTutor;
+	private Long tutorId;
+
+	private String jobId;
+
 }

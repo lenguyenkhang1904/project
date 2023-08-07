@@ -34,7 +34,7 @@ public class TaskByTheTimeCreatingDto implements Serializable {
 
 	private String requireNote;
 	// THỜI GIAN
-	private int lessonNumber; // Số buổi
+	private Integer lessonNumber; // Số buổi
 	
 	private AmoutPerTime lessonNumberPerTime; // Số buổi tính theo
 	
@@ -47,7 +47,7 @@ public class TaskByTheTimeCreatingDto implements Serializable {
 	private LocalDateTime startDate;
 	
 	// HỌC PHÍ
-	private int salary;
+	private Integer salary;
 	
 
 	private UnitOfMoney unitOfSalary;
@@ -56,7 +56,7 @@ public class TaskByTheTimeCreatingDto implements Serializable {
 
 	private TypeOfFee typeOfTaskFee;
 	
-	private int taskFee;
+	private Integer taskFee;
 	
 	private UnitOfMoney unitOfTaskFee;
 	
@@ -65,11 +65,11 @@ public class TaskByTheTimeCreatingDto implements Serializable {
 	
 	private TypeOfFee typeOfAffiliateFee;
 	
-	private int affiliateFee;
+	private Integer affiliateFee;
 	
 	private UnitOfMoney unitOfAffiliateFee;
 	
-	private PercentageOfMoney percentageOfAffiliateFeeInTaskFee;
+	private PercentageOfMoney percentageOfAffiliateFeeIntegeraskFee;
 
 	private String taskPlaceAddresses;
 

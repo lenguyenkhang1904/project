@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -25,7 +26,7 @@ public class ApplicationJob {
 	@Column(name = "application_id",unique = true)
 	private String appicationId;
 	
-	@Column(name = "job_id", unique = true)
-	private String jobId;
+	@OneToOne
+	private Job job;
 
 }

@@ -1,5 +1,6 @@
 package com.project.finance.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,12 @@ public class JobFinanceServiceImpl implements JobFinanceService {
 			return dto;
 		}
 		return null;
+	}
+
+	@Override
+	public List<JobFinanceDto> findAll() {
+		List<JobFinance> entities = jobFinanceRepository.findAll();
+		return ObjectMapperUtils.mapAll(entities, JobFinanceDto.class);
 	}
 
 }

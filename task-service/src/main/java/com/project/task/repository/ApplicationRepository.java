@@ -12,7 +12,7 @@ import com.project.task.entity.Application;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, String> {
 	
-	@Query(value = "SELECT COUNT(*) FROM application app WHERE app.tutorId =:tutorId AND app.task_id=:taskId", nativeQuery = true)
+	@Query(value = "SELECT COUNT(*) FROM application app WHERE app.tutor_id =:tutorId AND app.task_id=:taskId", nativeQuery = true)
 	int countByTaskIdAndTutorId(@Param("taskId") String taskId, @Param("tutorId") Long tutorId);
 	
 	@Query("SELECT app FROM Application app")

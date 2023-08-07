@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,7 @@ public class JobFinanceRest {
 
 	@Autowired
 	private JobFinanceFacade jobFinanceFacade;
-	
+
 	@Autowired
 	private StorageFacade storageFacade;
 
@@ -44,7 +45,7 @@ public class JobFinanceRest {
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
-	@PostMapping("/createOrUpdateBillImg/{id}")
+	@PostMapping("/create-or-update-bill-img/{id}")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
 			@PathVariable("id") String id) throws IOException {
 		String filename = org.springframework.util.StringUtils.cleanPath(file.getOriginalFilename());
@@ -55,8 +56,8 @@ public class JobFinanceRest {
 			return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
 					HttpStatus.BAD_REQUEST);
 	}
-	
-	@DeleteMapping("/deleteBillImg/{nameFile}/")
+
+	@DeleteMapping("/delete-bill-img/{nameFile}/")
 	public ResponseEntity<Object> delete(@PathVariable("nameFile") String nameFile) {
 		final String url = "https://hn.ss.bfcplatform.vn/billimagegsomt/";
 		if (!storageFacade.checkExistObjectBillImage(nameFile))
@@ -64,4 +65,19 @@ public class JobFinanceRest {
 		jobFinanceFacade.deleteBillImg(url + nameFile);
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
+
+	@PutMapping("/update-bill-img/{nameFile}")
+	public ResponseEntity<Object> UpdatePrivateImg(@RequestParam("file") MultipartFile file,
+			@PathVariable("nameFile") String nameFile) throws IOException {
+		String filename = StringUtils.cleanPath(file.getOriginalFilename());
+		if (filename.contains(".jpeg") || filename.contains(".jpg") || filename.contains(".png")) {
+			String awsAvatarURL = jobFinanceFacade.updateBillImgToAmazon(file, nameFile);
+			return ResponseHandler.getResponse(awsAvatarURL, HttpStatus.CREATED);
+		}
+
+		else
+			return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
+					HttpStatus.BAD_REQUEST);
+	}
+	
 }

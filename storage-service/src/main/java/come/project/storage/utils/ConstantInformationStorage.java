@@ -30,11 +30,15 @@ public class ConstantInformationStorage {
 	// imgage bill
 	public static final String BILL_IMAGE_URL = "https://hn.ss.bfcplatform.vn/billimagegsomt/";
 	public static final String BUCKET_NAME_BILL_IMAGE = "billimagegsomt";
-	//
+	// IDENTIFICATION
 	public static final String RETAINED_IMGS_IDENTIFICATION_URL = "https://hn.ss.bfcplatform.vn/retainedimgsidentificationgsomt/";
 	public static final String BUCKET_RETAINED_IMGS_IDENTIFICATION = "retainedimgsidentificationgsomt";
-	// feedback
-	public static final String FEED_BACK_URL = "https://hn.ss.bfcplatform.vn/feedbacktutorreview/";
-	public static final String BUCKET_FEED_BACK = "feedbacktutorreview";
+	//privatefeedback
+	public static final String PRIVATE_FEEDBACK_TUTOR_REVIEW_URL = "https://hn.ss.bfcplatform.vn/feedbacktutorreview/";
+	public static final String BUCKET_NAME_PRIVATE_FEEDBACK_TUTOR_REVIEW = "feedbacktutorreview";
+	//publicfeedback
+	//privatefeedback
+	public static final String PUBLIC_FEEDBACK_TUTOR_REVIEW_URL = "https://hn.ss.bfcplatform.vn/feedbacktutorreview/";
+	public static final String BUCKET_NAME_PUBLIC_FEEDBACK_TUTOR_REVIEW = "feedbacktutorreview";
 
 }
