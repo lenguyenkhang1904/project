@@ -8,6 +8,8 @@ import com.project.person.dto.TutorDto;
 import com.project.projectWs.dto.RequestSaveTutor;
 import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.ResponseTutor;
+import com.project.projectWs.dto.TutorForWebByIdDto;
+import com.project.projectWs.dto.TutorForWebDto;
 
 public interface TutorFacade {
 	Long saveTutor(final RequestSaveTutor request);
@@ -51,5 +53,9 @@ public interface TutorFacade {
 	TutorDto findById(final Long id);
 	
 	Long updateTutor(final RequestUpdateTutor request);
+
+	List<TutorForWebDto> findAllTutorForWeb();
+
+	TutorForWebByIdDto findAllTutorForWebById(Long id);
 	
 }
