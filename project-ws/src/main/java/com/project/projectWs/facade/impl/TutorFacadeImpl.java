@@ -24,8 +24,12 @@ import com.project.person.service.TutorService;
 import com.project.projectWs.dto.RequestSaveTutor;
 import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.ResponseTutor;
+import com.project.projectWs.dto.TutorForWebByIdDto;
+import com.project.projectWs.dto.TutorForWebDto;
 import com.project.projectWs.facade.TutorFacade;
 import com.project.projectWs.facade.UserFacade;
+import com.project.review.dto.TutorReviewDto;
+import com.project.review.service.TutorReviewService;
 import com.project.storage.service.AvatarAndPublicAndPrivateImgsTutorAwsService;
 
 @Service
@@ -47,7 +51,10 @@ public class TutorFacadeImpl implements TutorFacade {
 	private SubjectGroupService subjectGroupService;
 
 	@Autowired
-	JobService jobService;
+	private JobService jobService;
+
+	@Autowired
+	private TutorReviewService tutorReviewService;
 
 	@Override
 	public Long saveTutor(RequestSaveTutor request) {
@@ -70,10 +77,10 @@ public class TutorFacadeImpl implements TutorFacade {
 		List<ResponseTutor> tutors = new LinkedList<>();
 		List<AreaDto> areas = areaService.findAll();
 		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
-
+		List<JobDto> jobsByTutorIds = jobService.findAll();
 		dtos.stream().forEach(item -> {
 			ResponseTutor responseTutor = new ResponseTutor();
-			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups, jobsByTutorIds);
 			tutors.add(responseTutor);
 		});
 		return tutors;
@@ -82,12 +89,13 @@ public class TutorFacadeImpl implements TutorFacade {
 	@Override
 	public ResponseTutor findByTutorCode(final Long tutorCode) {
 		TutorForFindAllDto item = tutorService.findByTutorCode(tutorCode);
+		List<JobDto> jobsByTutorIds = jobService.findAll();
 		if (item != null) {
 			List<AreaDto> areas = areaService.findAll();
 			List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
 
 			ResponseTutor responseTutor = new ResponseTutor();
-			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups, jobsByTutorIds);
 			return Optional.of(responseTutor).get();
 		}
 		return null;
@@ -97,13 +105,14 @@ public class TutorFacadeImpl implements TutorFacade {
 	@Override
 	public List<ResponseTutor> findByPhoneNumber(final String phoneNumber) {
 		List<TutorForFindAllDto> dtos = tutorService.findByPhoneNumber(phoneNumber);
+		List<JobDto> jobsByTutorIds = jobService.findAll();
 		List<ResponseTutor> tutors = new LinkedList<>();
 		List<AreaDto> areas = areaService.findAll();
 		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
 
 		dtos.stream().forEach(item -> {
 			ResponseTutor responseTutor = new ResponseTutor();
-			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups, jobsByTutorIds);
 			tutors.add(responseTutor);
 		});
 		return tutors;
@@ -112,13 +121,14 @@ public class TutorFacadeImpl implements TutorFacade {
 	@Override
 	public List<ResponseTutor> findByEndPhoneNumber(String endPhoneNumber) {
 		List<TutorForFindAllDto> dtos = tutorService.findByEndPhoneNumber(endPhoneNumber);
+		List<JobDto> jobsByTutorIds = jobService.findAll();
 		List<ResponseTutor> tutors = new LinkedList<>();
 		List<AreaDto> areas = areaService.findAll();
 		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
 
 		dtos.stream().forEach(item -> {
 			ResponseTutor responseTutor = new ResponseTutor();
-			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups, jobsByTutorIds);
 			tutors.add(responseTutor);
 		});
 		return tutors;
@@ -128,12 +138,13 @@ public class TutorFacadeImpl implements TutorFacade {
 	public List<ResponseTutor> findByFullNameContain(final String fullName) {
 		List<TutorForFindAllDto> dtos = tutorService.findByFullNameContain(fullName);
 		List<ResponseTutor> tutors = new LinkedList<>();
+		List<JobDto> jobsByTutorIds = jobService.findAll();
 		List<AreaDto> areas = areaService.findAll();
 		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
 
 		dtos.stream().forEach(item -> {
 			ResponseTutor responseTutor = new ResponseTutor();
-			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups, jobsByTutorIds);
 			tutors.add(responseTutor);
 		});
 		return tutors;
@@ -142,13 +153,14 @@ public class TutorFacadeImpl implements TutorFacade {
 	@Override
 	public List<ResponseTutor> findByEnglishFullName(final String fullname) {
 		List<TutorForFindAllDto> dtos = tutorService.findByEnglishFullName(fullname);
+		List<JobDto> jobsByTutorIds = jobService.findAll();
 		List<ResponseTutor> tutors = new LinkedList<>();
 		List<AreaDto> areas = areaService.findAll();
 		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
 
 		dtos.stream().forEach(item -> {
 			ResponseTutor responseTutor = new ResponseTutor();
-			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups);
+			responseTutor = convertObjectFrSerToObjectFacade(responseTutor, item, areas, subjectGroups, jobsByTutorIds);
 			tutors.add(responseTutor);
 		});
 		return tutors;
@@ -309,9 +321,7 @@ public class TutorFacadeImpl implements TutorFacade {
 	}
 
 	private ResponseTutor convertObjectFrSerToObjectFacade(ResponseTutor responseTutor, TutorForFindAllDto item,
-			List<AreaDto> areas, List<SubjectGroupDto> subjectGroups) {
-
-		List<JobDto> jobsByTutorIds = jobService.findAll();
+			List<AreaDto> areas, List<SubjectGroupDto> subjectGroups, List<JobDto> jobsByTutorIds) {
 
 		responseTutor = ObjectMapperUtils.map(item, ResponseTutor.class);
 
@@ -335,6 +345,67 @@ public class TutorFacadeImpl implements TutorFacade {
 		responseTutor.setJobDtos(
 				jobsByTutorIds.stream().filter(it -> it.getTutorId().equals(item.getId())).collect(Collectors.toSet()));
 
+		return responseTutor;
+	}
+
+	@Override
+	public List<TutorForWebDto> findAllTutorForWeb() {
+		List<TutorForFindAllDto> dtos = tutorService.findAllTutor().stream()
+				.filter(item -> item.getAverageStarNumbers() >= 4.5).collect(Collectors.toList());
+		List<TutorForWebDto> tutors = new LinkedList<>();
+		List<AreaDto> areas = areaService.findAll();
+		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
+		List<JobDto> jobsByTutorIds = jobService.findAll();
+		List<TutorReviewDto> tutorReviewDtos = tutorReviewService.findAll();
+		dtos.stream().forEach(item -> {
+
+			long countJob = jobsByTutorIds.stream().filter(it -> it.getTutorId().equals(item.getId())).count();
+			long countReview = tutorReviewDtos.stream().filter(it -> it.getTutorId().equals(item.getId())).count();
+			TutorForWebDto responseTutor = new TutorForWebDto();
+			responseTutor = ObjectMapperUtils.map(item, TutorForWebDto.class);
+			responseTutor.setJobNumbers(countJob);
+			responseTutor.setTutorReviewNumbers(countReview);
+
+			responseTutor.setSubjectGroupMaybes(subjectGroups.stream()
+					.filter(sub -> item.getSubjectGroupMaybeIds().stream().anyMatch(it -> it.equals(sub.getId())))
+					.collect(Collectors.toList()));
+
+			responseTutor.setRelAreas(
+					areas.stream().filter(area -> item.getRelArea().stream().anyMatch(it -> it.equals(area.getId())))
+							.collect(Collectors.toList()));
+
+			tutors.add(responseTutor);
+		});
+		return tutors;
+	}
+
+	@Override
+	public TutorForWebByIdDto findAllTutorForWebById(Long id) {
+		TutorForFindAllDto entity = tutorService.findByTutorCode(id);
+		List<TutorForWebDto> tutors = new LinkedList<>();
+		List<AreaDto> areas = areaService.findAll();
+		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
+		List<JobDto> jobsByTutorIds = jobService.findAll();
+		List<TutorReviewDto> tutorReviewDtos = tutorReviewService.findAll();
+
+		long countJob = jobsByTutorIds.stream().filter(it -> it.getTutorId().equals(entity.getId())).count();
+		long countReview = tutorReviewDtos.stream().filter(it -> it.getTutorId().equals(entity.getId())).count();
+		TutorForWebByIdDto responseTutor = new TutorForWebByIdDto();
+		responseTutor = ObjectMapperUtils.map(entity, TutorForWebByIdDto.class);
+		responseTutor.setJobNumbers(countJob);
+		responseTutor.setTutorReviewNumbers(countReview);
+
+		responseTutor.setSubjectGroupMaybes(subjectGroups.stream()
+				.filter(sub -> entity.getSubjectGroupMaybeIds().stream().anyMatch(it -> it.equals(sub.getId())))
+				.collect(Collectors.toList()));
+
+		responseTutor.setRelArea(
+				areas.stream().filter(area -> entity.getRelArea().stream().anyMatch(it -> it.equals(area.getId())))
+						.collect(Collectors.toList()));
+		
+		responseTutor.setTutorReviews(tutorReviewDtos.stream().filter(it -> it.getTutorId().equals(entity.getId()))
+				.collect(Collectors.toList()));
+		
 		return responseTutor;
 	}
 

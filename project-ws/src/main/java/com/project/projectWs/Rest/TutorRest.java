@@ -24,6 +24,7 @@ import com.project.person.dto.TutorDto;
 import com.project.projectWs.dto.RequestSaveTutor;
 import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.ResponseTutor;
+import com.project.projectWs.dto.TutorForWebDto;
 import com.project.projectWs.facade.StorageFacade;
 import com.project.projectWs.facade.TutorFacade;
 import com.project.projectWs.utils.Routes;
@@ -105,14 +106,23 @@ public class TutorRest {
 		return ResponseHandler.getResponse(tutorNames, HttpStatus.OK);
 	}
 
-//	@GetMapping("/findAllTutorForWeb")
-//	public ResponseEntity<Object> findAllTutorForWeb() {
-//		List<TutorForWebDto> list = iTutorService.findAllTutorForWeb();
-//		if (list.isEmpty())
-//			return ResponseHandler.getResponse("No content", HttpStatus.BAD_REQUEST);
-//
-//		return ResponseHandler.getResponse(list, HttpStatus.OK);
-//	}
+	@GetMapping("/find-all-for-web")
+	public ResponseEntity<Object> findAllTutorForWeb() {
+		List<TutorForWebDto> list = tutorFacade.findAllTutorForWeb();
+		if (list.isEmpty())
+			return ResponseHandler.getResponse("No content", HttpStatus.BAD_REQUEST);
+
+		return ResponseHandler.getResponse(list, HttpStatus.OK);
+	}
+	
+	@GetMapping("/find-all-for-web-by-id/{id}")
+	public ResponseEntity<Object> findAllTutorForWebById(@PathVariable("id") Long id) {
+		TutorForWebDto entity = tutorFacade.findAllTutorForWebById(id);
+		if (entity == null)
+			return ResponseHandler.getResponse("No content", HttpStatus.BAD_REQUEST);
+
+		return ResponseHandler.getResponse(entity, HttpStatus.OK);
+	}
 
 	@PostMapping("/create-or-update-avatar/{tutorCode}")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
@@ -248,7 +258,7 @@ public class TutorRest {
 		TutorDto tutor = tutorFacade.findById(id);
 		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/update")
 	public ResponseEntity<Object> updateTutor(@RequestBody final RequestUpdateTutor request) {
 		Long id = tutorFacade.updateTutor(request);
