@@ -157,8 +157,8 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 			RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
 			RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
 			registerAndLearnerDto = ObjectMapperUtils.map(registerAndLearner, RegisterAndLearnerDto.class);
-			registerAndLearnerDto.setPublicImgs(registerAndLearner.getPublicImgs().stream().toList());
-			registerAndLearnerDto.setPrivateImgs(registerAndLearner.getPublicImgs().stream().toList());
+			registerAndLearnerDto.setPublicImgs(registerAndLearner.getPublicImgs().stream().collect(Collectors.toList()));
+			registerAndLearnerDto.setPrivateImgs(registerAndLearner.getPublicImgs().stream().collect(Collectors.toList()));
 			return registerAndLearnerDto;
 		}
 		return null;
