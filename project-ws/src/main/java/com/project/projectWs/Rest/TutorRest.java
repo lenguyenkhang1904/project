@@ -24,6 +24,7 @@ import com.project.person.dto.TutorDto;
 import com.project.projectWs.dto.RequestSaveTutor;
 import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.ResponseTutor;
+import com.project.projectWs.dto.TutorForWebByIdDto;
 import com.project.projectWs.dto.TutorForWebDto;
 import com.project.projectWs.facade.StorageFacade;
 import com.project.projectWs.facade.TutorFacade;
@@ -117,7 +118,7 @@ public class TutorRest {
 	
 	@GetMapping("/find-all-for-web-by-id/{id}")
 	public ResponseEntity<Object> findAllTutorForWebById(@PathVariable("id") Long id) {
-		TutorForWebDto entity = tutorFacade.findAllTutorForWebById(id);
+		TutorForWebByIdDto entity = tutorFacade.findAllTutorForWebById(id);
 		if (entity == null)
 			return ResponseHandler.getResponse("No content", HttpStatus.BAD_REQUEST);
 
