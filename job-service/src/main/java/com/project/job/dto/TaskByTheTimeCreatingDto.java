@@ -36,31 +36,26 @@ public class TaskByTheTimeCreatingDto implements Serializable {
 	// THỜI GIAN
 	private Integer lessonNumber; // Số buổi
 	
-	private AmoutPerTime lessonNumberPerTime; // Số buổi tính theo
-	
-	private float hour; // Số giờ
-	
-	private AmoutPerTime hourPerTime; // Số giờ tính theo
+	private String lessonPeriodOfTime;
 	
 	private String freeTime;
 	
 	private LocalDateTime startDate;
 	
 	// HỌC PHÍ
-	private Integer salary;
-	
+	private Integer taskFeeForStudent;
 
-	private UnitOfMoney unitOfSalary;
+	private Integer taskFeeForGraduatedStudent;
+
+	private Integer taskFeeForTeacher;
+
 	
 	private AmoutPerTime salaryPerTime;
 
 	private TypeOfFee typeOfTaskFee;
 	
-	private Integer taskFee;
-	
 	private UnitOfMoney unitOfTaskFee;
 	
-	@Enumerated(EnumType.STRING)
 	private PercentageOfMoney percentageOfTaskFeeInSalary;
 	
 	private TypeOfFee typeOfAffiliateFee;
@@ -69,7 +64,7 @@ public class TaskByTheTimeCreatingDto implements Serializable {
 	
 	private UnitOfMoney unitOfAffiliateFee;
 	
-	private PercentageOfMoney percentageOfAffiliateFeeIntegeraskFee;
+	private PercentageOfMoney percentageOfAffiliateFeeInTaskFee;
 
 	private String taskPlaceAddresses;
 

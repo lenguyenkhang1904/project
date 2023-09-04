@@ -1,8 +1,10 @@
 package com.project.projectWs.facade.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 
@@ -15,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.project.common.utils.ObjectMapperUtils;
@@ -29,16 +32,22 @@ import com.project.projectWs.dto.RequestUpdateUserRoleDto;
 import com.project.projectWs.dto.RequestUpdateUserTypeTutorDto;
 import com.project.projectWs.dto.ResponseLoginDto;
 import com.project.projectWs.dto.ResponseToken;
+import com.project.projectWs.dto.ResponseUserDto;
 import com.project.projectWs.facade.UserFacade;
 import com.project.projectWs.mail.EmailUtils;
 import com.project.projectWs.utils.GenerateAuthenticationalCode;
 import com.project.projectWs.utils.GenerateToken;
+import com.project.projectWs.utils.TemplateHTMLForEmail;
 import com.project.user.management.dto.RoleDto;
 import com.project.user.management.dto.UserDto;
 import com.project.user.management.service.RoleService;
 import com.project.user.management.service.UserService;
 
+import lombok.extern.log4j.Log4j2;
+import net.bytebuddy.implementation.bytecode.Throw;
+
 @Service
+@Log4j2
 public class UserFacadeImpl implements UserFacade {
 
 	@Autowired
@@ -160,6 +169,7 @@ public class UserFacadeImpl implements UserFacade {
 	@Override
 	public String forgotPassword(RequestEmail request) throws UnsupportedEncodingException, MessagingException {
 		Optional<UserDto> userOpt = findByPhonesOrEmailOrUsername(request.getEmail());
+		System.out.println(request);
 		if (!userOpt.isEmpty()) {
 			UserDto userDto = userOpt.get();
 
@@ -167,8 +177,11 @@ public class UserFacadeImpl implements UserFacade {
 			final String username = userDto.getUsername();
 			final String code = generateCode.generateCode(username);
 
-			emailUtils.sendEmail(email, username, code);
-			return "Token is sent";
+			List<String> content = TemplateHTMLForEmail.templateGenearateTokenAuthentication(username, code);
+
+			emailUtils.sendEmail(email, content.get(0), content.get(1));
+
+			return "Token is sent to user:  " + username;
 		}
 		return StringUtils.EMPTY;
 	}
@@ -178,15 +191,47 @@ public class UserFacadeImpl implements UserFacade {
 		final String tokenRequest = request.getToken();
 		final Optional<UserDto> userOpt = findByPhonesOrEmailOrUsername(request.getUsername());
 		final String tokenCache = generateCode.getOtp(request.getUsername());
+		if (StringUtils.isEmpty(tokenCache)) {
+			log.error("Invalid token");
+			return "Invalid token";
+		}
 		if (tokenRequest.equals(tokenCache) && !userOpt.isEmpty()) {
 			UserDto userDto = userOpt.get();
-			String userId = userService.save(userDto);
-			if (!StringUtils.isEmpty(userId)) {
-				generateCode.clearOTP(request.getUsername());
-				return userId;
+			String password = userDto.getPassword();
+
+			if (passwordEncoder.matches(request.getPassword(), password)) {
+				userDto.setPassword(passwordEncoder.encode(request.getPassword()));
+				String userId = userService.save(userDto);
+				if (!StringUtils.isEmpty(userId)) {
+					generateCode.clearOTP(request.getUsername());
+					return userId;
+				}
 			}
+
 		}
 		return StringUtils.EMPTY;
+	}
+
+	@Override
+	public List<ResponseUserDto> findAll() {
+		List<RoleDto> roles = roleService.findAll();
+		List<UserDto> userDtos = userService.findAll();
+		if (!CollectionUtils.isEmpty(userDtos)) {
+			return userDtos.stream().map(item -> {
+				ResponseUserDto res = new ResponseUserDto();
+
+				res = ObjectMapperUtils.map(item, ResponseUserDto.class);
+
+				List<String> roleIds = item.getRoles();
+
+				roles.stream().filter(role -> roleIds.stream().anyMatch(id -> role.getId().equals(id)))
+						.collect(Collectors.toList());
+				res.setRoles(roles);
+				return res;
+			}).collect(Collectors.toList());
+		}
+
+		return new LinkedList<>();
 	}
 
 }

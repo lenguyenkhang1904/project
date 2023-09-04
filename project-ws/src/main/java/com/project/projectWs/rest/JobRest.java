@@ -99,7 +99,7 @@ public class JobRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@PostMapping("/update-job-result")
+	@PutMapping("/update-job-result")
 	public ResponseEntity<Object> updateJobResult(@RequestBody final RequestUpdateJobResultDto request) {
 		String id = jobFacade.updateJobResult(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);

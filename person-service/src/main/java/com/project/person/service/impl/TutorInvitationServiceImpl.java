@@ -90,4 +90,9 @@ public class TutorInvitationServiceImpl implements TutorInvitationService {
 		return tutorInvitationRepository.findById(id);
 	}
 
+	@Override
+	public Optional<TutorInvitation> findTutorIdAndRegisterId(Long tutorId, String reId) {
+		return  tutorInvitationRepository.findByRegisterAndTutor(reId, tutorId);
+	}
+
 }

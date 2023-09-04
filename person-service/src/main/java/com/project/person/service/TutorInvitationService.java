@@ -17,5 +17,7 @@ public interface TutorInvitationService {
 	List<TutorInvitation> findAll();
 
 	Optional<TutorInvitation> findById(String id);
+	
+	Optional<TutorInvitation> findTutorIdAndRegisterId(Long tutorId, String reId);
 
 }

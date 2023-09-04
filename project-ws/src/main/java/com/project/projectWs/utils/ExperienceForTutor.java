@@ -24,11 +24,12 @@ public class ExperienceForTutor {
 		List<TutorReviewDto> tutorReviews = tutorReviewService.findAll();
 		Double countExp = 0.0;
 		Set<JobDto> allJobs = tutorDto.getJobDtos();
+		System.out.println(allJobs.toString());
 		for (JobDto allJob : allJobs) {
 			if (allJob.getJobResult().equals(JobResult.SUCCESS)) {
 				countExp += 1.0;
 			}
-			if (allJob.getFailReason().contains("PH/HV chê") || allJob.getFailReason().contains("do lỗi GS")) {
+			if ("PH/HV".equals(allJob.getFailReason()) || "do lỗi GS".equals(allJob.getFailReason())) {
 				countExp -= 1;
 			}
 

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.common.utils.ResponseHandler;
 import com.project.projectWs.dto.RequestEmail;
 import com.project.projectWs.dto.RequestLoginDto;
@@ -25,8 +26,11 @@ import com.project.projectWs.dto.RequestUpdatePassword;
 import com.project.projectWs.facade.UserFacade;
 import com.project.projectWs.utils.Routes;
 
+import lombok.extern.log4j.Log4j2;
+
 @RestController
 @RequestMapping(value = Routes.AUTH)
+@Log4j2
 public class AuthRest {
 
 	@Autowired
@@ -38,7 +42,8 @@ public class AuthRest {
 	@PostMapping("/login")
 	public ResponseEntity<Object> login(@RequestHeader(value = "client-id") String clientId,
 			@RequestHeader(value = "client-secret") String secretId, @RequestBody RequestLoginDto loginDto,
-			BindingResult bindingResult) {
+			BindingResult bindingResult) throws JsonProcessingException {
+		log.info("login: " + userFacade.login(loginDto, clientId, secretId).toJson());
 		return ResponseHandler.getResponse(userFacade.login(loginDto, clientId, secretId), HttpStatus.OK);
 	}
 

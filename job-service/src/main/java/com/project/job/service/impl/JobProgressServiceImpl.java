@@ -1,11 +1,15 @@
 package com.project.job.service.impl;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.project.common.utils.DateConverter;
 import com.project.common.utils.ObjectMapperUtils;
@@ -59,6 +63,20 @@ public class JobProgressServiceImpl implements JobProgressService {
 			return repository.save(jobProgress).getId();
 		}
 		return StringUtils.EMPTY;
+	}
+
+	@Override
+	public List<JobProgressDto> findAll() {
+		List<JobProgress> entities = repository.findAll();
+		if(!CollectionUtils.isEmpty(entities)) {
+		  return entities.stream().map(item -> {
+				JobProgressDto dto = new JobProgressDto();
+				dto = ObjectMapperUtils.map(item, JobProgressDto.class);
+				dto.setJobId(item.getJob().getId());
+				return dto;
+			}).collect(Collectors.toList());
+		}
+		return new LinkedList<>();
 	}
 
 }

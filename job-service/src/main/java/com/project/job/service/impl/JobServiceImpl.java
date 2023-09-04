@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.project.common.utils.DateConverter;
+import com.project.common.utils.JobResult;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.job.dto.JobDto;
 import com.project.job.dto.JobProgressDto;
@@ -59,10 +60,10 @@ public class JobServiceImpl implements JobService {
 		LocalDateTime createdDate = job.getCreatedAt();
 
 		job = ObjectMapperUtils.map(dto, Job.class);
+		job.setJobResult(dto.getJobResult());
 
 		final String currentUser = dto.getCreatedBy();
 		if (isUpdated) {
-			job.setCreatedAt(createdDate);
 			job.setUpdatedBy(currentUser);
 			job.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
 		} else {
@@ -79,6 +80,7 @@ public class JobServiceImpl implements JobService {
 		job = jobRepo.save(job);
 
 		TaskByTheTimeCreatingDto taskJobDto = dto.getTaskByTheTimeCreatingDto();
+		System.out.println(taskJobDto.toString());
 		if (taskJobDto != null) {
 			TaskByTheTimeCreatingJob taskJob = ObjectMapperUtils.map(taskJobDto, TaskByTheTimeCreatingJob.class);
 			taskJob.setJob(job);
@@ -116,6 +118,8 @@ public class JobServiceImpl implements JobService {
 			tutorByTheTimeCreatingJobRepo.deleteByJobId(jobId);
 
 			applicationJobRepository.deleteByJobId(jobId);
+
+			System.out.println("ba");
 
 			return jobId.equals(mapDtoToObject(dto, job, true)) ? jobId : StringUtils.EMPTY;
 		}
@@ -160,11 +164,13 @@ public class JobServiceImpl implements JobService {
 
 		if (!StringUtils.isEmpty(entity.getRetainedImgsIdentification())) {
 			imgs = Arrays.asList(entity.getRetainedImgsIdentification().split(", "));
-			imgs.remove(imgs.size() - 1);
+			// imgs.remove(imgs.size() - 1);
 		}
 		dto.setRetainedImgsIdentification(imgs);
 
-		dto.setApplicationId(entity.getApplicationJob().getAppicationId());
+		dto.setApplicationId(
+				entity.getApplicationJob() == null ? StringUtils.EMPTY : entity.getApplicationJob().getAppicationId());
+		dto.setJobResult(entity.getJobResult() == null ? JobResult.NONE : entity.getJobResult());
 
 		return dto;
 	}

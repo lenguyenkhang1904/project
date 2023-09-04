@@ -67,7 +67,7 @@ public class TutorReviewFacadeImpl implements TutorReviewFacade {
 
 		if (!CollectionUtils.isEmpty(starNumbersList)) {
 			average = starNumbersList.stream().map(item -> {
-				return item.getStarNumber();
+				return item.getStarNumber() == null ? 0.0 : item.getStarNumber();
 			}).mapToDouble(Double::doubleValue).sum();
 
 			Double resultAvarage = (average / starNumbersList.size());

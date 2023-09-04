@@ -6,9 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
 import com.project.common.utils.JobResult;
 
 import lombok.Getter;
@@ -47,5 +44,18 @@ public class JobDto implements Serializable {
 	private String failReason;
 	
 	private Boolean findAnotherTutorIfFail;
+
+	@Override
+	public String toString() {
+		return "JobDto [id=" + id + ", taskId=" + taskId + ", tutorId=" + tutorId + ", applicationId=" + applicationId
+				+ ", verifiedTutorInfo=" + verifiedTutorInfo + ", adviceToTutor=" + adviceToTutor
+				+ ", retainedImgsIdentification=" + retainedImgsIdentification + ", taskByTheTimeCreatingDto="
+				+ taskByTheTimeCreatingDto + ", tutorByTheTimeCreatingJobDto=" + tutorByTheTimeCreatingJobDto
+				+ ", createdBy=" + createdBy + ", jobProgresseDtos=" + jobProgresseDtos + ", jobResult=" + jobResult
+				+ ", failReason=" + failReason + ", findAnotherTutorIfFail=" + findAnotherTutorIfFail + "]";
+	}
+	
+	
+	
 
  }

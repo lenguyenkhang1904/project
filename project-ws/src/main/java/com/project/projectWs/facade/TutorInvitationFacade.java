@@ -1,7 +1,11 @@
 package com.project.projectWs.facade;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
+import com.project.projectWs.dto.RequestEmailInvitationToTutor;
 import com.project.projectWs.dto.RequestSaveTutorInvitationDto;
 import com.project.projectWs.dto.RequestUpdateTutorInvitationDto;
 import com.project.projectWs.dto.ResponseTutorInvitationDto;
@@ -17,5 +21,7 @@ public interface TutorInvitationFacade {
 	List<ResponseTutorInvitationDto> findTutorInvitation();
 
 	ResponseTutorInvitationDto findTutorInterestById(String id);
+
+	String sendRequest(RequestEmailInvitationToTutor request) throws UnsupportedEncodingException, MessagingException;
 
 }

@@ -342,6 +342,10 @@ public class TutorFacadeImpl implements TutorFacade {
 				.filter(sub -> item.getSubjectGroupMaybeIds().stream().anyMatch(it -> it.equals(sub.getId())))
 				.collect(Collectors.toList()));
 
+		responseTutor.setSubjectGroupfails(subjectGroups.stream()
+				.filter(sub -> item.getSubjectGroupFails().stream().anyMatch(it -> it.equals(sub.getId())))
+				.collect(Collectors.toList()));
+
 		responseTutor.setJobDtos(
 				jobsByTutorIds.stream().filter(it -> it.getTutorId().equals(item.getId())).collect(Collectors.toSet()));
 
@@ -402,10 +406,10 @@ public class TutorFacadeImpl implements TutorFacade {
 		responseTutor.setRelArea(
 				areas.stream().filter(area -> entity.getRelArea().stream().anyMatch(it -> it.equals(area.getId())))
 						.collect(Collectors.toList()));
-		
+
 		responseTutor.setTutorReviews(tutorReviewDtos.stream().filter(it -> it.getTutorId().equals(entity.getId()))
 				.collect(Collectors.toList()));
-		
+
 		return responseTutor;
 	}
 

@@ -1,8 +1,11 @@
 package com.project.projectWs.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +18,9 @@ import com.project.projectWs.dto.RequestUpdateRegisterAndLearnerTypeUserDto;
 import com.project.projectWs.dto.RequestUpdateUserDto;
 import com.project.projectWs.dto.RequestUpdateUserRoleDto;
 import com.project.projectWs.dto.RequestUpdateUserTypeTutorDto;
+import com.project.projectWs.dto.ResponseUserDto;
 import com.project.projectWs.facade.UserFacade;
-import com.project.projectWs.utils.Routes;
+import com.project.projectWs.utils.Routes;import com.project.user.management.dto.UserDto;
  	
 @RestController
 @RequestMapping(value = Routes.USER)
@@ -53,6 +57,12 @@ public class UserRest {
 	public ResponseEntity<Object> updateRegisterAndLearnerTypeUser(@RequestBody final RequestUpdateRegisterAndLearnerTypeUserDto request) {
 		String id = userFacade.updateRegisterAndLearnerTypeUser(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
+	}
+	
+	@GetMapping("/find-all-user")
+	public ResponseEntity<Object> findAll() {
+		List<ResponseUserDto> response = userFacade.findAll();
+		return ResponseHandler.getResponse(response, HttpStatus.OK);
 	}
 
 }

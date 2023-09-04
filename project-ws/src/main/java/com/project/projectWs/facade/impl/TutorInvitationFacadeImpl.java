@@ -1,9 +1,13 @@
-  package com.project.projectWs.facade.impl;
+package com.project.projectWs.facade.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +15,7 @@ import com.project.common.utils.ObjectMapperUtils;
 import com.project.person.dto.TutorInvitationDto;
 import com.project.person.entity.TutorInvitation;
 import com.project.person.service.TutorInvitationService;
+import com.project.projectWs.dto.RequestEmailInvitationToTutor;
 import com.project.projectWs.dto.RequestSaveTutorInvitationDto;
 import com.project.projectWs.dto.RequestUpdateTutorInvitationDto;
 import com.project.projectWs.dto.ResponseRegisterAndLearnerBasicInfo;
@@ -18,6 +23,8 @@ import com.project.projectWs.dto.ResponseTutorBasicInfo;
 import com.project.projectWs.dto.ResponseTutorInvitationDto;
 import com.project.projectWs.facade.TutorInvitationFacade;
 import com.project.projectWs.facade.UserFacade;
+import com.project.projectWs.mail.EmailUtils;
+import com.project.projectWs.utils.TemplateHTMLForEmail;
 
 @Service
 public class TutorInvitationFacadeImpl implements TutorInvitationFacade {
@@ -27,6 +34,9 @@ public class TutorInvitationFacadeImpl implements TutorInvitationFacade {
 
 	@Autowired
 	private UserFacade userFacade;
+
+	@Autowired
+	private EmailUtils emailUtils;
 
 	@Override
 	public String saveTutorInvitation(RequestSaveTutorInvitationDto request) {
@@ -69,18 +79,46 @@ public class TutorInvitationFacadeImpl implements TutorInvitationFacade {
 	@Override
 	public ResponseTutorInvitationDto findTutorInterestById(String id) {
 		Optional<TutorInvitation> tutorInvitationOpt = tutorInvitationService.findById(id);
-		if(!tutorInvitationOpt.isEmpty()) {
+		if (!tutorInvitationOpt.isEmpty()) {
 			TutorInvitation tutorInvitation = tutorInvitationOpt.get();
 			ResponseTutorInvitationDto response = new ResponseTutorInvitationDto();
 			response = ObjectMapperUtils.map(tutorInvitation, ResponseTutorInvitationDto.class);
-			ResponseTutorBasicInfo tutor = ObjectMapperUtils.map(tutorInvitation.getTutor(), ResponseTutorBasicInfo.class);
+			ResponseTutorBasicInfo tutor = ObjectMapperUtils.map(tutorInvitation.getTutor(),
+					ResponseTutorBasicInfo.class);
 			response.setTutor(tutor);
-			ResponseRegisterAndLearnerBasicInfo registerAndLearner = ObjectMapperUtils.map(tutorInvitation.getRegisterAndLearner(),
-					ResponseRegisterAndLearnerBasicInfo.class);
+			ResponseRegisterAndLearnerBasicInfo registerAndLearner = ObjectMapperUtils
+					.map(tutorInvitation.getRegisterAndLearner(), ResponseRegisterAndLearnerBasicInfo.class);
 			response.setRegisterAndLearner(registerAndLearner);
 			return response;
 		}
 		return null;
+	}
+
+	@Override
+	public String sendRequest(RequestEmailInvitationToTutor request)
+			throws UnsupportedEncodingException, MessagingException {
+		Optional<TutorInvitation> tutorInvitationOpt = tutorInvitationService
+				.findTutorIdAndRegisterId(request.getTutorId(), request.getReId());
+		;
+		if (!tutorInvitationOpt.isEmpty()) {
+			TutorInvitation tutorInvitation = tutorInvitationOpt.get();
+			ResponseTutorInvitationDto response = new ResponseTutorInvitationDto();
+			response = ObjectMapperUtils.map(tutorInvitation, ResponseTutorInvitationDto.class);
+
+			ResponseTutorBasicInfo tutor = ObjectMapperUtils.map(tutorInvitation.getTutor(),
+					ResponseTutorBasicInfo.class);
+			response.setTutor(tutor);
+			ResponseRegisterAndLearnerBasicInfo registerAndLearner = ObjectMapperUtils
+					.map(tutorInvitation.getRegisterAndLearner(), ResponseRegisterAndLearnerBasicInfo.class);
+			response.setRegisterAndLearner(registerAndLearner);
+			List<String> content = TemplateHTMLForEmail
+					.templateGenearateSendIntivation(response.getTutor().getFullName(), response);
+
+			emailUtils.sendEmail(request.getEmail(), content.get(0), content.get(1));
+
+			return "Token is sent to tutor";
+		}
+		return StringUtils.EMPTY;
 	}
 
 }

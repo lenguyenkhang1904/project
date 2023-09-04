@@ -12,6 +12,7 @@ spring:
     url:   jdbc:postgresql://localhost:5432/OMTDev
     username: ${USERNAME_POSTGRES}
     password: ${PASSWORD_POSTGRES}
+   
     #password: khangdeptrai anhhungemkhang48@
   #JPA Configuration 
   jpa:
@@ -19,21 +20,3 @@ spring:
     generate-ddl: true #để thằng Hibernate tự nhìn Object và tạo database được
     hibernate: 
       ddl-auto: update
-  mail:
-    host: smtp.gmail.com
-    username: khangle190401@gmail.com
-    password: uycrdarvxtdiayss  
-    port: 587
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true 
-OAuth:            
- client: ws-omt
- secret: cHJvamVjdE9NVFNlY3JldA==
- expired: 50000 # s 
- resource: project-omt-ws
-logging:
-  config: classpath:log4j2-spring.xml

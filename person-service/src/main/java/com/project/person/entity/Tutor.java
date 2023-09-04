@@ -123,5 +123,5 @@ public class Tutor extends PersonAbstractInformation {
 	@Enumerated(EnumType.STRING)
 	private List<Calendar> calendars;
 	
-	private Integer successJobsNumbers = 0;
+	private Integer successJobsNumbers;
 }

@@ -17,8 +17,10 @@ import com.project.education.dto.SubjectGroupDto;
 import com.project.finance.dto.JobFinanceDto;
 import com.project.finance.service.JobFinanceService;
 import com.project.job.dto.JobDto;
+import com.project.job.dto.JobProgressDto;
 import com.project.job.dto.TaskByTheTimeCreatingDto;
 import com.project.job.dto.TutorByTheTimeCreatingJobDto;
+import com.project.job.service.JobProgressService;
 import com.project.job.service.JobService;
 import com.project.person.dto.TutorDto;
 import com.project.person.service.TutorService;
@@ -73,6 +75,9 @@ public class JobFacadeImpl implements JobFacade {
 	@Autowired
 	private TutorFacade tutorFacade;
 
+	@Autowired
+	private JobProgressService jobProgressService;
+
 	@Override
 	public String createJob(RequestSaveJob request) {
 		String applicationId = request.getApplicationId();
@@ -117,17 +122,18 @@ public class JobFacadeImpl implements JobFacade {
 			dto.setTutorId(tutorDto.getId());
 			jobDto.setTutorId(tutorId);
 			jobDto.setTutorByTheTimeCreatingJobDto(dto);
+
 		}
 
 		String taskId = applicationId.substring(0, applicationId.indexOf("-"));
 		TaskDto taskDto = taskService.findByTaskId(taskId);
-
 		if (!StringUtils.isEmpty(taskId) && taskDto != null) {
 			TaskByTheTimeCreatingDto dto = new TaskByTheTimeCreatingDto();
 			dto = ObjectMapperUtils.map(taskDto, TaskByTheTimeCreatingDto.class);
 			dto.setTaskId(taskId);
 			jobDto.setTaskId(taskId);
 			jobDto.setTaskByTheTimeCreatingDto(dto);
+			System.out.println(dto.toString());
 		}
 
 		return jobDto;
@@ -142,10 +148,12 @@ public class JobFacadeImpl implements JobFacade {
 
 		List<JobFinanceDto> jobFinances = jobFinanceService.findAll();
 
+		List<JobProgressDto> jobProgresses = jobProgressService.findAll();
+
 		if (!jobDtos.isEmpty()) {
 			responses = jobDtos.stream().map(item -> {
 				ResponseJobDto response = new ResponseJobDto();
-				response = mapDtoToResponse(item, response, applicationDtos, jobFinances);
+				response = mapDtoToResponse(item, response, applicationDtos, jobFinances, jobProgresses);
 
 				return response;
 			}).collect(Collectors.toList());
@@ -155,7 +163,7 @@ public class JobFacadeImpl implements JobFacade {
 	}
 
 	private ResponseJobDto mapDtoToResponse(JobDto dto, ResponseJobDto response, List<ApplicationDto> applicationDtos,
-			List<JobFinanceDto> jobFinances) {
+			List<JobFinanceDto> jobFinances, List<JobProgressDto> jobProgresses) {
 
 		response = ObjectMapperUtils.map(dto, ResponseJobDto.class);
 
@@ -174,6 +182,13 @@ public class JobFacadeImpl implements JobFacade {
 			response.setJobFinanceDtos(jobFinanceDtoOpt);
 		}
 
+		Set<JobProgressDto> jobProgressesOpt = jobProgresses.stream()
+				.filter(item -> item.getJobId().equals(dto.getId())).collect(Collectors.toSet());
+
+		if (!jobProgressesOpt.isEmpty()) {
+			response.setJobProgressDtos(jobProgressesOpt);
+		}
+
 		return response;
 	}
 
@@ -184,9 +199,11 @@ public class JobFacadeImpl implements JobFacade {
 		List<ApplicationDto> applicationDtos = applicationService.findAllApplication();
 
 		List<JobFinanceDto> jobFinances = jobFinanceService.findAll();
+
+		List<JobProgressDto> jobProgresses = jobProgressService.findAll();
 		if (dto != null) {
 			ResponseJobDto response = new ResponseJobDto();
-			response = mapDtoToResponse(dto, response, applicationDtos, jobFinances);
+			response = mapDtoToResponse(dto, response, applicationDtos, jobFinances, jobProgresses);
 			return response;
 		}
 		return null;
@@ -246,8 +263,11 @@ public class JobFacadeImpl implements JobFacade {
 		boolean check = true;
 
 		if (jobDto != null) {
-			if (jobDto.getJobResult().equals(JobResult.SUCCESS) && jobDto.getId().equals(request.getId())
-					&& request.getJobResult().equals(JobResult.SUCCESS)) {
+			JobResult jobRes = jobDto.getJobResult() == null ? JobResult.NONE : jobDto.getJobResult();
+			if ((jobRes.equals(request.getJobResult()) && (request.getJobResult().equals(JobResult.SUCCESS)
+					|| request.getJobResult().equals(JobResult.FAIL_CAUSE_LEARNER)
+					|| request.getJobResult().equals(JobResult.FAIL_CAUSE_TUTOR)))
+					&& jobDto.getId().equals(request.getId())) {
 				check = false;// lay duoc enity moi cap nhat
 			}
 		}
@@ -257,14 +277,12 @@ public class JobFacadeImpl implements JobFacade {
 			job.setJobResult(request.getJobResult());
 			job.setFailReason(request.getFailReason());
 			job.setFindAnotherTutorIfFail(request.getFindAnotherTutorIfFail());
-			jobDto.setCreatedBy(userFacade.getCurrentUser());
-			String jobId = jobService.updateJob(jobDto);
+			job.setCreatedBy(userFacade.getCurrentUser());
+			String jobId = jobService.updateJob(job);
 
-			Long tutorId = Long.parseLong(
-					request.getId().substring(request.getId().indexOf("-") + 1, request.getId().lastIndexOf("-a")));
+			Long tutorId = Long.parseLong(jobId.substring(jobId.indexOf("-") + 1, jobId.lastIndexOf("-a")));
 
 			String taskId = request.getId().substring(0, request.getId().indexOf("-"));
-
 			ResponseTutor tutorRe = tutorFacade.findByTutorCode(tutorId);
 			if (tutorRe != null) {
 				tutorRe = experienceForTutor.updateExpForTutor(tutorRe);
@@ -276,10 +294,10 @@ public class JobFacadeImpl implements JobFacade {
 				successNo = 0;
 			}
 			Set<SubjectGroupDto> subjectGroupTasks = taskRe.getSubjectGroups();
-			Set<SubjectGroupDto> subjectGroupForSureTutors = tutorRe.getSubjectGroupForsures().stream()
-					.collect(Collectors.toSet());
-			successNo += 1;
 			if (request.getJobResult().equals(JobResult.SUCCESS)) {
+				Set<SubjectGroupDto> subjectGroupForSureTutors = tutorRe.getSubjectGroupForsures().stream()
+						.collect(Collectors.toSet());
+				successNo += 1;
 				if (subjectGroupForSureTutors.isEmpty() && !subjectGroupTasks.isEmpty()) {
 					subjectGroupForSureTutors.addAll(subjectGroupTasks);
 					tutorRe.setSubjectGroupForsures(subjectGroupForSureTutors.stream().collect(Collectors.toList()));
@@ -302,10 +320,13 @@ public class JobFacadeImpl implements JobFacade {
 				Set<SubjectGroupDto> subjectGroupForFails = tutorRe.getSubjectGroupfails().stream()
 						.collect(Collectors.toSet());
 				successNo -= 1;
+				System.out.println(successNo);
 				if (subjectGroupForFails.isEmpty() && !subjectGroupTasks.isEmpty()) {
+					tutorRe.setSuccessJobsNumbers(successNo);
 					subjectGroupForFails.addAll(subjectGroupTasks);
 					tutorRe.setSubjectGroupfails(subjectGroupForFails.stream().collect(Collectors.toList()));
-					// iTutorRepository.save(tutor);
+					TutorDto tutorDto = convertResponseToJobDto(tutorRe);
+					tutorService.update(tutorDto);
 				} else if (!subjectGroupForFails.isEmpty() && !subjectGroupTasks.isEmpty()) {
 					subjectGroupTasks.stream().filter(subjectGroupTask -> subjectGroupForFails.stream().anyMatch(
 							subjectGroupForFail -> !subjectGroupForFail.getId().equals(subjectGroupTask.getId())))
@@ -329,6 +350,7 @@ public class JobFacadeImpl implements JobFacade {
 		TutorDto dto = new TutorDto();
 		dto = ObjectMapperUtils.map(response, TutorDto.class);
 		dto.setTutorAddressAreaId(response.getTutorAddressAreaId().getId());
+		dto.setSuccessJobsNumbers(response.getSuccessJobsNumbers());
 
 		dto.setAreaTutorIds(response.getAreaTutorId().stream().map(item -> {
 			return item.getId();
@@ -339,6 +361,10 @@ public class JobFacadeImpl implements JobFacade {
 		}).collect(Collectors.toList()));
 
 		dto.setTutorSubjectGroupMaybeIds(response.getSubjectGroupMaybes().stream().map(item -> {
+			return item.getId();
+		}).collect(Collectors.toList()));
+
+		dto.setTutorSubjectGroupFaileIds(response.getSubjectGroupfails().stream().map(item -> {
 			return item.getId();
 		}).collect(Collectors.toList()));
 
