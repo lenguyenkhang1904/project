@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 	public Optional<UserDto> findByPhonesOrEmailOrUsername(String parameter) {
 
 		Optional<User> userOpt = userRepository.findUsernameByParameter(parameter);
-		if (!userOpt.isEmpty()) {
+		if (userOpt.isPresent()) {
 			User user = userOpt.get();
 			UserDto userDto = ObjectMapperUtils.map(user, UserDto.class);
 			Optional<UserDto> userDtoOpt = Optional.of(userDto);
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String updateUser(final UserDto userDto) {
 		Optional<User> userOpt = userRepository.findById(userDto.getId());
-		if (!userOpt.isEmpty()) {
+		if (userOpt.isPresent()) {
 			User user = userOpt.get();
 			user.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
 			user.setUpdatedBy(userDto.getCreatedBy());
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public String updateUserRole(final String id, final List<String> roleIds, final String currentUser) {
 		Optional<User> userOpt = userRepository.findById(id);
-		if (!userOpt.isEmpty()) {
+		if (userOpt.isPresent()) {
 			User user = userOpt.get();
 			user.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
 			user.setUpdatedBy(currentUser);
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public String updateTypeTutor(String id, Long tutorId, String currentUser) {
 		Optional<User> userOpt = userRepository.findById(id);
-		if (!userOpt.isEmpty()) {
+		if (userOpt.isPresent()) {
 			User user = userOpt.get();
 			user.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
 			user.setUpdatedBy(currentUser);
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public String updateTypeRegisterAndLearner(String id, String registerAndLearnerId, String currentUser) {
 		Optional<User> userOpt = userRepository.findById(id);
-		if (!userOpt.isEmpty()) {
+		if (userOpt.isPresent()) {
 			User user = userOpt.get();
 			user.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
 			user.setUpdatedBy(currentUser);
@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
 		dto.setStatus((String) objectList[3]);
 		dto.setPhone((String) objectList[4]);
 
-		String roleId = !StringUtils.isEmpty((String) objectList[4]) ? (String) objectList[4] : "";
+		String roleId = !StringUtils.isEmpty((String) objectList[5]) ? (String) objectList[5] : "";
 
 		List<String> roleIds = Arrays.asList(roleId.split(", "));
 		dto.setRoles(roleIds);

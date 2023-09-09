@@ -55,7 +55,7 @@ public class TutorRest {
 	}
 
 	@GetMapping("/find-by-tutor-code/{tutorCode}")
-	public ResponseEntity<Object> findByTutorCode(@RequestParam("tutorCode") Long tutorCode) {
+	public ResponseEntity<Object> findByTutorCode(@PathVariable("tutorCode") Long tutorCode) {
 		ResponseTutor tutor = tutorFacade.findByTutorCode(tutorCode);
 		if (tutor == null)
 			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
@@ -63,7 +63,7 @@ public class TutorRest {
 	}
 
 	@GetMapping("/find-by-phone-number/{phoneNumber}")
-	public ResponseEntity<Object> findByPhones(@RequestParam("phoneNumber") String phoneNumber) {
+	public ResponseEntity<Object> findByPhones(@PathVariable("phoneNumber") String phoneNumber) {
 		List<ResponseTutor> tutors = tutorFacade.findByPhoneNumber(phoneNumber);
 		if (tutors.isEmpty())
 			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
@@ -71,15 +71,15 @@ public class TutorRest {
 	}
 
 	@GetMapping("/find-by-end-phone-number/{endPhoneNumber}")
-	public ResponseEntity<Object> findByEndPhone(@RequestParam("endPhoneNumber") String endPhoneNumber) {
+	public ResponseEntity<Object> findByEndPhone(@PathVariable("endPhoneNumber") String endPhoneNumber) {
 		List<ResponseTutor> tutors = tutorFacade.findByEndPhoneNumber(endPhoneNumber);
 		if (tutors.isEmpty())
 			return ResponseHandler.getResponse("cant find any tutors", HttpStatus.BAD_REQUEST);
 		return ResponseHandler.getResponse(tutors, HttpStatus.OK);
 	}
 
-	@GetMapping("/find-by-full-name/{fullName}")
-	public ResponseEntity<Object> findByFullnameAndReturnObject(@RequestParam("fullName") String fullName) {
+	@GetMapping("/find-by-fullname/{fullName}")
+	public ResponseEntity<Object> findByFullnameAndReturnObject(@PathVariable("fullName") String fullName) {
 		List<ResponseTutor> tutors = tutorFacade.findByFullNameContain(fullName.toUpperCase());
 		if (tutors.isEmpty()) {
 			List<ResponseTutor> tutorsByEngName = tutorFacade
@@ -91,9 +91,9 @@ public class TutorRest {
 		return ResponseHandler.getResponse(tutors, HttpStatus.OK);
 	}
 
-	@GetMapping("/find-by-fullname-and-return-name/{fullNameShowName}")
+	@GetMapping("/find-by-fullname-and-return-name/{fullName}")
 	public ResponseEntity<Object> findByFullnameAndReturnFullName(
-			@RequestParam("fullNameShowName") String fullNameShowName) {
+			@PathVariable("fullName") String fullNameShowName) {
 
 		List<String> tutorNames = tutorFacade.findByfullnameAndShowFullName(fullNameShowName.toUpperCase());
 
@@ -202,8 +202,8 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Upload files successfully", HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/delete-avatar/{urlPic}")
-	public ResponseEntity<Object> deleteTutorAvatar(@PathVariable("urlPic") String urlPic) {
+	@DeleteMapping("/delete-avatar/{nameFile}")
+	public ResponseEntity<Object> deleteTutorAvatar(@PathVariable("nameFile") String urlPic) {
 		String tutorAvatarURL = ConstantInformationStorage.TUTOR_AVATAR_URL;
 		if (!storageFacade.checkExistObjectinS3Tutor(urlPic))
 			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
@@ -211,7 +211,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete-private-img/{urlPic}")
+	@DeleteMapping("/delete-private-img/{nameFile}")
 	public ResponseEntity<Object> deleteTutorPrivateImg(@PathVariable("urlPic") String urlPic) {
 		final String tutorPrivateimgsURL = ConstantInformationStorage.TUTOR_PRIVATE_IMGS_URL;
 		if (!storageFacade.checkExistObjectPrivateInS3Tutor(urlPic))
@@ -221,7 +221,7 @@ public class TutorRest {
 	}
 
 	@DeleteMapping("/delete-public-img/{nameFile}")
-	public ResponseEntity<Object> deleteTutorPublicImg(@PathVariable("urlPic") String urlPic) {
+	public ResponseEntity<Object> deleteTutorPublicImg(@PathVariable("nameFile") String urlPic) {
 		final String tutorPublicImgsURL = ConstantInformationStorage.TUTOR_PUBLIC_IMGS_URL;
 		if (!storageFacade.checkExistObjectPublicInS3Tutor(urlPic))
 			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
@@ -229,7 +229,7 @@ public class TutorRest {
 		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
 	}
 
-	@PutMapping("/update-privateImg/{nameFile}")
+	@PutMapping("/update-private-img/{nameFile}")
 	public ResponseEntity<Object> UpdatePrivateImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());

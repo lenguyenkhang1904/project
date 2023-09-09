@@ -61,7 +61,7 @@ public class TutorFacadeImpl implements TutorFacade {
 		TutorDto dto = new TutorDto();
 		dto = ObjectMapperUtils.map(request, TutorDto.class);
 		dto.setCreatedBy(userFacade.getCurrentUser());
-		dto.setAreaTutorIds(request.getAreaTutorId());
+		dto.setAreaTutorIds(request.getRelAreaIds());
 		dto.setCalendars(dto.getCalendars());
 		dto.setNowLevel(dto.getNowLevel());
 		dto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());
@@ -242,8 +242,8 @@ public class TutorFacadeImpl implements TutorFacade {
 	public void deleteByFileNameAndIDPublicImgs(String urlFile) {
 		avatarTutorAwsService.deleteByFileNameAndIDPublicImgs(urlFile);
 		TutorDto tutorDto = tutorService.findById(
-				Long.parseLong(urlFile.substring(urlFile.lastIndexOf("/") + 1, urlFile.lastIndexOf("Private"))));
-		List<String> urlPublicImgs = tutorDto.getPrivateImgs();
+				Long.parseLong(urlFile.substring(urlFile.lastIndexOf("/") + 1, urlFile.lastIndexOf("Public"))));
+		List<String> urlPublicImgs = tutorDto.getPublicImgs();
 		urlPublicImgs.remove(urlFile);
 		tutorDto.setPublicImgs(urlPublicImgs);
 		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
@@ -310,7 +310,7 @@ public class TutorFacadeImpl implements TutorFacade {
 		TutorDto dto = new TutorDto();
 		dto = ObjectMapperUtils.map(request, TutorDto.class);
 		dto.setCreatedBy(userFacade.getCurrentUser());
-		dto.setAreaTutorIds(request.getAreaTutorId());
+		dto.setAreaTutorIds(request.getRelAreaIds());
 		dto.setCalendars(dto.getCalendars());
 		dto.setNowLevel(dto.getNowLevel());
 		dto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());

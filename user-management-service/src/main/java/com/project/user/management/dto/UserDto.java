@@ -28,4 +28,12 @@ public class UserDto implements Serializable {
 	private String status;
 	
 	List<String> roles = new LinkedList<>();
+
+	@Override
+	public String toString() {
+		return "UserDto : {\n   id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
+				+ ", phone=" + phone + ", createdBy=" + createdBy + ", status=" + status + ", roles=" + roles + " }";
+	}
+	
+	
 }

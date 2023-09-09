@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,7 +55,7 @@ public class AuthRest {
 		if (header != null && header.startsWith("Bearer")) {
 			String token = header.substring("Bearer ".length(), header.length());
 			tokenServices.revokeToken(token);
-			return ResponseHandler.getResponse("Token is revoked", HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse("Token is revoked", HttpStatus.OK);
 		}
 		return ResponseHandler.getResponse("Token is invalid", HttpStatus.BAD_REQUEST);
 	}
@@ -68,8 +69,10 @@ public class AuthRest {
 	}
 	
 	@PutMapping("/change-password")
-	public ResponseEntity<Object> changePassword(@RequestBody RequestUpdatePassword  request)
+	public ResponseEntity<Object> changePassword(@Valid @RequestBody RequestUpdatePassword  request, BindingResult errors)
 			throws UnsupportedEncodingException, MessagingException {
+		if(errors.hasErrors())
+			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 		String message = userFacade.changePassword(request);
 		return ResponseHandler.getResponse(message, HttpStatus.OK);
 

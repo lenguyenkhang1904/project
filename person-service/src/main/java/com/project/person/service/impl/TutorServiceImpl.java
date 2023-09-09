@@ -2,6 +2,7 @@ package com.project.person.service.impl;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -57,7 +58,7 @@ public class TutorServiceImpl implements TutorService {
 
 	@Autowired
 	private TutorSubjectGroupMaybeRepository tutorSubjectGroupMaybeRepository;
-	
+
 	@Autowired
 	private TutorSubjectGroupFailRepository tutorSubjectGroupFailRepository;
 
@@ -105,7 +106,7 @@ public class TutorServiceImpl implements TutorService {
 				tutorSubjectGroupMaybes.add(tutorSubjectGroupMaybe);
 			}
 			tutorSubjectGroupMaybeRepository.saveAll(tutorSubjectGroupMaybes);
-		} else if(typeOfSubjectGroup.equals("FORSURE")) {
+		} else if (typeOfSubjectGroup.equals("FORSURE")) {
 			for (String tutorSubjectGroupId : tutorSubjectGroupIds) {
 				TutorSubjectGroupForSure tutorSubjectGroupForSure = new TutorSubjectGroupForSure();
 				tutorSubjectGroupForSure.setTutor(tutor);
@@ -204,6 +205,7 @@ public class TutorServiceImpl implements TutorService {
 			convertObjectToTutorDto(objectList, dto);
 			tutorDtos.add(dto);
 		});
+		System.out.println(tutorDtos.toString());
 		return tutorDtos;
 	}
 
@@ -300,11 +302,13 @@ public class TutorServiceImpl implements TutorService {
 		Optional<Tutor> tutorOpt = tutorRepository.findById(dto.getId());
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
+			LocalDateTime createdDate = tutor.getCreatedAt();
 			tutor = ObjectMapperUtils.map(dto, Tutor.class);
 			tutor.setId(dto.getId());
 			tutor.setFullName(dto.getFullName().toUpperCase());
 			tutor.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName()).toUpperCase());
 			tutor.setUpdatedBy(dto.getCreatedBy());
+			tutor.setCreatedAt(createdDate);
 			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
 			// calendar
 			List<Calendar> calendars = new LinkedList<>();

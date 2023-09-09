@@ -8,17 +8,16 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import com.project.projectWs.validator.ConfirmPasswordValidator;
+import com.project.projectWs.validator.UniqueEmailPhoneUsernameUserValidator;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Constraint(validatedBy = ConfirmPasswordValidator.class)
-public @interface ConfirmPassword {
+@Target(ElementType.FIELD)
+@Constraint(validatedBy = UniqueEmailPhoneUsernameUserValidator.class)
+public @interface UniqueEmailPhoneUsernameUser {
 	
-	public String message() default "password and confirm password are not similar !";
+	public String message() default "dulicate data !!";
 
 	public Class<?>[] groups() default {};
 
 	public Class<? extends Payload>[] payload() default {};
-	
-}	
+}

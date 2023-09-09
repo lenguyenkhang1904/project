@@ -26,8 +26,6 @@ public class ResponseTutor implements Serializable {
 
 	private LocalDateTime createdAt;
 
-	private LocalDateTime updatedAt;
-
 	private String registeredStatus;
 
 	private String fullName;

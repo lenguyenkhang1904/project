@@ -23,8 +23,6 @@ public class RequestUpdateTutor implements Serializable {
 
 	private String fullName;
 
-	private String englishFullName;
-
 	private String gender;
 
 	private String birthYear;
@@ -51,7 +49,7 @@ public class RequestUpdateTutor implements Serializable {
 
 	private String yRelCoo;
 	
-	private List<String> areaTutorId = new LinkedList<>();
+	private List<String> relAreaIds = new LinkedList<>();
 	
 	private List<String> tutorSubjectGroupMaybeIds = new LinkedList<>();
 	
@@ -63,4 +61,25 @@ public class RequestUpdateTutor implements Serializable {
 	
 	private List<String> tutorSubjectGroupForSureIds = new LinkedList<>();
 
+	private String expNotices;
+	
+	private String hienDangLa;
+	
+	private String subject;
+
+	private String subjectClass;
+	
+	private String tutorTag;
+
+	private String voices;
+	
+	private String tutorNotices;
+	
+	private String studyingInsitution;
+
+	private String teachingInstitution;
+	
+	private String major;
+
+	private String advantageNote;
 }

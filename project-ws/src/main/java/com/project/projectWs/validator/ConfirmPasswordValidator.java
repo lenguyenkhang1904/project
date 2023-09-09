@@ -22,7 +22,9 @@ public class ConfirmPasswordValidator implements ConstraintValidator<ConfirmPass
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 		try {
 			String password = String.valueOf(value.getClass().getMethod("getPassword").invoke(value));
+			log.error(password);
 			String confirmPassword = String.valueOf(value.getClass().getMethod("getConfirmPassword").invoke(value));
+			log.error(confirmPassword);
 			if (password.equals(confirmPassword))
 				return true;
 
