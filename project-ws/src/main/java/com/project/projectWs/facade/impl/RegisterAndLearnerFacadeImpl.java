@@ -1,5 +1,6 @@
 package com.project.projectWs.facade.impl;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,8 +71,7 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 				.findById(fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("Private")));
 		List<String> urlPrivateImgs = registerAndLearnerDto.getPrivateImgs();
 		urlPrivateImgs.add(url);
-		List<String> converter = new LinkedList<>(urlPrivateImgs);
-		converter = RemoveDuplicateElement.removeDuplicateElemet(converter);
+		urlPrivateImgs = new LinkedList<>(new HashSet<>(urlPrivateImgs));
 		registerAndLearnerDto.setPrivateImgs(urlPrivateImgs);
 		String tutorUpdatedId = registerAndLearnerService.updateRegisterAndLearner(registerAndLearnerDto);
 		return tutorUpdatedId != null ? "Insert PrivateImgs successfully" : "";
@@ -81,12 +81,12 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	public String uploadImageToAmazonPubclicImgs(MultipartFile file, String fileName) {
 		String url = avatarAndPublicAndPrivateRegisterAndLearnerAwsService.uploadImageToAmazonPubclicImgs(file,
 				fileName);
+	
 		RegisterAndLearnerDto registerAndLearnerDto = registerAndLearnerService
 				.findById(fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("Public")));
 		List<String> urlPublicImgs = registerAndLearnerDto.getPublicImgs();
 		urlPublicImgs.add(url);
-		List<String> converter = new LinkedList<>(urlPublicImgs);
-		converter = RemoveDuplicateElement.removeDuplicateElemet(converter);
+		urlPublicImgs = new LinkedList<>(new HashSet<>(urlPublicImgs));
 		registerAndLearnerDto.setPublicImgs(urlPublicImgs);
 		String tutorUpdatedId = registerAndLearnerService.updateRegisterAndLearner(registerAndLearnerDto);
 		return tutorUpdatedId != null ? "Insert PublicImgs successfully" : "";
@@ -107,8 +107,8 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 	public void deleteByFileNameAndIDPublicImgs(String urlFile) {
 		avatarAndPublicAndPrivateRegisterAndLearnerAwsService.deleteByFileNameAndIDPublicImgs(urlFile);
 		RegisterAndLearnerDto registerAndLearnerDto = registerAndLearnerService
-				.findById(urlFile.substring(urlFile.lastIndexOf("/") + 1, urlFile.lastIndexOf("Private")));
-		List<String> urlPublicImgs = registerAndLearnerDto.getPrivateImgs();
+				.findById(urlFile.substring(urlFile.lastIndexOf("/") + 1, urlFile.lastIndexOf("Public")));
+		List<String> urlPublicImgs = registerAndLearnerDto.getPublicImgs();
 		urlPublicImgs.remove(urlFile);
 		registerAndLearnerDto.setPublicImgs(urlPublicImgs);
 		registerAndLearnerService.updateRegisterAndLearner(registerAndLearnerDto);
@@ -274,6 +274,7 @@ public class RegisterAndLearnerFacadeImpl implements RegisterAndLearnerFacade {
 		RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
 		registerAndLearnerDto = ObjectMapperUtils.map(dto, RegisterAndLearnerDto.class);
 		registerAndLearnerDto.setCreatedBy(userFacade.getCurrentUser());
+		registerAndLearnerDto.setSchoolerDtos(dto.getSchoolerDtos());
 		registerAndLearnerDto.setRegisterAndLearnerRelationships(dto.getRegisterAndLearnerRelationships());
 		String resigterAndLearnerId = registerAndLearnerService.update(registerAndLearnerDto);
 		List<RegisterAndLearnerAddressDto> registerAndLearnerAddressDtos = dto.getRegisterAndLearnerAddressDtos();

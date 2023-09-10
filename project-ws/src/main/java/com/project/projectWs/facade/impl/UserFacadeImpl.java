@@ -44,7 +44,6 @@ import com.project.user.management.service.RoleService;
 import com.project.user.management.service.UserService;
 
 import lombok.extern.log4j.Log4j2;
-import net.bytebuddy.implementation.bytecode.Throw;
 
 @Service
 @Log4j2
@@ -85,7 +84,7 @@ public class UserFacadeImpl implements UserFacade {
 
 		Optional<UserDto> userOpt = findByPhonesOrEmailOrUsername(dto.getParameter());
 
-		if (!userOpt.isEmpty()) {
+		if (userOpt.isPresent()) {
 
 			UserDto userDto = userOpt.get();
 
@@ -96,7 +95,7 @@ public class UserFacadeImpl implements UserFacade {
 
 			List<RoleDto> roleDto = roleService.findRolesByUserId(userDto.getId());
 
-			if (roleDto.isEmpty()) {
+			if (CollectionUtils.isEmpty(roleDto)) {
 				throw new UsernameNotFoundException("User does not have any roles ");
 			}
 
@@ -169,8 +168,7 @@ public class UserFacadeImpl implements UserFacade {
 	@Override
 	public String forgotPassword(RequestEmail request) throws UnsupportedEncodingException, MessagingException {
 		Optional<UserDto> userOpt = findByPhonesOrEmailOrUsername(request.getEmail());
-		System.out.println(request);
-		if (!userOpt.isEmpty()) {
+		if (userOpt.isPresent()) {
 			UserDto userDto = userOpt.get();
 
 			final String email = userDto.getEmail();
@@ -190,16 +188,17 @@ public class UserFacadeImpl implements UserFacade {
 	public String changePassword(RequestUpdatePassword request) {
 		final String tokenRequest = request.getToken();
 		final Optional<UserDto> userOpt = findByPhonesOrEmailOrUsername(request.getUsername());
+		log.info(userOpt.get().toString());
 		final String tokenCache = generateCode.getOtp(request.getUsername());
 		if (StringUtils.isEmpty(tokenCache)) {
 			log.error("Invalid token");
 			return "Invalid token";
 		}
-		if (tokenRequest.equals(tokenCache) && !userOpt.isEmpty()) {
+		if (tokenRequest.equals(tokenCache) && userOpt.isPresent()) {
 			UserDto userDto = userOpt.get();
 			String password = userDto.getPassword();
 
-			if (passwordEncoder.matches(request.getPassword(), password)) {
+			if (!passwordEncoder.matches(request.getPassword(), password)) {
 				userDto.setPassword(passwordEncoder.encode(request.getPassword()));
 				String userId = userService.save(userDto);
 				if (!StringUtils.isEmpty(userId)) {
@@ -216,17 +215,17 @@ public class UserFacadeImpl implements UserFacade {
 	public List<ResponseUserDto> findAll() {
 		List<RoleDto> roles = roleService.findAll();
 		List<UserDto> userDtos = userService.findAll();
+		
 		if (!CollectionUtils.isEmpty(userDtos)) {
 			return userDtos.stream().map(item -> {
 				ResponseUserDto res = new ResponseUserDto();
-
 				res = ObjectMapperUtils.map(item, ResponseUserDto.class);
 
 				List<String> roleIds = item.getRoles();
-
+		
+				res.setRoles(
 				roles.stream().filter(role -> roleIds.stream().anyMatch(id -> role.getId().equals(id)))
-						.collect(Collectors.toList());
-				res.setRoles(roles);
+						.collect(Collectors.toList()));
 				return res;
 			}).collect(Collectors.toList());
 		}

@@ -200,6 +200,7 @@ public class TutorFacadeImpl implements TutorFacade {
 		urlPrivateImgs = new LinkedList<>(new HashSet<>(urlPrivateImgs));
 		tutorDto.setPrivateImgs(urlPrivateImgs);
 		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
+		tutor.setPrivateImgs(urlPrivateImgs);
 		Long tutorUpdatedId = tutorService.updateTutor(tutor);
 		return tutorUpdatedId != null ? "Insert PrivateImgs successfully" : "";
 	}
@@ -222,6 +223,7 @@ public class TutorFacadeImpl implements TutorFacade {
 		urlPublicImgs = new LinkedList<>(new HashSet<>(urlPublicImgs));
 		tutorDto.setPublicImgs(urlPublicImgs);
 		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
+		tutor.setPublicImgs(urlPublicImgs);
 		Long tutorUpdatedId = tutorService.updateTutor(tutor);
 		return tutorUpdatedId != null ? "Insert PublicImgs successfully" : "";
 	}

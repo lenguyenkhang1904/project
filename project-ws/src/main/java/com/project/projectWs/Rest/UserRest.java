@@ -2,9 +2,12 @@ package com.project.projectWs.rest;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,13 +33,19 @@ public class UserRest {
 	private UserFacade userFacade;
 
 	@PostMapping("/create")
-	public ResponseEntity<Object> saveUser(@RequestBody final RequestSaveUserDto request) {
+	public ResponseEntity<Object> saveUser(@RequestBody @Valid final RequestSaveUserDto request, BindingResult error) {
+		if(error.hasErrors()) {
+			return ResponseHandler.getResponse(error, HttpStatus.BAD_REQUEST);
+		}
 		String id = userFacade.saveUser(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<Object> updateUser(@RequestBody final RequestUpdateUserDto request) {
+	public ResponseEntity<Object> updateUser(@RequestBody @Valid  final RequestUpdateUserDto request, BindingResult error) {
+		if(error.hasErrors()) {
+			return ResponseHandler.getResponse(error, HttpStatus.BAD_REQUEST);
+		}
 		String id = userFacade.updateUser(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}

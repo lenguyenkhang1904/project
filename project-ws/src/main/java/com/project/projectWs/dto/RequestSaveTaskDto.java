@@ -86,8 +86,6 @@ public class RequestSaveTaskDto implements Serializable {
 	private String voiceRequired;
 
 	private String hienDangLaRequired;
-
-	private Integer nowLevelRequired;
 	
 	private List<TaskPlaceAddressDto> taskPlaceAddressDtos = new LinkedList<>();
 }

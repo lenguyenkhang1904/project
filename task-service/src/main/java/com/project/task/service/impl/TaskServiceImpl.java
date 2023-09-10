@@ -1,5 +1,6 @@
 package com.project.task.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,16 +102,16 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
+	@Transactional
 	public String updateTask(TaskDto dto) {
 		Optional<Task> taskOpt = taskRepository.findById(dto.getId());
 		if (!taskOpt.isEmpty()) {
 			Task task = taskOpt.get();
+			LocalDateTime createdAt = task.getCreatedAt();
 			task = ObjectMapperUtils.map(dto, Task.class);
 			task.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
 			task.setUpdatedBy(dto.getCreatedBy());
-			String responsCharactor = generateTaskCode();
-			task.setId(GenerateTaskId.generatorCode().concat(responsCharactor));
-
+			task.setCreatedAt(createdAt);
 			Set<TaskSign> taskSignDtos = dto.getTaskSigns();
 			if (!CollectionUtils.isEmpty(taskSignDtos)) {
 				String taskSigns = taskSignDtos.toString().replace("[", "").replace("]", "");

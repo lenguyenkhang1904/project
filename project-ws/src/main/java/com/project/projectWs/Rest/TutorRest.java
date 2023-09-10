@@ -212,7 +212,7 @@ public class TutorRest {
 	}
 
 	@DeleteMapping("/delete-private-img/{nameFile}")
-	public ResponseEntity<Object> deleteTutorPrivateImg(@PathVariable("urlPic") String urlPic) {
+	public ResponseEntity<Object> deleteTutorPrivateImg(@PathVariable("nameFile") String urlPic) {
 		final String tutorPrivateimgsURL = ConstantInformationStorage.TUTOR_PRIVATE_IMGS_URL;
 		if (!storageFacade.checkExistObjectPrivateInS3Tutor(urlPic))
 			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);

@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -274,12 +275,15 @@ public class TutorServiceImpl implements TutorService {
 	@Override
 	public TutorDto findById(final Long id) {
 		Optional<Tutor> tutorOpt = tutorRepository.findById(id);
+		
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
+			List<String> urlPublic = tutor.getPublicImgs();
+			List<String> urlPrivate = tutor.getPrivateImgs();
 			TutorDto tutorDto = new TutorDto();
 			tutorDto = ObjectMapperUtils.map(tutor, TutorDto.class);
-			tutorDto.setPublicImgs(tutor.getPublicImgs());
-			tutorDto.setPrivateImgs(tutor.getPrivateImgs());
+			tutorDto.setPublicImgs(urlPublic);
+			tutorDto.setPrivateImgs(urlPrivate);
 			tutorDto.setAvatar(tutor.getAvatar());
 			return tutorDto;
 		}
@@ -303,6 +307,8 @@ public class TutorServiceImpl implements TutorService {
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
 			LocalDateTime createdDate = tutor.getCreatedAt();
+			List<String> urlPublic = tutor.getPublicImgs();
+			List<String> urlPrivate = tutor.getPrivateImgs();
 			tutor = ObjectMapperUtils.map(dto, Tutor.class);
 			tutor.setId(dto.getId());
 			tutor.setFullName(dto.getFullName().toUpperCase());
@@ -310,6 +316,8 @@ public class TutorServiceImpl implements TutorService {
 			tutor.setUpdatedBy(dto.getCreatedBy());
 			tutor.setCreatedAt(createdDate);
 			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+			tutor.setPrivateImgs(urlPrivate);
+			tutor.setPublicImgs(urlPublic);
 			// calendar
 			List<Calendar> calendars = new LinkedList<>();
 

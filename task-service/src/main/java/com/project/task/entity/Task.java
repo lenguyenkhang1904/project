@@ -152,9 +152,6 @@ public class Task extends AbstractEntity {
 
 	@Column(name = "dedicate_required")
 	private String dedicateRequired;
-
-	@Column(name = "now_level_required")
-	private Integer nowLevelRequired;
 	
 	private String jobId;
 

@@ -26,9 +26,6 @@ public class Schooler extends AbstractEntity {
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
-	
-	@Column(name = "confirm_imgs")
-	private String confirmImgs;
 
 	@Column(name = "now_level")
 	private String nowLevel;
