@@ -23,4 +23,6 @@ public interface UserService {
 	
 	List<UserDto> findAll();
 
+	void deleteById(String id);
+
 }

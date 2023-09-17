@@ -66,9 +66,9 @@ public class ResponseTutor implements Serializable {
 
 	private String updatedBy;
 
-	private List<String> publicImgs;
+	private List<String> publicImgs = new LinkedList<>();
 
-	private List<String> privateImgs;
+	private List<String> privateImgs = new LinkedList<>();
 
 	private List<SubjectGroupDto> subjectGroupForsures = new LinkedList<>();
 

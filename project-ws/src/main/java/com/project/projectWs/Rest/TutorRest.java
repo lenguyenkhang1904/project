@@ -265,5 +265,11 @@ public class TutorRest {
 		Long id = tutorFacade.updateTutor(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
+	
+	@GetMapping("/sync-up-from-s3")
+	public ResponseEntity<Object> sync() {
+		boolean check = tutorFacade.findAllTutorSynchronizedAvatarAndPublicAndPrivateImg();
+		return ResponseHandler.getResponse(check, HttpStatus.OK);
+	}
 
 }

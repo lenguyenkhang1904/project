@@ -21,6 +21,8 @@ import com.project.projectWs.facade.UserFacade;
 import com.project.task.dto.RegistrationDto;
 import com.project.task.service.RegistrationService;
 
+import software.amazon.ion.NullValueException;
+
 @Service
 public class RegistrationFacadeImpl implements RegistrationFacade {
 
@@ -35,10 +37,17 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
 
 	@Override
 	public String createRegistration(RequestSaveRegistrationDto dto) {
-		RegistrationDto registrationDto = new RegistrationDto();
-		registrationDto = ObjectMapperUtils.map(dto, RegistrationDto.class);
-		registrationDto.setCreatedBy(userFacade.getCurrentUser());
-		return registrationService.createRegistration(registrationDto);
+		
+		boolean check = registrationService.checkExistRegistration(dto.getTaskId(), dto.getRegisterAndLearnerId());
+		
+		if(!check) {
+			RegistrationDto registrationDto = new RegistrationDto();
+			registrationDto = ObjectMapperUtils.map(dto, RegistrationDto.class);
+			registrationDto.setCreatedBy(userFacade.getCurrentUser());
+			return registrationService.createRegistration(registrationDto);
+		}
+		
+		throw new NullValueException("We can not create because registerAndleanrner had existed application for this task ");
 	}
 
 	@Override
@@ -50,13 +59,13 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
 	}
 
 	@Override
-	public List<ResponseRegistrationDto> findAllRegistration() {
+	public List<ResponseRegistrationDto> findAllRegistration(String taskId) {
 
 		List<ResponseRegistrationDto> response = new LinkedList<>();
 
 		List<RegisterAndLearnerDto> registerAndLearnerDtos = registerAndLearnerService.findAllRegisterAndLearner();
 
-		List<RegistrationDto> registrationDtos = registrationService.findAllRegistration();
+		List<RegistrationDto> registrationDtos = registrationService.findAllRegistration(taskId);
 
 		response = registrationDtos.stream().map(item -> {
 

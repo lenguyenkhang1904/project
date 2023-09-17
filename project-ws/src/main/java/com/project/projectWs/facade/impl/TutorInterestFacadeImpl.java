@@ -50,17 +50,19 @@ public class TutorInterestFacadeImpl implements TutorInterestFacade {
 	}
 
 	@Override
-	public List<ResponseTutorInterestDto> findAllTutorInterest() {
-		List<TutorInterest> tutorInterestFromDBs = tutorInterestService.findAll();
+	public List<ResponseTutorInterestDto> findAllTutorInterest(Long tutorId) {
+		List<TutorInterest> tutorInterestFromDBs = tutorInterestService.findAll(tutorId);
 		List<ResponseTutorInterestDto> tutorInvitationResponse = new LinkedList<>();
 		tutorInterestFromDBs.forEach(item -> {
 			ResponseTutorInterestDto response = new ResponseTutorInterestDto();
 			response = ObjectMapperUtils.map(item, ResponseTutorInterestDto.class);
 			ResponseTutorBasicInfo tutor = ObjectMapperUtils.map(item.getTutor(), ResponseTutorBasicInfo.class);
 			response.setTutor(tutor);
-			ResponseRegisterAndLearnerBasicInfo registerAndLearner = ObjectMapperUtils.map(item.getRegisterAndLearner(),
-					ResponseRegisterAndLearnerBasicInfo.class);
-			response.setRegisterAndLearner(registerAndLearner);
+			if(item.getRegisterAndLearner() != null) {
+				ResponseRegisterAndLearnerBasicInfo registerAndLearner = ObjectMapperUtils.map(item.getRegisterAndLearner(),
+						ResponseRegisterAndLearnerBasicInfo.class);
+				response.setRegisterAndLearner(registerAndLearner);
+			}
 			tutorInvitationResponse.add(response);
 		});
 		return tutorInvitationResponse;

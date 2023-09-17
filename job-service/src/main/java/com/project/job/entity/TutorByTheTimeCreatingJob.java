@@ -24,29 +24,13 @@ public class TutorByTheTimeCreatingJob {
 	
 	private Long tutorId; 
 	
-	private String tempAddNo;
-	
-	private String tempAddSt;
-	
-	private String tempAddNote;
-	
-	private String perAddNo;
-	
-	private String perAddSt;
-	
-	private String perAddNote;
-
-	private String xRelCoo;
-	
-	private String yRelCoo;
+	private String tutorAddress;
 	// MEDIA
 	private String avatar;
 	
 	private String publicImgs;
 	
 	private String privateImgs;
-	
-	private String infoImgs;
 	
 	private String tutorNotices;
 	

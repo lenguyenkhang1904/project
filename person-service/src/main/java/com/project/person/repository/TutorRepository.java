@@ -65,6 +65,6 @@ public interface TutorRepository extends JpaRepository<Tutor, Long> {
 
 	Tutor findByCreatedBy(String createdBy);
 
-	@Query("SELECT t FROM Tutor t WHERE t.avatar IS NOT NULL ")
+	@Query("SELECT t FROM Tutor t  ")
 	List<Tutor> findTutorBeforeSynchronize(); 
 }

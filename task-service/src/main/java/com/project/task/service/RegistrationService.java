@@ -10,7 +10,9 @@ public interface RegistrationService {
 	
 	String updateRegistration(RegistrationDto dto);
 	
-	List<RegistrationDto> findAllRegistration();
+	List<RegistrationDto> findAllRegistration(String taskId);
 	
 	RegistrationDto findById(String registrationId);
+	
+	boolean checkExistRegistration(String taskId, String registerAndLearnerId);
 }

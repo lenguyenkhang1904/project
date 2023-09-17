@@ -26,5 +26,7 @@ public interface JobFacade {
 	void deleteByFileNameAndID(String string);
 	
 	String updateJobResult(RequestUpdateJobResultDto request);
+	
+	boolean findAllJobRetainedImgsIdentificationSynchronized();
 
 }

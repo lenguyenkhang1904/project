@@ -233,4 +233,9 @@ public class UserFacadeImpl implements UserFacade {
 		return new LinkedList<>();
 	}
 
+	@Override
+	public void deleteById(String id) {
+		userService.deleteById(id);
+	}
+
 }

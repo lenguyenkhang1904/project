@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +25,7 @@ import com.project.projectWs.dto.RequestUpdateUserRoleDto;
 import com.project.projectWs.dto.RequestUpdateUserTypeTutorDto;
 import com.project.projectWs.dto.ResponseUserDto;
 import com.project.projectWs.facade.UserFacade;
-import com.project.projectWs.utils.Routes;import com.project.user.management.dto.UserDto;
+import com.project.projectWs.utils.Routes;
  	
 @RestController
 @RequestMapping(value = Routes.USER)
@@ -72,6 +74,12 @@ public class UserRest {
 	public ResponseEntity<Object> findAll() {
 		List<ResponseUserDto> response = userFacade.findAll();
 		return ResponseHandler.getResponse(response, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/delete-by-id/{id}")
+	public ResponseEntity<Object> deleteById (@PathVariable("id") String id) {
+		 userFacade.deleteById(id);
+		return ResponseHandler.getResponse("Deleted", HttpStatus.OK);
 	}
 
 }

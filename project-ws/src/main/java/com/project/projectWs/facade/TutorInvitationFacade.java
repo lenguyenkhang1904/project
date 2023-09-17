@@ -18,7 +18,7 @@ public interface TutorInvitationFacade {
 
 	void deleteTutorInvitationById(final String id);
 
-	List<ResponseTutorInvitationDto> findTutorInvitation();
+	List<ResponseTutorInvitationDto> findTutorInvitation(Long id);
 
 	ResponseTutorInvitationDto findTutorInterestById(String id);
 

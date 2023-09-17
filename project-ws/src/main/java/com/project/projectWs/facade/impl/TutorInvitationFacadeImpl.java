@@ -60,17 +60,20 @@ public class TutorInvitationFacadeImpl implements TutorInvitationFacade {
 	}
 
 	@Override
-	public List<ResponseTutorInvitationDto> findTutorInvitation() {
-		List<TutorInvitation> tutorInvitationFromDBs = tutorInvitationService.findAll();
+	public List<ResponseTutorInvitationDto> findTutorInvitation(Long id) {
+		List<TutorInvitation> tutorInvitationFromDBs = tutorInvitationService.findAll(id);
 		List<ResponseTutorInvitationDto> tutorInvitationResponse = new LinkedList<>();
 		tutorInvitationFromDBs.forEach(item -> {
 			ResponseTutorInvitationDto response = new ResponseTutorInvitationDto();
 			response = ObjectMapperUtils.map(item, ResponseTutorInvitationDto.class);
 			ResponseTutorBasicInfo tutor = ObjectMapperUtils.map(item.getTutor(), ResponseTutorBasicInfo.class);
 			response.setTutor(tutor);
-			ResponseRegisterAndLearnerBasicInfo registerAndLearner = ObjectMapperUtils.map(item.getRegisterAndLearner(),
-					ResponseRegisterAndLearnerBasicInfo.class);
-			response.setRegisterAndLearner(registerAndLearner);
+			if(item.getRegisterAndLearner() != null) {
+				ResponseRegisterAndLearnerBasicInfo registerAndLearner = ObjectMapperUtils.map(item.getRegisterAndLearner(),
+						ResponseRegisterAndLearnerBasicInfo.class);
+				response.setRegisterAndLearner(registerAndLearner);
+			}
+
 			tutorInvitationResponse.add(response);
 		});
 		return tutorInvitationResponse;
@@ -116,7 +119,7 @@ public class TutorInvitationFacadeImpl implements TutorInvitationFacade {
 
 			emailUtils.sendEmail(request.getEmail(), content.get(0), content.get(1));
 
-			return "Token is sent to tutor";
+			return "Invited to Tutor";
 		}
 		return StringUtils.EMPTY;
 	}

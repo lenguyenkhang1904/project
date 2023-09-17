@@ -37,8 +37,8 @@ public class TutorInterestServiceImpl implements TutorInterestService {
 	}
 
 	@Override
-	public List<TutorInterest> findAll() {
-		return tutorInterestRepository.findAll();
+	public List<TutorInterest> findAll(Long tutorId) {
+		return tutorInterestRepository.findAllByTutorId(tutorId);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class TutorInterestServiceImpl implements TutorInterestService {
 			}
 			Optional<RegisterAndLearner> registerAndLearnerOpt = registerAndLearnerRepository
 					.findById(dto.getRegisterAndLearnerId());
-			if (!tutorOpt.isEmpty()) {
+			if (!registerAndLearnerOpt.isEmpty()) {
 				RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
 				tutorInterest.setRegisterAndLearner(registerAndLearner);
 			}
@@ -77,11 +77,13 @@ public class TutorInterestServiceImpl implements TutorInterestService {
 			Tutor tutor = tutorOpt.get();
 			tutorInterest.setTutor(tutor);
 		}
-		Optional<RegisterAndLearner> registerAndLearnerOpt = registerAndLearnerRepository
-				.findById(dto.getRegisterAndLearnerId());
-		if (!tutorOpt.isEmpty()) {
-			RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
-			tutorInterest.setRegisterAndLearner(registerAndLearner);
+		if (!StringUtils.isEmpty(dto.getRegisterAndLearnerId())) {
+			Optional<RegisterAndLearner> registerAndLearnerOpt = registerAndLearnerRepository
+					.findById(dto.getRegisterAndLearnerId());
+			if (!tutorOpt.isEmpty()) {
+				RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
+				tutorInterest.setRegisterAndLearner(registerAndLearner);
+			}
 		}
 
 		return tutorInterestRepository.save(tutorInterest).getId();

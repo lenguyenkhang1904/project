@@ -49,6 +49,7 @@ public class JobServiceImpl implements JobService {
 	private ApplicationJobRepository applicationJobRepository;
 
 	@Override
+	@Transactional
 	public String createJob(JobDto dto) {
 		Job job = new Job();
 		String id = mapDtoToObject(dto, job, false);
@@ -66,6 +67,7 @@ public class JobServiceImpl implements JobService {
 		if (isUpdated) {
 			job.setUpdatedBy(currentUser);
 			job.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
+			job.setCreatedAt(createdDate);
 		} else {
 			job.setCreatedBy(currentUser);
 			job.setCreatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
@@ -80,7 +82,6 @@ public class JobServiceImpl implements JobService {
 		job = jobRepo.save(job);
 
 		TaskByTheTimeCreatingDto taskJobDto = dto.getTaskByTheTimeCreatingDto();
-		System.out.println(taskJobDto.toString());
 		if (taskJobDto != null) {
 			TaskByTheTimeCreatingJob taskJob = ObjectMapperUtils.map(taskJobDto, TaskByTheTimeCreatingJob.class);
 			taskJob.setJob(job);
@@ -97,6 +98,7 @@ public class JobServiceImpl implements JobService {
 		ApplicationJob applicationJob = new ApplicationJob();
 		applicationJob.setJob(job);
 		applicationJob.setAppicationId(dto.getApplicationId());
+		applicationJobRepository.deleteByJobId(job.getId());
 		applicationJobRepository.save(applicationJob);
 
 		return job.getId();
@@ -112,14 +114,6 @@ public class JobServiceImpl implements JobService {
 			Job job = jobOpt.get();
 
 			final String jobId = job.getId();
-
-			byTheTimeCreatingJobRepo.deleteByJobId(jobId);
-
-			tutorByTheTimeCreatingJobRepo.deleteByJobId(jobId);
-
-			applicationJobRepository.deleteByJobId(jobId);
-
-			System.out.println("ba");
 
 			return jobId.equals(mapDtoToObject(dto, job, true)) ? jobId : StringUtils.EMPTY;
 		}
@@ -198,4 +192,15 @@ public class JobServiceImpl implements JobService {
 		}
 		return null;
 	}
+
+	@Override
+	public List<Job> findAllSyncUp() {
+		return jobRepo.findAllSyncUp();
+	}
+
+	@Override
+	public void saveAll(List<Job> jobs) {
+		jobRepo.saveAll(jobs);
+	}
+
 }

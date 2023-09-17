@@ -19,8 +19,6 @@ public class TutorRequestDto implements Serializable  {
 
 	private String phones;
 
-	private String username;
-
 	private String whenToContact;
 
 	private String requireContent;

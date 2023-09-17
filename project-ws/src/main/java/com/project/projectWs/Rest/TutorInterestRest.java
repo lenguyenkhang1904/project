@@ -34,11 +34,11 @@ public class TutorInterestRest {
 			return ResponseHandler.getResponse(id, HttpStatus.OK);
 		}
 	   
-	   @PutMapping("/update")
-	 	public ResponseEntity<Object> updateTutorInterest(@RequestBody final RequestUpdateTutorInvitationDto request) {
-	 		String id = tutorInterestFacade.updateTutorInterest(request);
-	 		return ResponseHandler.getResponse(id, HttpStatus.OK);
-	 	}
+//	   @PutMapping("/update")
+//	 	public ResponseEntity<Object> updateTutorInterest(@RequestBody final RequestUpdateTutorInvitationDto request) {
+//	 		String id = tutorInterestFacade.updateTutorInterest(request);
+//	 		return ResponseHandler.getResponse(id, HttpStatus.OK);
+//	 	}
 	   
 	   @DeleteMapping("/delete-by-id/{id}")
 	  	public ResponseEntity<Object> deleteTutorInterest(@PathVariable("id") String id) {
@@ -46,16 +46,16 @@ public class TutorInterestRest {
 	  		return ResponseHandler.getResponse("deleted", HttpStatus.OK);
 	  	}
 	   
-	   @GetMapping("/find-all")
-		public ResponseEntity<Object> findByTutorInterest() {
-			List<ResponseTutorInterestDto> tutorInterests = tutorInterestFacade.findAllTutorInterest();
+	   @GetMapping("/find-all-tutor-id/{tutorId}")
+		public ResponseEntity<Object> findByTutorInterest(@PathVariable("tutorId") Long tutorId) {
+			List<ResponseTutorInterestDto> tutorInterests = tutorInterestFacade.findAllTutorInterest(tutorId);
 			return ResponseHandler.getResponse(tutorInterests, HttpStatus.OK);
 		}
-	   
-	   @GetMapping("/find-by-id/{id}")
-		public ResponseEntity<Object> findByTutorInterestById(@PathVariable("id") String id) {
-			ResponseTutorInterestDto tutorInterest = tutorInterestFacade.findTutorInterestById(id);
-			return ResponseHandler.getResponse(tutorInterest, HttpStatus.OK);
-		}
+//	   
+//	   @GetMapping("/find-by-id/{id}")
+//		public ResponseEntity<Object> findByTutorInterestById(@PathVariable("id") String id) {
+//			ResponseTutorInterestDto tutorInterest = tutorInterestFacade.findTutorInterestById(id);
+//			return ResponseHandler.getResponse(tutorInterest, HttpStatus.OK);
+//		}
 
 }

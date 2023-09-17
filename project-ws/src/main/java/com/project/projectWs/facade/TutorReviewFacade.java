@@ -13,7 +13,7 @@ public interface TutorReviewFacade {
 	
 	String createTutorReview(RequestSaveTutorReviewDto request);
 	
-	List<ResponseTutorReviewDto> findAll();
+	List<ResponseTutorReviewDto> findAll(Long tutorId);
 	
 	ResponseTutorReviewDto findById(String id);
 	
@@ -34,5 +34,7 @@ public interface TutorReviewFacade {
 	String updatePrivateImageToAmazon(MultipartFile file, String nameFile);
 
 	String updatePublicImageToAmazon(MultipartFile file, String nameFile);
+
+	boolean syncUp();
 	
 }

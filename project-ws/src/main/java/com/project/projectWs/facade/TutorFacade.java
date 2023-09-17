@@ -58,4 +58,6 @@ public interface TutorFacade {
 
 	TutorForWebByIdDto findAllTutorForWebById(Long id);
 	
+	boolean findAllTutorSynchronizedAvatarAndPublicAndPrivateImg();
+	
 }

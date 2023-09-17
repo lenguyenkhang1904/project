@@ -39,16 +39,16 @@ public class ApplicationRest {
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
-	@GetMapping("/find-all")
-	public ResponseEntity<Object> findAllApplication() {
-		List<ResponseApplicationDto> dtos = applicationFacade.findAllApplication();
+	@GetMapping("/find-by-task-id/{id}")
+	public ResponseEntity<Object> findAllApplication(@PathVariable("id") String id) {
+		List<ResponseApplicationDto> dtos = applicationFacade.findAllApplication(id);
 		return ResponseHandler.getResponse(dtos , HttpStatus.OK);
 	}
 	
-	@GetMapping("/find-by-id/{id}")
-	public ResponseEntity<Object> findById(@PathVariable("id") String id) {
-		ResponseApplicationDto dto = applicationFacade.findById(id);
-		return ResponseHandler.getResponse(dto, HttpStatus.OK);
-	}
+//	@GetMapping("/find-by-id/{id}")
+//	public ResponseEntity<Object> findById(@PathVariable("id") String id) {
+//		ResponseApplicationDto dto = applicationFacade.findById(id);
+//		return ResponseHandler.getResponse(dto, HttpStatus.OK);
+//	}
 
 }

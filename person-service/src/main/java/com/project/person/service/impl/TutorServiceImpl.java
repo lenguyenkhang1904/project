@@ -275,7 +275,7 @@ public class TutorServiceImpl implements TutorService {
 	@Override
 	public TutorDto findById(final Long id) {
 		Optional<Tutor> tutorOpt = tutorRepository.findById(id);
-		
+
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
 			List<String> urlPublic = tutor.getPublicImgs();
@@ -353,9 +353,10 @@ public class TutorServiceImpl implements TutorService {
 
 			// Subject Group fail
 			List<String> tutorSubjectGroupFaileIds = dto.getTutorSubjectGroupFaileIds();
+			System.out.println(tutorSubjectGroupFaileIds);
 			if (!tutorSubjectGroupFaileIds.isEmpty()) {
 				tutorSubjectGroupFailRepository.deleteByTutorId(dto.getId());
-				saveAllTutorSubjectGroup(tutorSubjectGroupMaybeIds, TypeOfSubjectGroup.FAILED.name(), tutor);
+				saveAllTutorSubjectGroup(tutorSubjectGroupFaileIds, TypeOfSubjectGroup.FAILED.name(), tutor);
 			}
 
 			return tutor.getId();
@@ -446,6 +447,17 @@ public class TutorServiceImpl implements TutorService {
 	@Override
 	public void deleteSubjectGroupMaybeByTutorId(Long tutorId) {
 		tutorSubjectGroupMaybeRepository.deleteByTutorId(tutorId);
+	}
+
+	@Override
+	public List<Tutor> findTutorBeforeSynchronize() {
+		return tutorRepository.findTutorBeforeSynchronize();
+	}
+
+	@Override
+	public void saveAll(List<Tutor> tutors) {
+		tutorRepository.saveAll(tutors);
+
 	}
 
 }

@@ -12,7 +12,7 @@ public interface RegistrationFacade {
 	
 	String updateRegistration(RequestUpdateRegistrationDto dto);
 	
-	List<ResponseRegistrationDto> findAllRegistration();
+	List<ResponseRegistrationDto> findAllRegistration(String taskId);
 	
 	ResponseRegistrationDto findById(String id);
 }

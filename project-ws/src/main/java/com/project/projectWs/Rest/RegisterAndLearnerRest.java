@@ -299,5 +299,12 @@ public class RegisterAndLearnerRest {
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
 		return ResponseHandler.getResponse(registerAndLearnerId, HttpStatus.OK);
 	}
+	
+	@GetMapping("/sync-up-from-s3")
+	public ResponseEntity<Object> sync() {
+		boolean check = registerAndLearnerFacade.findAllRegisterAndLearnerSynchronizeSynchronizedAvatarAndPublicAndPrivateImg();
+		return ResponseHandler.getResponse(check, HttpStatus.OK);
+	}
+
 
 }

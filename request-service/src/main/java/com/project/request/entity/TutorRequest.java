@@ -33,9 +33,6 @@ public class TutorRequest extends AbstractEntity {
 	@Column(name = "phones")
 	private String phones;
 	
-	@Column(name = "username")
-	private String username;
-	
 	@Column(name = "when_to_contact")
 	private String whenToContact;
 	

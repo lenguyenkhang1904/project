@@ -34,8 +34,6 @@ public class TutorReview extends PersonAbstractInformation  {
 	@Column(name = "job_id")
 	private String jobId;
 	
-	private String jobCreatedByCreatingTutorReview;
-	
 	private String  publicFeedbackImgs;
 	
 	private String  privateFeedbackImgs;

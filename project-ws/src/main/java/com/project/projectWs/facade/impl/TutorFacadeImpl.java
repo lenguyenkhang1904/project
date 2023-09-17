@@ -4,12 +4,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.common.collect.Sets;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.education.dto.SubjectGroupDto;
 import com.project.education.service.SubjectGroupService;
@@ -388,7 +391,6 @@ public class TutorFacadeImpl implements TutorFacade {
 	@Override
 	public TutorForWebByIdDto findAllTutorForWebById(Long id) {
 		TutorForFindAllDto entity = tutorService.findByTutorCode(id);
-		List<TutorForWebDto> tutors = new LinkedList<>();
 		List<AreaDto> areas = areaService.findAll();
 		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
 		List<JobDto> jobsByTutorIds = jobService.findAll();
@@ -413,6 +415,49 @@ public class TutorFacadeImpl implements TutorFacade {
 				.collect(Collectors.toList()));
 
 		return responseTutor;
+	}
+
+	@Override
+	public boolean findAllTutorSynchronizedAvatarAndPublicAndPrivateImg() {
+		Set<String> urlAvatarTutors = Sets.newHashSet(avatarTutorAwsService.findAll());
+
+		Set<String> urlTutorPrivateImgs = Sets.newHashSet(avatarTutorAwsService.findAllPrivateImgs());
+
+		Set<String> urlTutorPublicImgs = Sets.newHashSet(avatarTutorAwsService.findAllPublicImgs());
+
+		List<Tutor> tutors = tutorService.findTutorBeforeSynchronize();
+
+		for (Tutor tutor : tutors) {
+			// avatar
+
+			List<String> urlAvatars = urlAvatarTutors.stream()
+					.filter(item -> item.contains(String.valueOf(tutor.getId()))).collect(Collectors.toList());
+
+			if (!CollectionUtils.isEmpty(urlAvatars)) {
+				tutor.setAvatar(urlAvatars.get(0));
+			}
+
+			// privateImgs
+
+			List<String> urlPrivateImgs = urlTutorPrivateImgs.stream()
+					.filter(item -> item.contains(String.valueOf(tutor.getId()))).collect(Collectors.toList());
+
+			if (!CollectionUtils.isEmpty(urlPrivateImgs)) {
+				tutor.setPrivateImgs(urlPrivateImgs);
+			}
+
+			List<String> urlPublicImgs = urlTutorPublicImgs.stream()
+					.filter(item -> item.contains(String.valueOf(tutor.getId()))).collect(Collectors.toList());
+
+			if (!CollectionUtils.isEmpty(urlPublicImgs)) {
+				tutor.setPublicImgs(urlPublicImgs);
+			}
+
+		}
+
+		tutorService.saveAll(tutors);
+
+		return true;
 	}
 
 }

@@ -157,7 +157,11 @@ public class UserServiceImpl implements UserService {
 			Object[] objectList = (Object[]) item;
 			UserDto dto = new UserDto();
 			dto = convertObjectToUserDto(objectList, dto);
-			userDtos.add(dto);
+			
+			if(dto.getStatus().equals(USERSTATUS.ACTIVE.getName())) {
+				userDtos.add(dto);
+			}
+
 		});
 
 		return userDtos;
@@ -176,6 +180,16 @@ public class UserServiceImpl implements UserService {
 		dto.setRoles(roleIds);
 
 		return dto;
+	}
+
+	@Override
+	public void deleteById(String id) {
+		Optional<User> userOpt = userRepository.findById(id);
+		if (userOpt.isPresent()) { 
+			User user = userOpt.get();
+			user.setStatus(USERSTATUS.INACTIVE.getName());
+			userRepository.save(user);
+		}
 	}
 
 }

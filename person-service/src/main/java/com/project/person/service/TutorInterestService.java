@@ -10,7 +10,7 @@ public interface TutorInterestService {
 
 	void deleteById(String id);
 
-	List<TutorInterest> findAll();
+	List<TutorInterest> findAll(Long tutorId);
 
 	String updateTutorInvitation(TutorInterestDto dto);
 

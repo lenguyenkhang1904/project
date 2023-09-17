@@ -12,7 +12,7 @@ public interface ApplicationFacade {
 	
 	String updateApplication(RequestUpdateApplicationDto dto);
 	
-	List<ResponseApplicationDto> findAllApplication();
+	List<ResponseApplicationDto> findAllApplication(String id);
 	
 	ResponseApplicationDto findById(String id);
 

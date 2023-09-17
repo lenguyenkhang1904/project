@@ -39,15 +39,15 @@ public class RegistrationRest {
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
-	@GetMapping("/find-all")
-	public ResponseEntity<Object> findAllRegistration() {
-		List<ResponseRegistrationDto> dtos = registrationFacade.findAllRegistration();
+	@GetMapping("/find-all-by-task-id/{taskId}")
+	public ResponseEntity<Object> findAllRegistrationByTaskId(@PathVariable("taskId") String taskId) {
+		List<ResponseRegistrationDto> dtos = registrationFacade.findAllRegistration(taskId);
 		return ResponseHandler.getResponse(dtos , HttpStatus.OK);
 	}
 	
-	@GetMapping("/find-by-id/{id}")
-	public ResponseEntity<Object> findById(@PathVariable("id") String id) {
-		ResponseRegistrationDto dto = registrationFacade.findById(id);
-		return ResponseHandler.getResponse(dto, HttpStatus.OK);
-	}
+//	@GetMapping("/find-by-id/{id}")
+//	public ResponseEntity<Object> findById(@PathVariable("id") String id) {
+//		ResponseRegistrationDto dto = registrationFacade.findById(id);
+//		return ResponseHandler.getResponse(dto, HttpStatus.OK);
+//	}
 }

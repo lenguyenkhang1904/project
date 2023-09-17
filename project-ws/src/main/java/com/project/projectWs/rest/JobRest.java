@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.common.utils.ResponseHandler;
 import com.project.projectWs.dto.RequestSaveJob;
-import com.project.projectWs.dto.RequestUpdateJobDto;
 import com.project.projectWs.dto.RequestUpdateJobResultDto;
 import com.project.projectWs.dto.ResponseJobDto;
 import com.project.projectWs.facade.JobFacade;
-import com.project.projectWs.facade.StorageFacade;
 import com.project.projectWs.utils.Routes;
 
 @RestController
@@ -34,20 +31,17 @@ public class JobRest {
 	@Autowired
 	private JobFacade jobFacade;
 
-	@Autowired
-	private StorageFacade storageFacade;
-
 	@PostMapping("/create")
 	public ResponseEntity<Object> createJob(@RequestBody final RequestSaveJob request) {
 		String id = jobFacade.createJob(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
-	@PutMapping("/update")
-	public ResponseEntity<Object> updateJob(@RequestBody final RequestUpdateJobDto request) {
-		String id = jobFacade.updateJob(request);
-		return ResponseHandler.getResponse(id, HttpStatus.OK);
-	}
+//	@PutMapping("/update")
+//	public ResponseEntity<Object> updateJob(@RequestBody final RequestUpdateJobDto request) {
+//		String id = jobFacade.updateJob(request);
+//		return ResponseHandler.getResponse(id, HttpStatus.OK);
+//	}
 
 	@GetMapping("/find-all")
 	public ResponseEntity<Object> findAll() {
@@ -90,19 +84,25 @@ public class JobRest {
 				HttpStatus.BAD_REQUEST);
 	}
 
-	@DeleteMapping("/delete-multiple-retain-identification-img/{nameFile}")
-	public ResponseEntity<Object> deleteTutorPublicImg(@PathVariable("nameFile") String nameFile) {
-		final String retainedImgsIdentificationURL = "https://hn.ss.bfcplatform.vn/retainedimgsidentificationgsomt/";
-		if (!storageFacade.checkExistRetain(nameFile))
-			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
-		jobFacade.deleteByFileNameAndID(retainedImgsIdentificationURL + nameFile);
-		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
-	}
+//	@DeleteMapping("/delete-multiple-retain-identification-img/{nameFile}")
+//	public ResponseEntity<Object> deleteTutorPublicImg(@PathVariable("nameFile") String nameFile) {
+//		final String retainedImgsIdentificationURL = "https://hn.ss.bfcplatform.vn/retainedimgsidentificationgsomt/";
+//		if (!storageFacade.checkExistRetain(nameFile))
+//			return ResponseHandler.getResponse("Don't have any url and id", HttpStatus.BAD_REQUEST);
+//		jobFacade.deleteByFileNameAndID(retainedImgsIdentificationURL + nameFile);
+//		return ResponseHandler.getResponse("Delete Successfully", HttpStatus.OK);
+//	}
 
 	@PutMapping("/update-job-result")
 	public ResponseEntity<Object> updateJobResult(@RequestBody final RequestUpdateJobResultDto request) {
 		String id = jobFacade.updateJobResult(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
+	}
+	
+	@GetMapping("/sync-up")
+	public ResponseEntity<Object> syncUpData() {
+		boolean check = jobFacade.findAllJobRetainedImgsIdentificationSynchronized();
+		return ResponseHandler.getResponse(check, HttpStatus.OK);
 	}
 
 }

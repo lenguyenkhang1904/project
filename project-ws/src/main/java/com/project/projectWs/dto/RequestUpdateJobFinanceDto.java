@@ -16,8 +16,6 @@ public class RequestUpdateJobFinanceDto {
 
 	private WayOfPaying wayOfPaying;
 	
-	private String billImg ;
-	
 	private Integer amountOfMoney;
 
 	private UnitOfMoney unitOfMoney;

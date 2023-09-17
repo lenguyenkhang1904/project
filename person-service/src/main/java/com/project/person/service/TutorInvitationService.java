@@ -14,7 +14,7 @@ public interface TutorInvitationService {
 
 	void deleteById(final String id);
 	
-	List<TutorInvitation> findAll();
+	List<TutorInvitation> findAll(Long id);
 
 	Optional<TutorInvitation> findById(String id);
 	

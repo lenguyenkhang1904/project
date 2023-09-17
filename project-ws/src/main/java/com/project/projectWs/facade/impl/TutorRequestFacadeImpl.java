@@ -32,8 +32,8 @@ public class TutorRequestFacadeImpl implements TutorRequestFacade {
 	}
 
 	@Override
-	public List<TutorRequestDto> findAll() {
-		return tutorRequestService.findAll();
+	public List<TutorRequestDto> findAll(Long tutorId) {
+		return tutorRequestService.findAll(tutorId);
 	}
 
 	@Override

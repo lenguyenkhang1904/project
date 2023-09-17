@@ -97,9 +97,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 	}
 
 	@Override
-	public List<ApplicationDto> findAllApplication() {
+	public List<ApplicationDto> findAllApplication(String id) {
 		List<ApplicationDto> applicationDtos = new LinkedList<>();
-		List<Application> entites = applicationRepository.findAllAppication();
+		List<Application> entites = applicationRepository.findAllAppication(id);
 		if(!CollectionUtils.isEmpty(entites)) {
 			applicationDtos = entites.stream().map(item -> {
 				ApplicationDto dto = new ApplicationDto();

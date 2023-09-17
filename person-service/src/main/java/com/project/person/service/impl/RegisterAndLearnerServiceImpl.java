@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;import java.util.stream.Collector;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -49,8 +49,6 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		registerAndLearner.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName().toUpperCase()));
 		registerAndLearner.setCreatedBy(dto.getCreatedBy());
 		registerAndLearner.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
-//		registerAndLearner.setPublicImgs(new HashSet<>(dto.getPublicImgs()));
-//		registerAndLearner.setPrivateImgs(new HashSet<>(dto.getPublicImgs()));
 		registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
 
 		// register and learner relationship
@@ -292,6 +290,17 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 			return registerAndLearner.getId();
 		}
 		return StringUtils.EMPTY;
+	}
+
+	@Override
+	public List<RegisterAndLearner> findAllBeforeSynchronize() {
+		return registerAndLearnerRepository.findAll();
+	}
+
+	@Override
+	public void saveAll(List<RegisterAndLearner> entities) {
+		registerAndLearnerRepository.saveAll(entities);
+		
 	}
 
 }

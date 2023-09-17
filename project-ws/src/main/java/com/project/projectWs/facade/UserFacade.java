@@ -41,4 +41,6 @@ public interface UserFacade {
 	String changePassword(RequestUpdatePassword request);
 
 	List<ResponseUserDto> findAll();
+
+	void deleteById(String id);
 }
