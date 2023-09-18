@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    tools {
+        maven 'Maven 3.8.6'
+        jdk 'OpenJDK 11'
+    }
+      
+    stages {
+        stage('Check out Branches') {
+            steps {
+                checkout scmGit(branches: [[name: '*/dev']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/lenguyenkhang1904/project']])
+            }
+        }
+
+        stage('Build maven') {
+            steps {
+                  sh 'mvn clean install'
+            }
+            post {
+              success {
+                archiveArtifacts artifacts: '**/target/*.war'
+              }
+            }
+        }
+        
+        stage('Deploy to tomcat server') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'ad9eb193-88a4-4736-8856-fa2ed23a1da2',  path: '', url: 'http://103.107.182.173:8080/')], contextPath: null, war: '**/*.war'
+            }
+        }
+
+        stage('Sending email to notification') {
+            steps {
+                 mail bcc: '', body: 'Here is API: http://103.107.182.173:8080/project-ws/swagger-ui/index.html#/', cc: '', from: '', replyTo: '', subject: 'New build ', to: 'khangle190401@gmail.com'
+
+
+            }
+        }
+    }
+}

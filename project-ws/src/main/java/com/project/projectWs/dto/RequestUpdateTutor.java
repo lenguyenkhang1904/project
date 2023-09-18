@@ -2,8 +2,11 @@ package com.project.projectWs.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.project.common.utils.Calendar;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,8 +22,6 @@ public class RequestUpdateTutor implements Serializable {
 	private String registeredStatus;
 
 	private String fullName;
-
-	private String englishFullName;
 
 	private String gender;
 
@@ -48,6 +49,37 @@ public class RequestUpdateTutor implements Serializable {
 
 	private String yRelCoo;
 	
-	private List<String> areaTutorId = new LinkedList<>();
+	private List<String> relAreaIds = new LinkedList<>();
+	
+	private List<String> tutorSubjectGroupMaybeIds = new LinkedList<>();
+	
+	private List<Calendar> calendars = new LinkedList<>();
+	
+	private LocalDateTime nowLevelUpdatedAt;
+	
+	private String nowLevel;
+	
+	private List<String> tutorSubjectGroupForSureIds = new LinkedList<>();
 
+	private String expNotices;
+	
+	private String hienDangLa;
+	
+	private String subject;
+
+	private String subjectClass;
+	
+	private String tutorTag;
+
+	private String voices;
+	
+	private String tutorNotices;
+	
+	private String studyingInsitution;
+
+	private String teachingInstitution;
+	
+	private String major;
+
+	private String advantageNote;
 }

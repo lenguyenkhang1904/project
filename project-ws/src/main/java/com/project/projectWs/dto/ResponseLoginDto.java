@@ -3,6 +3,8 @@ package com.project.projectWs.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.common.utils.ObjectMapperUtils;
 import com.project.user.management.dto.RoleDto;
 
 import lombok.Getter;
@@ -20,5 +22,7 @@ public class ResponseLoginDto implements Serializable  {
 	
 	private List<RoleDto> roleDtos;
 
-	
+	public String toJson() throws JsonProcessingException {
+		return ObjectMapperUtils.toJson(this);
+	}
 }

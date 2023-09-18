@@ -1,5 +1,6 @@
-package com.project.projectWs.Utils;
+package com.project.projectWs.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.apache.commons.codec.binary.Base64;
@@ -17,7 +18,10 @@ import org.springframework.web.client.RestTemplate;
 import com.project.projectWs.dto.RequestOauth;
 import com.project.projectWs.dto.ResponseToken;
 
+import lombok.extern.log4j.Log4j2;
+
 @Component
+@Log4j2
 public class GenerateToken {
 
 	@Autowired
@@ -28,6 +32,7 @@ public class GenerateToken {
 		HttpHeaders header = buildHeader(request.getSecretId(), request.getClientId());
 
 		String url = request.getUrlBase() + "/oauth/token";
+		log.info("url: " + url);
 
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
 		body.add("grant_type", "password");
@@ -35,6 +40,7 @@ public class GenerateToken {
 		body.add("password", request.getPassword());
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(body, header) ;
+		log.info("--- body: " + entity.toString());
 
 		ResponseEntity<ResponseToken> response = restTemplate.exchange(url, HttpMethod.POST, entity,
 				ResponseToken.class);
@@ -44,9 +50,9 @@ public class GenerateToken {
 
 	private HttpHeaders buildHeader(final String secretId, final String clientId) {
 		String credentials = clientId + ":" + secretId;
-		String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
+		String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes(StandardCharsets.US_ASCII)));
 		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_FORM_URLENCODED));
 		headers.add("Authorization", "Basic " + encodedCredentials);
 		return headers;
 	}
@@ -63,6 +69,5 @@ public class GenerateToken {
 				Object.class);	
     	return true;
     }
-
 
 }

@@ -1,37 +1,40 @@
 package com.project.person.service.impl;
 
 import java.sql.Date;
-
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.project.common.utils.Calendar;
 import com.project.common.utils.DateConverter;
 import com.project.common.utils.HandleCharacter;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.common.utils.TypeOfSubjectGroup;
-import com.project.person.dto.TutorForFindAllDto;
 import com.project.person.dto.TutorDto;
+import com.project.person.dto.TutorForFindAllDto;
 import com.project.person.entity.AreaTutor;
 import com.project.person.entity.Tutor;
+import com.project.person.entity.TutorSubjectGroupFAIL;
 import com.project.person.entity.TutorSubjectGroupForSure;
 import com.project.person.entity.TutorSubjectGroupMaybe;
 import com.project.person.repository.AreaTutorRepository;
 import com.project.person.repository.TutorRepository;
+import com.project.person.repository.TutorSubjectGroupFailRepository;
 import com.project.person.repository.TutorSubjectGroupForSureRepository;
 import com.project.person.repository.TutorSubjectGroupMaybeRepository;
 import com.project.person.service.TutorService;
@@ -41,7 +44,7 @@ import com.project.person.utils.GenerateTutorId;
 @Service
 @SuppressWarnings("unchecked")
 public class TutorServiceImpl implements TutorService {
-	
+
 	@Autowired
 	private EntityManager entityManager;
 
@@ -56,6 +59,9 @@ public class TutorServiceImpl implements TutorService {
 
 	@Autowired
 	private TutorSubjectGroupMaybeRepository tutorSubjectGroupMaybeRepository;
+
+	@Autowired
+	private TutorSubjectGroupFailRepository tutorSubjectGroupFailRepository;
 
 	@Override
 	public Long saveTutor(TutorDto dto) {
@@ -91,6 +97,7 @@ public class TutorServiceImpl implements TutorService {
 	private void saveAllTutorSubjectGroup(List<String> tutorSubjectGroupIds, String typeOfSubjectGroup, Tutor tutor) {
 		List<TutorSubjectGroupMaybe> tutorSubjectGroupMaybes = new LinkedList<>();
 		List<TutorSubjectGroupForSure> tutorSubjectGroupForSures = new LinkedList<>();
+		List<TutorSubjectGroupFAIL> tutorSubjectGroupFAILs = new LinkedList<>();
 
 		if (typeOfSubjectGroup.equals("MAYBE")) {
 			for (String tutorSubjectGroupId : tutorSubjectGroupIds) {
@@ -100,7 +107,7 @@ public class TutorServiceImpl implements TutorService {
 				tutorSubjectGroupMaybes.add(tutorSubjectGroupMaybe);
 			}
 			tutorSubjectGroupMaybeRepository.saveAll(tutorSubjectGroupMaybes);
-		} else {
+		} else if (typeOfSubjectGroup.equals("FORSURE")) {
 			for (String tutorSubjectGroupId : tutorSubjectGroupIds) {
 				TutorSubjectGroupForSure tutorSubjectGroupForSure = new TutorSubjectGroupForSure();
 				tutorSubjectGroupForSure.setTutor(tutor);
@@ -108,6 +115,14 @@ public class TutorServiceImpl implements TutorService {
 				tutorSubjectGroupForSures.add(tutorSubjectGroupForSure);
 			}
 			tutorSubjectGroupForSureRepository.saveAll(tutorSubjectGroupForSures);
+		} else {
+			for (String tutorSubjectGroupId : tutorSubjectGroupIds) {
+				TutorSubjectGroupFAIL tutorSubjectGroupFail = new TutorSubjectGroupFAIL();
+				tutorSubjectGroupFail.setTutor(tutor);
+				tutorSubjectGroupFail.setSubjectGroupId(tutorSubjectGroupId);
+				tutorSubjectGroupFAILs.add(tutorSubjectGroupFail);
+			}
+			tutorSubjectGroupFailRepository.saveAll(tutorSubjectGroupFAILs);
 		}
 
 	}
@@ -151,8 +166,8 @@ public class TutorServiceImpl implements TutorService {
 	public TutorForFindAllDto findByTutorCode(final Long tutorCode) {
 		TutorForFindAllDto dto = new TutorForFindAllDto();
 		try {
-			Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX + 
-					"t.id =:tutorCode \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
+			Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX
+					+ "t.id =:tutorCode \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
 			query.setParameter("tutorCode", tutorCode);
 			Object[] listObject = (Object[]) query.getSingleResult();
 			dto = convertObjectToTutorDto(listObject, dto);
@@ -162,109 +177,113 @@ public class TutorServiceImpl implements TutorService {
 		return Optional.of(dto).get();
 	}
 
-
 	@Override
 	public List<TutorForFindAllDto> findByPhoneNumber(final String phoneNumber) {
 		List<TutorForFindAllDto> tutorDtos = new LinkedList<>();
-		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX + 
-				"t.phones like CONCAT('%', :phones, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
+		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX
+				+ "t.phones like CONCAT('%', :phones, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
 		query.setParameter("phones", phoneNumber);
-		if(query != null) {
+		if (query != null) {
 			query.getResultList().stream().forEach(item -> {
 				Object[] objectList = (Object[]) item;
 				TutorForFindAllDto dto = new TutorForFindAllDto();
 				convertObjectToTutorDto(objectList, dto);
 				tutorDtos.add(dto);
-		 });
+			});
 		}
 		return tutorDtos;
 	}
 
-
 	@Override
 	public List<TutorForFindAllDto> findByEndPhoneNumber(String endPhoneNumber) {
 		List<TutorForFindAllDto> tutorDtos = new LinkedList<>();
-		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX + 
-				"t.phones like CONCAT('%', :phones, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
+		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX
+				+ "t.phones like CONCAT('%', :phones, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
 		query.setParameter("phones", endPhoneNumber.concat("#"));
-		 query.getResultList().stream().forEach(item -> {
-				Object[] objectList = (Object[]) item;
-				TutorForFindAllDto dto = new TutorForFindAllDto();
-				convertObjectToTutorDto(objectList, dto);
-				tutorDtos.add(dto);
-		 });
+		query.getResultList().stream().forEach(item -> {
+			Object[] objectList = (Object[]) item;
+			TutorForFindAllDto dto = new TutorForFindAllDto();
+			convertObjectToTutorDto(objectList, dto);
+			tutorDtos.add(dto);
+		});
+		System.out.println(tutorDtos.toString());
 		return tutorDtos;
 	}
 
 	@Override
 	public List<TutorForFindAllDto> findByFullNameContain(final String fullName) {
 		List<TutorForFindAllDto> tutorDtos = new LinkedList<>();
-		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX + 
-				"t.full_name like CONCAT('%', :fullName, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
-		 query.setParameter("fullName", fullName);
-		 query.getResultList().stream().forEach(item -> {
-				Object[] objectList = (Object[]) item;
-				TutorForFindAllDto dto = new TutorForFindAllDto();
-				dto = convertObjectToTutorDto(objectList, dto);
-				tutorDtos.add(dto);
-		 });
+		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX
+				+ "t.full_name like CONCAT('%', :fullName, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
+		query.setParameter("fullName", fullName);
+		query.getResultList().stream().forEach(item -> {
+			Object[] objectList = (Object[]) item;
+			TutorForFindAllDto dto = new TutorForFindAllDto();
+			dto = convertObjectToTutorDto(objectList, dto);
+			tutorDtos.add(dto);
+		});
 		return tutorDtos;
 	}
 
 	@Override
 	public List<TutorForFindAllDto> findByEnglishFullName(final String fullname) {
 		List<TutorForFindAllDto> tutorDtos = new LinkedList<>();
-		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX + 
-				"t.english_full_name LIKE CONCAT('%', :englishFullName, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
+		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX
+				+ "t.english_full_name LIKE CONCAT('%', :englishFullName, '%') \n"
+				+ ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
 		query.setParameter("englishFullName", fullname);
-		 query.getResultList().stream().forEach(item -> {
-				Object[] objectList = (Object[]) item;
-				TutorForFindAllDto dto = new TutorForFindAllDto();
-				dto = convertObjectToTutorDto(objectList, dto);
-				tutorDtos.add(dto);
-		 });
+		query.getResultList().stream().forEach(item -> {
+			Object[] objectList = (Object[]) item;
+			TutorForFindAllDto dto = new TutorForFindAllDto();
+			dto = convertObjectToTutorDto(objectList, dto);
+			tutorDtos.add(dto);
+		});
 		return tutorDtos;
 	}
 
 	@Override
 	public List<String> findByEngfullnameAndShowFullName(final String fullname) {
 		List<String> tutorFullNames = new LinkedList<>();
-		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX + 
-				"t.english_full_name LIKE CONCAT('%', :englishFullName, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
+		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX
+				+ "t.english_full_name LIKE CONCAT('%', :englishFullName, '%') \n"
+				+ ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
 		query.setParameter("englishFullName", fullname);
-		 query.getResultList().stream().forEach(item -> {
-				Object[] objectList = (Object[]) item;
-				TutorForFindAllDto dto = new TutorForFindAllDto();
-				dto = convertObjectToTutorDto(objectList, dto);
-				tutorFullNames.add(dto.getFullName());
-		 });
+		query.getResultList().stream().forEach(item -> {
+			Object[] objectList = (Object[]) item;
+			TutorForFindAllDto dto = new TutorForFindAllDto();
+			dto = convertObjectToTutorDto(objectList, dto);
+			tutorFullNames.add(dto.getFullName());
+		});
 		return tutorFullNames;
 	}
 
 	@Override
 	public List<String> findByfullnameAndShowFullName(final String fullname) {
 		List<String> tutorFullNames = new LinkedList<>();
-		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX + 
-				"t.full_name LIKE CONCAT('%', :fullName, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
+		Query query = entityManager.createNativeQuery(ConstantQueriesDefault.DEFAULT_QUERY_PREFIX
+				+ "t.full_name LIKE CONCAT('%', :fullName, '%') \n" + ConstantQueriesDefault.DEFAULT_QUERY_SUBFIX);
 		query.setParameter("fullName", fullname);
-		 query.getResultList().stream().forEach(item -> {
-				Object[] objectList = (Object[]) item;
-				TutorForFindAllDto dto = new TutorForFindAllDto();
-				dto = convertObjectToTutorDto(objectList, dto);
-				tutorFullNames.add(dto.getFullName());
-		 });
+		query.getResultList().stream().forEach(item -> {
+			Object[] objectList = (Object[]) item;
+			TutorForFindAllDto dto = new TutorForFindAllDto();
+			dto = convertObjectToTutorDto(objectList, dto);
+			tutorFullNames.add(dto.getFullName());
+		});
 		return tutorFullNames;
 	}
 
 	@Override
 	public TutorDto findById(final Long id) {
 		Optional<Tutor> tutorOpt = tutorRepository.findById(id);
+
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
+			List<String> urlPublic = tutor.getPublicImgs();
+			List<String> urlPrivate = tutor.getPrivateImgs();
 			TutorDto tutorDto = new TutorDto();
 			tutorDto = ObjectMapperUtils.map(tutor, TutorDto.class);
-			tutorDto.setPublicImgs(tutor.getPublicImgs());
-			tutorDto.setPrivateImgs(tutor.getPrivateImgs());
+			tutorDto.setPublicImgs(urlPublic);
+			tutorDto.setPrivateImgs(urlPrivate);
 			tutorDto.setAvatar(tutor.getAvatar());
 			return tutorDto;
 		}
@@ -276,105 +295,76 @@ public class TutorServiceImpl implements TutorService {
 		return tutorRepository.save(tutor).getId();
 	}
 
-	@Override
-	@Transactional
-	public Long updateSubjetGroupMaybe(TutorDto dto) {
-		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
-		if (!tutorOpt.isEmpty()) {
-			Tutor tutor = tutorOpt.get();
-			tutor.setUpdatedBy(dto.getCreatedBy());
-			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
-			tutorSubjectGroupMaybeRepository.deleteByTutorId(dto.getId());
-			// Subject Group Maybe
-			List<String> tutorSubjectGroupMaybeIds = dto.getTutorSubjectGroupMaybeIds();
-			if (!tutorSubjectGroupMaybeIds.isEmpty()) {
-				saveAllTutorSubjectGroup(tutorSubjectGroupMaybeIds, TypeOfSubjectGroup.MAYBE.name(), tutor);
-				return tutor.getId();
-			}
-		}
-		return null;
-	}
-
-	@Override
-	@Transactional
-	public Long updateSubjectGroupForSure(TutorDto dto) {
-		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
-		if (!tutorOpt.isEmpty()) {
-			Tutor tutor = tutorOpt.get();
-			tutor.setUpdatedBy(dto.getCreatedBy());
-			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
-			tutorSubjectGroupForSureRepository.deleteByTutorId(dto.getId());
-			// Subject Group ForSure
-			List<String> tutorSubjectGroupForSureIds = dto.getTutorSubjectGroupForSureIds();
-			if (!tutorSubjectGroupForSureIds.isEmpty()) {
-				saveAllTutorSubjectGroup(tutorSubjectGroupForSureIds, TypeOfSubjectGroup.FORSURE.name(), tutor);
-				return tutor.getId();
-			}
-		}
-		return null;
-	}
-
 	private Optional<Tutor> findByIdTutor(Long id) {
 		return tutorRepository.findById(id);
 	}
 
 	@Override
-	public Long updateNowLevelAndNowUpdateAt(TutorDto dto) {
-		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
-		if (!tutorOpt.isEmpty()) {
-			Tutor tutor = tutorOpt.get();
-			tutor.setUpdatedBy(dto.getCreatedBy());
-			tutor.setNowLevel(dto.getNowLevel());
-			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
-			tutor = tutorRepository.save(tutor);
-			return tutor.getId();
-		}
-		return null;
-	}
-
-	@Override
-	public Long updateCalendar(TutorDto dto) {
-		Optional<Tutor> tutorOpt = findByIdTutor(dto.getId());
-		if (!tutorOpt.isEmpty()) {
-			Tutor tutor = tutorOpt.get();
-			tutor.setUpdatedBy(dto.getCreatedBy());
-			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
-			List<Calendar> calendars = new LinkedList<>();
-			for (Calendar calendar : dto.getCalendars()) {
-				calendars.add(calendar);
-			}
-			tutor.setCalendars(calendars);
-			tutor = tutorRepository.save(tutor);
-			return tutor.getId();
-		}
-		return null;
-	}
-
-	@Override
+	@Transactional
 	public Long update(TutorDto dto) {
 		// tutor
 		Optional<Tutor> tutorOpt = tutorRepository.findById(dto.getId());
 		if (!tutorOpt.isEmpty()) {
 			Tutor tutor = tutorOpt.get();
+			LocalDateTime createdDate = tutor.getCreatedAt();
+			List<String> urlPublic = tutor.getPublicImgs();
+			List<String> urlPrivate = tutor.getPrivateImgs();
 			tutor = ObjectMapperUtils.map(dto, Tutor.class);
-			Long id = Long.parseLong(generateTutorCode());
-			tutor.setId(id);
+			tutor.setId(dto.getId());
 			tutor.setFullName(dto.getFullName().toUpperCase());
 			tutor.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName()).toUpperCase());
 			tutor.setUpdatedBy(dto.getCreatedBy());
+			tutor.setCreatedAt(createdDate);
 			tutor.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+			tutor.setPrivateImgs(urlPrivate);
+			tutor.setPublicImgs(urlPublic);
+			// calendar
+			List<Calendar> calendars = new LinkedList<>();
+
+			List<Calendar> dtoCa = dto.getCalendars();
+			if (!CollectionUtils.isEmpty(dtoCa)) {
+				for (Calendar calendar : dtoCa) {
+					calendars.add(calendar);
+				}
+				tutor.setCalendars(calendars);
+			}
+
 			tutor = tutorRepository.save(tutor);
 			// Area Tutor
 			List<String> areaTutorIds = dto.getAreaTutorIds();
 			if (!areaTutorIds.isEmpty()) {
+				areaTutorRepository.deleteByTutorId(tutor.getId());
 				saveAllAreaTutor(areaTutorIds, tutor);
 			}
+
+			// Subject Group ForSure
+			List<String> tutorSubjectGroupForSureIds = dto.getTutorSubjectGroupForSureIds();
+			if (!tutorSubjectGroupForSureIds.isEmpty()) {
+				tutorSubjectGroupForSureRepository.deleteByTutorId(dto.getId());
+				saveAllTutorSubjectGroup(tutorSubjectGroupForSureIds, TypeOfSubjectGroup.FORSURE.name(), tutor);
+			}
+
+			// Subject Group Maybe
+			List<String> tutorSubjectGroupMaybeIds = dto.getTutorSubjectGroupMaybeIds();
+			if (!tutorSubjectGroupMaybeIds.isEmpty()) {
+				tutorSubjectGroupMaybeRepository.deleteByTutorId(dto.getId());
+				saveAllTutorSubjectGroup(tutorSubjectGroupMaybeIds, TypeOfSubjectGroup.MAYBE.name(), tutor);
+			}
+
+			// Subject Group fail
+			List<String> tutorSubjectGroupFaileIds = dto.getTutorSubjectGroupFaileIds();
+			System.out.println(tutorSubjectGroupFaileIds);
+			if (!tutorSubjectGroupFaileIds.isEmpty()) {
+				tutorSubjectGroupFailRepository.deleteByTutorId(dto.getId());
+				saveAllTutorSubjectGroup(tutorSubjectGroupFaileIds, TypeOfSubjectGroup.FAILED.name(), tutor);
+			}
+
 			return tutor.getId();
 		}
 		return null;
 
 	}
-	
+
 	private TutorForFindAllDto convertObjectToTutorDto(Object[] objectList, TutorForFindAllDto dto) {
 		String convertToStringId = (String) objectList[0].toString();
 		Long id = Long.parseLong(convertToStringId);
@@ -429,10 +419,45 @@ public class TutorServiceImpl implements TutorService {
 			});
 			dto.setCalendars(calendars);
 		}
-		
-		//dto.setAverageStarNumbers(Double.valueOf((String) objectList[30]));
-		
+
+		dto.setAverageStarNumbers((Double) objectList[30] == null ? 0.0 : (Double) objectList[30]);
+		dto.setExp((Double) objectList[31] == null ? 0.0 : (Double) objectList[31]);
+		dto.setSuccessJobsNumbers((Integer) objectList[32] == null ? 0 : (Integer) objectList[32]);
+		String subjectGroupFails = !StringUtils.isEmpty((String) objectList[33]) ? (String) objectList[33] : "";
+		dto.setSubjectGroupFails(Arrays.asList(subjectGroupFails.split(", ")));
+
 		return dto;
+	}
+
+	@Override
+	public List<String> getSubjectGroupsByTutorId(Long tutorId) {
+		List<String> subjectgroups = tutorSubjectGroupMaybeRepository.getSubjectGroupIdByTutorId(tutorId);
+		return !CollectionUtils.isEmpty(subjectgroups) ? subjectgroups : new LinkedList<String>();
+	}
+
+	@Override
+	public void saveAllSubjectGroup(List<String> subjectGroupOfTutor, Long tutorId) {
+		Optional<Tutor> tutorOpt = tutorRepository.findById(tutorId);
+		if (!tutorOpt.isEmpty()) {
+			Tutor tutor = tutorOpt.get();
+			saveAllTutorSubjectGroup(subjectGroupOfTutor, TypeOfSubjectGroup.MAYBE.name(), tutor);
+		}
+	}
+
+	@Override
+	public void deleteSubjectGroupMaybeByTutorId(Long tutorId) {
+		tutorSubjectGroupMaybeRepository.deleteByTutorId(tutorId);
+	}
+
+	@Override
+	public List<Tutor> findTutorBeforeSynchronize() {
+		return tutorRepository.findTutorBeforeSynchronize();
+	}
+
+	@Override
+	public void saveAll(List<Tutor> tutors) {
+		tutorRepository.saveAll(tutors);
+
 	}
 
 }

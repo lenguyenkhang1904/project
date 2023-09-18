@@ -44,9 +44,9 @@ amazon:
 #publicimgsRegisterandlearner
   registerandlearnerPublicimgsURL: https://hn.ss.bfcplatform.vn/publicimgsregisterandlearner/
   bucketnameRegisterandlearner: publicimgsregisterandlearner    
- #privateimgsRegisterandlearner
+ #privatefeedback
   privateFeedBackTutorReviewURL: https://hn.ss.bfcplatform.vn/feedbacktutorreview/
   bucketnamePrivateFeedBackTutorReview: feedbacktutorreview
-#publicimgsRegisterandlearner
+# publicfeedback
   publicFeedBackTutorReviewURL: https://hn.ss.bfcplatform.vn/feedbacktutorreview/
   bucketnamePublicFeedBackTutorReview: feedbacktutorreview  

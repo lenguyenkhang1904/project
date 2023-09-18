@@ -13,15 +13,15 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.project.storage.service.AvatarAwsService;
 
-import come.project.storage.utils.ConstaintInformationStorage;
+import come.project.storage.utils.ConstantInformationStorage;
 import come.project.storage.utils.FileUtils;
 
 @Service
 public class AvatarAwsServiceImpl extends AwsClientS3Impl implements AvatarAwsService {
 
-	private final static String urlAvatar = ConstaintInformationStorage.AVATAR_URL;
+	private final static String urlAvatar = ConstantInformationStorage.AVATAR_URL;
 
-	private final static String bucketName = ConstaintInformationStorage.BUCKET_NAME_AVATAR;
+	private final static String bucketName = ConstantInformationStorage.BUCKET_NAME_AVATAR;
 
 	
 //	@Override

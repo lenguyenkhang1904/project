@@ -1,15 +1,19 @@
 package com.project.person.service.impl;
 
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;import java.util.stream.Collector;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.project.common.utils.DateConverter;
 import com.project.common.utils.HandleCharacter;
@@ -17,7 +21,6 @@ import com.project.common.utils.ObjectMapperUtils;
 import com.project.person.dto.RegisterAndLearnerDto;
 import com.project.person.dto.RegisterAndLearnerRelationshipDto;
 import com.project.person.dto.SchoolerDto;
-import com.project.person.dto.TutorDto;
 import com.project.person.entity.RegisterAndLearner;
 import com.project.person.entity.RegisterAndLearnerRelationship;
 import com.project.person.entity.Schooler;
@@ -46,22 +49,20 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		registerAndLearner.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName().toUpperCase()));
 		registerAndLearner.setCreatedBy(dto.getCreatedBy());
 		registerAndLearner.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
-		registerAndLearner.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
-		registerAndLearner.setPublicImgs(new HashSet<>(dto.getPublicImgs()));
-		registerAndLearner.setPrivateImgs(new HashSet<>(dto.getPublicImgs()));
 		registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
 
 		// register and learner relationship
-		List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationshipDtos = dto.getRegisterAndLearnerRelationships();
+		List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationshipDtos = dto
+				.getRegisterAndLearnerRelationships();
 		List<RegisterAndLearnerRelationship> registerAndLearnerRelationships = new LinkedList<>();
 		for (RegisterAndLearnerRelationshipDto registerAndLearnerRelationshipDto : registerAndLearnerRelationshipDtos) {
-				RegisterAndLearnerRelationship registerAndLearnerRelationship = new RegisterAndLearnerRelationship();
-				registerAndLearnerRelationship = ObjectMapperUtils.map(registerAndLearnerRelationshipDto,
-						RegisterAndLearnerRelationship.class);
-				registerAndLearnerRelationship.setRegisterAndLearnerBy(
-						registerAndLearnerRepository.findById(registerAndLearnerRelationshipDto.getRegisterAndLearnerById()).get());
-				registerAndLearnerRelationship.setRegisterAndLearnerWith(registerAndLearner);
-				registerAndLearnerRelationships.add(registerAndLearnerRelationship);
+			RegisterAndLearnerRelationship registerAndLearnerRelationship = new RegisterAndLearnerRelationship();
+			registerAndLearnerRelationship = ObjectMapperUtils.map(registerAndLearnerRelationshipDto,
+					RegisterAndLearnerRelationship.class);
+			registerAndLearnerRelationship.setRegisterAndLearnerBy(registerAndLearnerRepository
+					.findById(registerAndLearnerRelationshipDto.getRegisterAndLearnerById()).get());
+			registerAndLearnerRelationship.setRegisterAndLearnerWith(registerAndLearner);
+			registerAndLearnerRelationships.add(registerAndLearnerRelationship);
 		}
 		registerAndLearnerRelationshipRepository.saveAll(registerAndLearnerRelationships);
 
@@ -96,7 +97,7 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 	@Override
 	public RegisterAndLearnerDto findByRegisterAndLearnerCode(String registerAndLearnerId) {
 		Optional<RegisterAndLearner> regísterOpt = registerAndLearnerRepository.findById(registerAndLearnerId);
-		if(!regísterOpt.isEmpty()) {
+		if (!regísterOpt.isEmpty()) {
 			RegisterAndLearner registerAndLearner = regísterOpt.get();
 			RegisterAndLearnerDto dto = new RegisterAndLearnerDto();
 			dto = convertEntityToModel(dto, registerAndLearner);
@@ -120,7 +121,8 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 	@Override
 	public List<RegisterAndLearnerDto> findByEndPhoneNumber(String endPhoneNumber) {
 		List<RegisterAndLearnerDto> dtos = new LinkedList<>();
-		List<RegisterAndLearner> registerAndLearners = registerAndLearnerRepository.findByPhonesContaining(endPhoneNumber.concat("#"));
+		List<RegisterAndLearner> registerAndLearners = registerAndLearnerRepository
+				.findByPhonesContaining(endPhoneNumber.concat("#"));
 		registerAndLearners.forEach(item -> {
 			RegisterAndLearnerDto dto = new RegisterAndLearnerDto();
 			dto = convertEntityToModel(dto, item);
@@ -156,10 +158,13 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 		Optional<RegisterAndLearner> registerAndLearnerOpt = registerAndLearnerRepository.findById(id);
 		if (!registerAndLearnerOpt.isEmpty()) {
 			RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
+			Set<String> urlPublic = registerAndLearner.getPublicImgs();
+			Set<String> urlPrivate = registerAndLearner.getPrivateImgs();
 			RegisterAndLearnerDto registerAndLearnerDto = new RegisterAndLearnerDto();
 			registerAndLearnerDto = ObjectMapperUtils.map(registerAndLearner, RegisterAndLearnerDto.class);
-			registerAndLearnerDto.setPublicImgs(registerAndLearner.getPublicImgs().stream().toList());
-			registerAndLearnerDto.setPrivateImgs(registerAndLearner.getPublicImgs().stream().toList());
+			registerAndLearnerDto.setPublicImgs(urlPublic.stream().collect(Collectors.toList()));
+			registerAndLearnerDto
+					.setPrivateImgs(urlPrivate.stream().collect(Collectors.toList()));
 			return registerAndLearnerDto;
 		}
 		return null;
@@ -185,7 +190,7 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 
 	@Override
 	public List<String> findByVocativeAndFullNameAndShowFullName(String vocative, String fullName) {
-		return registerAndLearnerRepository.findByVocativeAndFullNameAndShowFullName(vocative, fullName);
+		return registerAndLearnerRepository.findByVocativeAndFullNameAndShowFullNameByFullName(vocative, fullName);
 	}
 
 	@Override
@@ -202,26 +207,100 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 
 	@Override
 	public String updateRegisterAndLearner(RegisterAndLearnerDto registerAndLearnerDto) {
+		Set<String> urlPublic = new HashSet<>(registerAndLearnerDto.getPublicImgs());
+		Set<String> urlprivate = new HashSet<>(registerAndLearnerDto.getPrivateImgs());
 		RegisterAndLearner registerAndLearner = ObjectMapperUtils.map(registerAndLearnerDto, RegisterAndLearner.class);
+		registerAndLearner.setPrivateImgs(urlprivate);
+		registerAndLearner.setPublicImgs(urlPublic);
 		registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
 		return registerAndLearner.getId();
 	}
-	
+
 	private RegisterAndLearnerDto convertEntityToModel(RegisterAndLearnerDto dto, RegisterAndLearner item) {
 		dto = ObjectMapperUtils.map(item, RegisterAndLearnerDto.class);
 		Set<RegisterAndLearnerRelationship> relas = item.getRelationshipBy();
-		
-		List<RegisterAndLearnerRelationshipDto> relationshipDtos = 	relas.stream().map(re -> {
+
+		List<RegisterAndLearnerRelationshipDto> relationshipDtos = relas.stream().map(re -> {
 			RegisterAndLearnerRelationshipDto relationshipDto = new RegisterAndLearnerRelationshipDto();
 			relationshipDto.setId(re.getId());
 			relationshipDto.setRelationshipType(re.getRelationshipType());
-			relationshipDto.setRegisterAndLearnerById(re.getRegisterAndLearnerBy().getId());
+			relationshipDto.setRegisterAndLearnerById(re.getRegisterAndLearnerWith().getId());
 			return relationshipDto;
 		}).collect(Collectors.toList());
 
 		dto.setRegisterAndLearnerRelationships(relationshipDtos);
 		dto.setSchoolerDtos(ObjectMapperUtils.mapAll(item.getSchoolers(), SchoolerDto.class));
 		return dto;
+	}
+
+	@Override
+	@Transactional
+	public String update(RegisterAndLearnerDto dto) {
+
+		Optional<RegisterAndLearner> registerAndLearnerOpt = registerAndLearnerRepository.findById(dto.getId());
+		if (!registerAndLearnerOpt.isEmpty()) {
+			RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
+			LocalDateTime createdAt = registerAndLearner.getCreatedAt();
+			Set<String> urlPublic = registerAndLearner.getPublicImgs();
+			Set<String> urlPrivate = registerAndLearner.getPrivateImgs();
+			registerAndLearner = ObjectMapperUtils.map(dto, RegisterAndLearner.class);
+			registerAndLearner.setFullName(dto.getFullName().toUpperCase());
+			registerAndLearner.setCreatedAt(createdAt);
+			registerAndLearner.setEnglishFullName(HandleCharacter.removeAccent(dto.getFullName().toUpperCase()));
+			registerAndLearner.setUpdatedBy(dto.getCreatedBy());
+			registerAndLearner.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));;
+			registerAndLearner.setPublicImgs(urlPublic);
+			registerAndLearner.setPrivateImgs(urlPrivate);
+			registerAndLearner = registerAndLearnerRepository.save(registerAndLearner);
+
+			// register and learner relationship
+			List<RegisterAndLearnerRelationshipDto> registerAndLearnerRelationshipDtos = dto
+					.getRegisterAndLearnerRelationships();
+			List<RegisterAndLearnerRelationship> registerAndLearnerRelationships = new LinkedList<>();
+			registerAndLearnerRelationshipRepository.deleteByRegisterAndLearnerWithId(registerAndLearner.getId());
+			if (!CollectionUtils.isEmpty(registerAndLearnerRelationshipDtos)) {
+				for (RegisterAndLearnerRelationshipDto registerAndLearnerRelationshipDto : registerAndLearnerRelationshipDtos) {
+					RegisterAndLearnerRelationship registerAndLearnerRelationship = new RegisterAndLearnerRelationship();
+					registerAndLearnerRelationship = ObjectMapperUtils.map(registerAndLearnerRelationshipDto,
+							RegisterAndLearnerRelationship.class);
+					registerAndLearnerRelationship.setRegisterAndLearnerBy(registerAndLearnerRepository
+							.findById(registerAndLearnerRelationshipDto.getRegisterAndLearnerById()).get());
+					registerAndLearnerRelationship.setRegisterAndLearnerWith(registerAndLearner);
+					registerAndLearnerRelationships.add(registerAndLearnerRelationship);
+				}
+				registerAndLearnerRelationshipRepository.saveAll(registerAndLearnerRelationships);
+			}
+
+			// Schooler
+			List<SchoolerDto> schoolerDtos = dto.getSchoolerDtos();
+			List<Schooler> schoolers = new LinkedList<>();
+			schoolerRepository.deleteByregisterAndLearnerId(registerAndLearner.getId());
+			if (!CollectionUtils.isEmpty(schoolerDtos)) {
+				for (SchoolerDto schoolerDto : schoolerDtos) {
+					Schooler schooler = new Schooler();
+					schooler = ObjectMapperUtils.map(schoolerDto, Schooler.class);
+					schooler.setCreatedBy(dto.getCreatedBy());
+					schooler.setCreatedAt(DateConverter.convertDateToLocalDateTime(new java.util.Date()));
+					schooler.setRegisterAndLearner(registerAndLearner);
+					schoolers.add(schooler);
+				}
+				schoolerRepository.saveAll(schoolers);
+			}
+
+			return registerAndLearner.getId();
+		}
+		return StringUtils.EMPTY;
+	}
+
+	@Override
+	public List<RegisterAndLearner> findAllBeforeSynchronize() {
+		return registerAndLearnerRepository.findAll();
+	}
+
+	@Override
+	public void saveAll(List<RegisterAndLearner> entities) {
+		registerAndLearnerRepository.saveAll(entities);
+		
 	}
 
 }

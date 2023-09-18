@@ -23,13 +23,15 @@ public interface TutorRepository extends JpaRepository<Tutor, Long> {
 			+ ", STRING_AGG(tp.public_imgs, ', ') AS public_imgs "
 			+ ", STRING_AGG(tsgmb.subject_group_id, ', ') AS tutor_subject_group_maybe_ids "
 			+ ", STRING_AGG(tsffs.subject_group_id, ', ') AS tutor_subject_group_for_sure_ids "
-			+ ", STRING_AGG(tca.calendars, ', ') AS calendars, t.average_start_numbers "
+			+ ", STRING_AGG(tca.calendars, ', ') AS calendars, t.average_start_numbers, t.exp, t.success_jobs_numbers, "
+			+ " STRING_AGG(tsfs.subject_group_id, ', ') AS tutor_subject_group_fails_ids "
 			+ "FROM tutor t "
 			+ "LEFT JOIN area_tutor art ON t.id = art.tutor_id "
 			+ "LEFT JOIN tutor_private_imgs tpr ON tpr.tutor_id = t.id "
 			+ "LEFT JOIN tutor_public_imgs tp ON tp.tutor_id = t.id "
 			+ "LEFT JOIN tutor_subject_group_maybe tsgmb ON tsgmb.tutor_id = t.id "
 			+ "LEFT JOIN tutor_subject_group_for_sure tsffs ON tsffs.tutor_id = t.id "
+			+ "LEFT JOIN tutor_subject_group_fails tsfs ON tsfs.tutor_id = t.id "
 			+ "LEFT JOIN tutor_calendars tca ON tca.tutor_id = t.id "
 			+ "GROUP BY t.id ORDER BY t.id; ", nativeQuery = true)
 	List<Object> findAllTutor();
@@ -63,6 +65,6 @@ public interface TutorRepository extends JpaRepository<Tutor, Long> {
 
 	Tutor findByCreatedBy(String createdBy);
 
-	@Query("SELECT t FROM Tutor t WHERE t.avatar IS NOT NULL ")
+	@Query("SELECT t FROM Tutor t  ")
 	List<Tutor> findTutorBeforeSynchronize(); 
 }

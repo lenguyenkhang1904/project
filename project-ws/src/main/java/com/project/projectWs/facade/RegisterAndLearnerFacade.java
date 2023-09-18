@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.project.person.dto.RegisterAndLearnerDto;
 import com.project.projectWs.dto.RequestSaveResigterAndLearnerDto;
+import com.project.projectWs.dto.RequestUpdateResigterAndLearnerDto;
 import com.project.projectWs.dto.ResponseRegisterAndLearnerDto;
 
 public interface RegisterAndLearnerFacade {
@@ -57,5 +57,9 @@ public interface RegisterAndLearnerFacade {
 	String save(RequestSaveResigterAndLearnerDto dto);
 	
 	List<ResponseRegisterAndLearnerDto> findAll();
+	
+	String update(RequestUpdateResigterAndLearnerDto dto);
+
+	boolean findAllRegisterAndLearnerSynchronizeSynchronizedAvatarAndPublicAndPrivateImg();
 
 }

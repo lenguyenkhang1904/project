@@ -7,11 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.person.dto.TutorDto;
 import com.project.projectWs.dto.RequestSaveTutor;
 import com.project.projectWs.dto.RequestUpdateTutor;
-import com.project.projectWs.dto.RequestUpdateTutorCalendarDto;
-import com.project.projectWs.dto.RequestUpdateTutorNowLevelAndUpdateAtDto;
-import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupForSureDto;
-import com.project.projectWs.dto.RequestUpdateTutorSubjectGroupMaybeDto;
 import com.project.projectWs.dto.ResponseTutor;
+import com.project.projectWs.dto.TutorForWebByIdDto;
+import com.project.projectWs.dto.TutorForWebDto;
 
 public interface TutorFacade {
 	Long saveTutor(final RequestSaveTutor request);
@@ -53,15 +51,13 @@ public interface TutorFacade {
 	String updatePublicImageToAmazon(final MultipartFile file, final String tutorCode);
 
 	TutorDto findById(final Long id);
-
-	Long updateSubjetGroupMaybe(RequestUpdateTutorSubjectGroupMaybeDto dto);
-
-	Long updateSubjectGroupForSure(RequestUpdateTutorSubjectGroupForSureDto dto);
-
-	Long updateNowLevelAndNowUpdateAt(RequestUpdateTutorNowLevelAndUpdateAtDto dto);
-
-	Long updateCalendar(RequestUpdateTutorCalendarDto dto);
-
+	
 	Long updateTutor(final RequestUpdateTutor request);
+
+	List<TutorForWebDto> findAllTutorForWeb();
+
+	TutorForWebByIdDto findAllTutorForWebById(Long id);
+	
+	boolean findAllTutorSynchronizedAvatarAndPublicAndPrivateImg();
 	
 }

@@ -12,7 +12,7 @@ import com.project.user.management.entity.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, String> {
 
-	@Query(value = "SELECT r.id, r.name, description FROM public.role r "
+	@Query(value = "SELECT DISTINCT r.id, r.name, description FROM public.role r "
 			+ " JOIN public.user_role usr ON usr.role_id = r.id WHERE usr.user_id =:userId ", nativeQuery = true)
 	List<Object> findAllRoleByUsername(final @Param("userId") String userId);
 }

@@ -16,26 +16,26 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.project.storage.service.AvatarAndPublicAndPrivateImgsTutorAwsService;
 
-import come.project.storage.utils.ConstaintInformationStorage;
+import come.project.storage.utils.ConstantInformationStorage;
 import come.project.storage.utils.FileUtils;
 
 @Service
 public class AvatarAndPublicAndPrivateImgsTutorAwsServiceImpl extends AwsClientS3Impl
 		implements AvatarAndPublicAndPrivateImgsTutorAwsService {
 
-	private static final String tutorAvatarURL = ConstaintInformationStorage.TUTOR_AVATAR_URL;
+	private static final String tutorAvatarURL = ConstantInformationStorage.TUTOR_AVATAR_URL;
 
-	private static final String bucketNameTutorAvatar = ConstaintInformationStorage.BUCKET_NAME_TUTOR_AVATAR;
+	private static final String bucketNameTutorAvatar = ConstantInformationStorage.BUCKET_NAME_TUTOR_AVATAR;
 
-	private static final String tutorPrivateimgsURL = ConstaintInformationStorage.TUTOR_PRIVATE_IMGS_URL;
+	private static final String tutorPrivateimgsURL = ConstantInformationStorage.TUTOR_PRIVATE_IMGS_URL;
 
-	private static final String bucketnamePrivateimgs = ConstaintInformationStorage.BUCKET_NAME_PRIVATE_IMGS_TUTOR_AVATAR;
+	private static final String bucketnamePrivateimgs = ConstantInformationStorage.BUCKET_NAME_PRIVATE_IMGS_TUTOR_AVATAR;
 
-	private static final String tutorPublicimgsURL = ConstaintInformationStorage.TUTOR_PUBLIC_IMGS_URL;
+	private static final String tutorPublicimgsURL = ConstantInformationStorage.TUTOR_PUBLIC_IMGS_URL;
 
-	private static final String bucketnamePublicimgs = ConstaintInformationStorage.BUCKET_NAME_PUBLIC_IMGS_TUTOR_AVATAR;
+	private static final String bucketnamePublicimgs = ConstantInformationStorage.BUCKET_NAME_PUBLIC_IMGS_TUTOR_AVATAR;
 
-	private void upploadPublicFile(String filename, File file, String bucketName) {
+	private void uploadPublicFile(String filename, File file, String bucketName) {
 		client.putObject(
 				new PutObjectRequest(bucketName, filename, file).withCannedAcl(CannedAccessControlList.PublicRead));
 	}
@@ -45,7 +45,7 @@ public class AvatarAndPublicAndPrivateImgsTutorAwsServiceImpl extends AwsClientS
 		String imageURL = null;
 		try {
 			File file = FileUtils.convertMultiPathToFile(multipartFile);
-			upploadPublicFile(nameFile, file, bucketName);
+			uploadPublicFile(nameFile, file, bucketName);
 			file.delete();
 			// urlAvatar "http://meomeo/"tutorAvatarURL
 			imageURL = url.concat(nameFile);

@@ -1,4 +1,4 @@
-package com.project.projectWs.Rest;
+package com.project.projectWs.rest;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.common.utils.ResponseHandler;
 import com.project.location.dto.AreaDto;
-import com.project.projectWs.Utils.Routes;
 import com.project.projectWs.dto.RequestFindingArea;
 import com.project.projectWs.facade.LocationFacade;
+import com.project.projectWs.utils.Routes;
 
 @RestController
 @RequestMapping(value = Routes.AREA)

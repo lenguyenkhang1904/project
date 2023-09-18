@@ -14,7 +14,7 @@ public interface TutorInterestFacade {
 
 	void deleteTutorInterestById(String id);
 
-	List<ResponseTutorInterestDto> findAllTutorInterest();
+	List<ResponseTutorInterestDto> findAllTutorInterest(Long tutorId);
 
 	ResponseTutorInterestDto findTutorInterestById(String id);
 

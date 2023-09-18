@@ -7,16 +7,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+@EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -56,7 +59,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		});
 
 		http.antMatcher("/api/**").authorizeRequests()
-				.antMatchers("/oauth/**", "/api/v2/auth/login", "/swagger-ui/index.html", "/api/v2/auth/logout")
+				.antMatchers("/oauth/**", 
+						"/api/v2/auth/login", 
+						"/swagger-ui/index.html", 
+						"/api/v2/auth/logout", 
+						"/api/v2/tutor/find-all-for-web",
+						"/api/v2/tutor/find-all-for-web-by-id/**",
+						"/api/v2/tutor-request/create")
 				.permitAll().anyRequest().authenticated();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}

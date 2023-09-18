@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.S3ClientOptions;
 
-import come.project.storage.utils.ConstaintInformationStorage;
+import come.project.storage.utils.ConstantInformationStorage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,8 +20,8 @@ public class AwsClientS3Impl {
 	@PostConstruct 
 	public void init()
 	{
-		BasicAWSCredentials awsCredentials=new BasicAWSCredentials(ConstaintInformationStorage.ACCESS_KEY, 
-				ConstaintInformationStorage.SECRET_KEY);
+		BasicAWSCredentials awsCredentials=new BasicAWSCredentials(ConstantInformationStorage.ACCESS_KEY, 
+				ConstantInformationStorage.SECRET_KEY);
 		 this.client = new AmazonS3Client(awsCredentials);
 		 this.client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(true));
 		 this.client.setEndpoint("hn.ss.bfcplatform.vn");

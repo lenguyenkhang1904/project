@@ -2,9 +2,9 @@ package com.project.person.service;
 
 import java.util.List;
 
+import com.project.person.dto.TutorDto;
 import com.project.person.dto.TutorForFindAllDto;
 import com.project.person.entity.Tutor;
-import com.project.person.dto.TutorDto;
 
 public interface TutorService {
 	Long saveTutor(final TutorDto dto);
@@ -28,15 +28,17 @@ public interface TutorService {
     TutorDto findById(final Long id);
     
     Long updateTutor(Tutor tutor);
-    
-    Long updateSubjetGroupMaybe(TutorDto dto);
-
-	Long updateSubjectGroupForSure(TutorDto dto);
-	
-	Long updateNowLevelAndNowUpdateAt(TutorDto dto);
-
-	Long updateCalendar(TutorDto dto);
 	
 	Long update(TutorDto dto);
+
+	List<String> getSubjectGroupsByTutorId(Long tutorId);
+
+	void saveAllSubjectGroup(List<String> subjectGroupOfTutor, Long tutorId);
+	
+	void deleteSubjectGroupMaybeByTutorId(Long tutorId);
+
+	List<Tutor> findTutorBeforeSynchronize();
+	
+	void saveAll(List<Tutor> tutors);
 
 }
