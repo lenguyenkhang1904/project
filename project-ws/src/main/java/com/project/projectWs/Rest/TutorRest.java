@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.common.utils.HandleCharacter;
 import com.project.common.utils.ResponseHandler;
-import com.project.person.dto.TutorDto;
 import com.project.projectWs.dto.RequestSaveTutor;
 import com.project.projectWs.dto.RequestUpdateTutor;
 import com.project.projectWs.dto.ResponseTutor;
@@ -43,18 +43,21 @@ public class TutorRest {
 	private StorageFacade storageFacade;
 
 	@PostMapping("/create")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> saveTutor(@RequestBody final RequestSaveTutor request) {
 		Long id = tutorFacade.saveTutor(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
 	@GetMapping("/find-all")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> findAllTutor() {
 		List<ResponseTutor> tutorDtos = tutorFacade.findAllTutor();
 		return ResponseHandler.getResponse(tutorDtos, HttpStatus.OK);
 	}
 
 	@GetMapping("/find-by-tutor-code/{tutorCode}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> findByTutorCode(@PathVariable("tutorCode") Long tutorCode) {
 		ResponseTutor tutor = tutorFacade.findByTutorCode(tutorCode);
 		if (tutor == null)
@@ -63,6 +66,7 @@ public class TutorRest {
 	}
 
 	@GetMapping("/find-by-phone-number/{phoneNumber}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> findByPhones(@PathVariable("phoneNumber") String phoneNumber) {
 		List<ResponseTutor> tutors = tutorFacade.findByPhoneNumber(phoneNumber);
 		if (tutors.isEmpty())
@@ -79,6 +83,7 @@ public class TutorRest {
 	}
 
 	@GetMapping("/find-by-fullname/{fullName}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> findByFullnameAndReturnObject(@PathVariable("fullName") String fullName) {
 		List<ResponseTutor> tutors = tutorFacade.findByFullNameContain(fullName.toUpperCase());
 		if (tutors.isEmpty()) {
@@ -92,6 +97,7 @@ public class TutorRest {
 	}
 
 	@GetMapping("/find-by-fullname-and-return-name/{fullName}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> findByFullnameAndReturnFullName(
 			@PathVariable("fullName") String fullNameShowName) {
 
@@ -126,6 +132,7 @@ public class TutorRest {
 	}
 
 	@PostMapping("/create-or-update-avatar/{tutorCode}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
 			@PathVariable("tutorCode") String tutorCode) throws IOException {
 
@@ -145,6 +152,7 @@ public class TutorRest {
 	}
 
 	@PostMapping("/create-or-update-public-img/{tutorCode}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> uploadOrUpdatePublicImgs(@RequestParam("file") MultipartFile file,
 			@PathVariable("tutorCode") String tutorCode) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -158,6 +166,7 @@ public class TutorRest {
 	}
 
 	@PostMapping("/create-or-update-private-img/{tutorCode}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> uploadOrUpdatePrivateImgs(@RequestParam("file") MultipartFile file,
 			@PathVariable("tutorCode") String tutorCode) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -171,6 +180,7 @@ public class TutorRest {
 	}
 
 	@PostMapping("/create-or-update-multiple-private-imgs/{tutorCode}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> uploadMutiplePrivateImgs(@RequestParam("files") MultipartFile[] files,
 			@PathVariable("tutorCode") String tutorCode) throws IOException {
 		int count = 0;
@@ -187,6 +197,7 @@ public class TutorRest {
 	}
 
 	@PostMapping("/create-or-update-multiple-public-imgs/{tutorCode}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> uploadMutiplePubliImgs(@RequestParam("files") MultipartFile[] files,
 			@PathVariable("tutorCode") String tutorCode) throws IOException {
 		int count = 0;
@@ -203,6 +214,7 @@ public class TutorRest {
 	}
 
 	@DeleteMapping("/delete-avatar/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> deleteTutorAvatar(@PathVariable("nameFile") String urlPic) {
 		String tutorAvatarURL = ConstantInformationStorage.TUTOR_AVATAR_URL;
 		if (!storageFacade.checkExistObjectinS3Tutor(urlPic))
@@ -212,6 +224,7 @@ public class TutorRest {
 	}
 
 	@DeleteMapping("/delete-private-img/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> deleteTutorPrivateImg(@PathVariable("nameFile") String urlPic) {
 		final String tutorPrivateimgsURL = ConstantInformationStorage.TUTOR_PRIVATE_IMGS_URL;
 		if (!storageFacade.checkExistObjectPrivateInS3Tutor(urlPic))
@@ -221,6 +234,7 @@ public class TutorRest {
 	}
 
 	@DeleteMapping("/delete-public-img/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> deleteTutorPublicImg(@PathVariable("nameFile") String urlPic) {
 		final String tutorPublicImgsURL = ConstantInformationStorage.TUTOR_PUBLIC_IMGS_URL;
 		if (!storageFacade.checkExistObjectPublicInS3Tutor(urlPic))
@@ -230,6 +244,7 @@ public class TutorRest {
 	}
 
 	@PutMapping("/update-private-img/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> UpdatePrivateImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -242,6 +257,7 @@ public class TutorRest {
 	}
 
 	@PutMapping("/update-public-img/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> updatePublicImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -254,19 +270,21 @@ public class TutorRest {
 					HttpStatus.BAD_REQUEST);
 	}
 
-	@GetMapping("/find-by-id/{id}")
-	public ResponseEntity<Object> findByid(@PathVariable("id") final Long id) {
-		TutorDto tutor = tutorFacade.findById(id);
-		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
-	}
+//	@GetMapping("/find-by-id/{id}")
+//	public ResponseEntity<Object> findByid(@PathVariable("id") final Long id) {
+//		TutorDto tutor = tutorFacade.findById(id);
+//		return ResponseHandler.getResponse(tutor, HttpStatus.OK);
+//	}
 
 	@PutMapping("/update")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'TUTOR')")
 	public ResponseEntity<Object> updateTutor(@RequestBody final RequestUpdateTutor request) {
 		Long id = tutorFacade.updateTutor(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
 	@GetMapping("/sync-up-from-s3")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> sync() {
 		boolean check = tutorFacade.findAllTutorSynchronizedAvatarAndPublicAndPrivateImg();
 		return ResponseHandler.getResponse(check, HttpStatus.OK);

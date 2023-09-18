@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class JobRest {
 	private JobFacade jobFacade;
 
 	@PostMapping("/create")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> createJob(@RequestBody final RequestSaveJob request) {
 		String id = jobFacade.createJob(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
@@ -56,6 +58,7 @@ public class JobRest {
 	}
 
 	@PostMapping("/create-or-update-multiple-retain-identification-imgs/{id}")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> createOrUpdateRetainImgs(@RequestParam("files") MultipartFile[] files,
 			@PathVariable("id") String id) throws IOException {
 		int count = 0;
@@ -72,6 +75,7 @@ public class JobRest {
 	}
 
 	@PostMapping("/create-or-update-multiple-retain-identification-img/{id}")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> createOrUpdateRetainImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("id") String id) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -94,12 +98,14 @@ public class JobRest {
 //	}
 
 	@PutMapping("/update-job-result")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> updateJobResult(@RequestBody final RequestUpdateJobResultDto request) {
 		String id = jobFacade.updateJobResult(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
 	@GetMapping("/sync-up")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> syncUpData() {
 		boolean check = jobFacade.findAllJobRetainedImgsIdentificationSynchronized();
 		return ResponseHandler.getResponse(check, HttpStatus.OK);

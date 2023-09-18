@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,12 +39,14 @@ public class TutorRequestRest {
 //	 	}
 	   
 	   @DeleteMapping("/delete-by-id/{id}")
+	   @PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	  	public ResponseEntity<Object> deleteTutorRequest(@PathVariable("id") String id) {
 		   tutorRequestFacade.deleteById(id);
 	  		return ResponseHandler.getResponse("deleted", HttpStatus.OK);
 	  	}
 	   
 	   @GetMapping("/find-all-by-id/{tutorId}")
+	   @PreAuthorize("hasAuthority('ADMINISTRATOR')")
 		public ResponseEntity<Object> findByTutorRequest(@PathVariable("tutorId") Long tutorId) {
 			List<TutorRequestDto> tutorInvitations = tutorRequestFacade.findAll(tutorId);
 			return ResponseHandler.getResponse(tutorInvitations, HttpStatus.OK);

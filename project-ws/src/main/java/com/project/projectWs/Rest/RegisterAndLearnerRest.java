@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,7 @@ public class RegisterAndLearnerRest {
 	private StorageFacade storageFacade;
 
 	@PostMapping("/create-or-update-avatar/{registerAndLearnerId}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> uploadOrUpdate(@RequestParam("file") MultipartFile file,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
 
@@ -60,6 +62,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PostMapping("/create-or-update-public-img/{registerAndLearnerId}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> uploadOrUpdatePublicImgs(@RequestParam("file") MultipartFile file,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -73,6 +76,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PostMapping("/create-or-update-private-img/{registerAndLearnerId}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> uploadOrUpdatePrivateImgs(@RequestParam("file") MultipartFile file,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -86,6 +90,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PostMapping("/create-or-update-multiple-private-imgs/{registerAndLearnerId}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> uploadMutiplePrivateImgs(@RequestParam("files") MultipartFile[] files,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
 		int count = 0;
@@ -103,6 +108,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PostMapping("/create-or-update-multiple-public-imgs/{registerAndLearnerId}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> uploadMutiplePubliImgs(@RequestParam("files") MultipartFile[] files,
 			@PathVariable("registerAndLearnerId") String registerAndLearnerId) throws IOException {
 		int count = 0;
@@ -120,6 +126,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@DeleteMapping("/delete-avatar/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> deleteRegisterAndLearnerAvatar(@PathVariable("nameFile") String urlPic) {
 		String registerAndLearnerAvatarURL = ConstantInformationStorage.REGISTER_AND_LEARNER_AVATAR_URL;
 		if (!storageFacade.checkExistObjectinS3RegisterAndLearner(urlPic))
@@ -131,6 +138,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@DeleteMapping("/delete-private-img/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> deleteRegisterAndLearnerPrivateImg(@PathVariable("nameFile") String urlPic) {
 		final String registerAndLearnerPrivateimgsURL = ConstantInformationStorage.REGISTER_AND_LEARNER_PRIVATE_IMGS_URL;
 		if (!storageFacade.checkExistObjectPrivateInS3RegisterAndLearner(urlPic))
@@ -140,6 +148,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@DeleteMapping("/delete-public-img/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> deleteRegisterAndLearnerPublicImg(@PathVariable("nameFile") String urlPic) {
 
 		final String registerAndLearnerPublicImgsURL = ConstantInformationStorage.REGISTER_AND_LEARNER_PUBLIC_IMGS_URL;
@@ -150,6 +159,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PutMapping("/update-private-img/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> UpdatePrivateImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -165,6 +175,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PutMapping("/update-public-img/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> updatePublicImg(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -178,6 +189,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@GetMapping("/find-by-phone-number/{phoneNumber}")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> findByPhones(@RequestParam("phoneNumber") String phoneNumber) {
 		List<ResponseRegisterAndLearnerDto> registerAndLearnerDtos = registerAndLearnerFacade
 				.findByPhoneNumber(phoneNumber);
@@ -187,6 +199,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@GetMapping("/find-by-end-phone-number/{endPhoneNumber}")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> findByEndPhone(@RequestParam("endPhoneNumber") String endPhoneNumber) {
 		List<ResponseRegisterAndLearnerDto> registerAndLearnerDtos = registerAndLearnerFacade
 				.findByEndPhoneNumber(endPhoneNumber);
@@ -196,6 +209,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@GetMapping("/find-by-full-name-and-return-object/{fullName}")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> findByFullnameAndReturnObject(@RequestParam("fullName") String fullName) {
 		List<ResponseRegisterAndLearnerDto> registerAndLearnerDtos = registerAndLearnerFacade
 				.findByEnglishFullNameContaining(fullName.toUpperCase());
@@ -210,6 +224,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@GetMapping("/find-by-full-name-and-return-full-name/{fullName}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> findByFullnameAndReturnFullName(
 			@RequestParam("fullName") String fullNameShowName) {
 
@@ -227,6 +242,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@GetMapping("/find-by-full-name-and-vocative-and-return-object/{fullname}/{vocative}")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> findByFullnameAndVocativeAndReturnObject(@RequestParam("fullname") String fullname,
 			@RequestParam("vocative") String vocative) {
 		List<ResponseRegisterAndLearnerDto> registerAndLearners = registerAndLearnerFacade
@@ -243,6 +259,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@GetMapping("/find-by-full-name-and-vocative-and-return-fullName/{fullname}/{vocative}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> findByFullnameAndVocativeAndReturnFullName(@RequestParam("fullname") String fullname,
 			@RequestParam("vocative") String vocative) {
 		List<String> registerAndLearners = registerAndLearnerFacade.findByVocativeAndFullNameAndShowFullName(vocative,
@@ -259,6 +276,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PostMapping("/create")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> createRegisterAndLearner(@RequestBody final RequestSaveResigterAndLearnerDto dto) {
 		String registerAndLearnerId = registerAndLearnerFacade.save(dto);
 		if (registerAndLearnerId == null)
@@ -267,6 +285,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PutMapping("/update-avatar/{nameFile}")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> updateAvatarRegisterAndLearner(@RequestParam("file") MultipartFile file,
 			@PathVariable("nameFile") String nameFile) throws IOException {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -278,13 +297,16 @@ public class RegisterAndLearnerRest {
 			return ResponseHandler.getResponse("You have to upload files which have type of .jpg, .png, .jpeg ",
 					HttpStatus.BAD_REQUEST);
 	}
+	
 	@GetMapping("/find-all")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> findAllRegisterAndLearners() {
 		List<ResponseRegisterAndLearnerDto> dtos = registerAndLearnerFacade.findAll();
 		return ResponseHandler.getResponse(dtos, HttpStatus.OK);
 	}
 
 	@GetMapping("/find-by-id/{id}")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> findByRegisterAndLearnerId(@PathVariable("id") String id) {
 		ResponseRegisterAndLearnerDto dto = registerAndLearnerFacade.findByRegisterAndLearnerCode(id);
 		if (dto == null)
@@ -293,6 +315,7 @@ public class RegisterAndLearnerRest {
 	}
 
 	@PutMapping("/update")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> updateRegisterAndLearner(@RequestBody final RequestUpdateResigterAndLearnerDto dto) {
 		String registerAndLearnerId = registerAndLearnerFacade.update(dto);
 		if (registerAndLearnerId == null)
@@ -301,6 +324,7 @@ public class RegisterAndLearnerRest {
 	}
 	
 	@GetMapping("/sync-up-from-s3")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> sync() {
 		boolean check = registerAndLearnerFacade.findAllRegisterAndLearnerSynchronizeSynchronizedAvatarAndPublicAndPrivateImg();
 		return ResponseHandler.getResponse(check, HttpStatus.OK);

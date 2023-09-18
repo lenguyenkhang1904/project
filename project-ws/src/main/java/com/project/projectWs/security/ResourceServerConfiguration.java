@@ -30,11 +30,14 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	public void configure(HttpSecurity http) throws Exception {
 
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and().authorizeRequests().antMatchers("/api/v2/**").authenticated()
+		.and().authorizeRequests()
+		.antMatchers("/api/v2/tutor/find-all-for-web").permitAll()
+		.antMatchers("/api/v2/tutor/find-all-for-web-by-id/**").permitAll()
+		.antMatchers("/api/v2/tutor-request/create").permitAll()
+		.antMatchers("/api/v2/**")
+		.authenticated()
 		.and().formLogin().loginProcessingUrl(Routes.AUTH)
 		.and().csrf().disable().cors()
 		.and().logout().clearAuthentication(true).deleteCookies();
-		// antMatchers("/api/v2/user/**",
-		// "/api/v2/role/**").hasAnyRole("administrator");
 	}
 }

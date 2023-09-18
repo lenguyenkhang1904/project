@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,12 +29,14 @@ public class TaskRest {
 	private TaskFacade taskFacade;
 	
 	@PostMapping("/create")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> createTask(@RequestBody final RequestSaveTaskDto request) {
 		String id = taskFacade.save(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
 	@PutMapping("/update")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 	public ResponseEntity<Object> updateTask(@RequestBody final RequestUpdateTaskDto request) {
 		String id = taskFacade.update(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
