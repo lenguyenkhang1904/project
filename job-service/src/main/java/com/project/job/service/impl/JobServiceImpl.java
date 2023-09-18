@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.project.common.utils.DateConverter;
+import com.project.common.utils.JobResult;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.job.dto.JobDto;
 import com.project.job.dto.JobProgressDto;
@@ -48,6 +49,7 @@ public class JobServiceImpl implements JobService {
 	private ApplicationJobRepository applicationJobRepository;
 
 	@Override
+	@Transactional
 	public String createJob(JobDto dto) {
 		Job job = new Job();
 		String id = mapDtoToObject(dto, job, false);
@@ -59,12 +61,13 @@ public class JobServiceImpl implements JobService {
 		LocalDateTime createdDate = job.getCreatedAt();
 
 		job = ObjectMapperUtils.map(dto, Job.class);
+		job.setJobResult(dto.getJobResult());
 
 		final String currentUser = dto.getCreatedBy();
 		if (isUpdated) {
-			job.setCreatedAt(createdDate);
 			job.setUpdatedBy(currentUser);
 			job.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
+			job.setCreatedAt(createdDate);
 		} else {
 			job.setCreatedBy(currentUser);
 			job.setCreatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
@@ -95,6 +98,7 @@ public class JobServiceImpl implements JobService {
 		ApplicationJob applicationJob = new ApplicationJob();
 		applicationJob.setJob(job);
 		applicationJob.setAppicationId(dto.getApplicationId());
+		applicationJobRepository.deleteByJobId(job.getId());
 		applicationJobRepository.save(applicationJob);
 
 		return job.getId();
@@ -110,12 +114,6 @@ public class JobServiceImpl implements JobService {
 			Job job = jobOpt.get();
 
 			final String jobId = job.getId();
-
-			byTheTimeCreatingJobRepo.deleteByJobId(jobId);
-
-			tutorByTheTimeCreatingJobRepo.deleteByJobId(jobId);
-
-			applicationJobRepository.deleteByJobId(jobId);
 
 			return jobId.equals(mapDtoToObject(dto, job, true)) ? jobId : StringUtils.EMPTY;
 		}
@@ -160,11 +158,13 @@ public class JobServiceImpl implements JobService {
 
 		if (!StringUtils.isEmpty(entity.getRetainedImgsIdentification())) {
 			imgs = Arrays.asList(entity.getRetainedImgsIdentification().split(", "));
-			imgs.remove(imgs.size() - 1);
+			// imgs.remove(imgs.size() - 1);
 		}
 		dto.setRetainedImgsIdentification(imgs);
 
-		dto.setApplicationId(entity.getApplicationJob().getAppicationId());
+		dto.setApplicationId(
+				entity.getApplicationJob() == null ? StringUtils.EMPTY : entity.getApplicationJob().getAppicationId());
+		dto.setJobResult(entity.getJobResult() == null ? JobResult.NONE : entity.getJobResult());
 
 		return dto;
 	}
@@ -192,4 +192,15 @@ public class JobServiceImpl implements JobService {
 		}
 		return null;
 	}
+
+	@Override
+	public List<Job> findAllSyncUp() {
+		return jobRepo.findAllSyncUp();
+	}
+
+	@Override
+	public void saveAll(List<Job> jobs) {
+		jobRepo.saveAll(jobs);
+	}
+
 }

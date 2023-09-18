@@ -14,13 +14,9 @@ public class SchoolerDto implements Serializable  {
 	
 	private String id;
 
-	private String confirmImgs;
-
 	private String nowLevel;
 	
 	private String note;
-
-	private LocalDateTime nowLevelUpdatedAt;
 
 	private String institutionName;
 
@@ -31,5 +27,7 @@ public class SchoolerDto implements Serializable  {
 	private String institutionType;
 	
 	private String createdBy;
+	
+	private LocalDateTime createdAt;
 
 }

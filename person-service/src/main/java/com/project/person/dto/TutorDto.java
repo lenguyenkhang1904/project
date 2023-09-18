@@ -58,6 +58,8 @@ public class TutorDto extends PersonInformationDto implements Serializable {
 	private List<String> tutorSubjectGroupMaybeIds = new LinkedList<>();
 
 	private List<String> tutorSubjectGroupForSureIds = new LinkedList<>();
+	
+	private List<String> tutorSubjectGroupFaileIds = new LinkedList<>();
 
 	private String subject;
 

@@ -48,14 +48,9 @@ public class TaskByTheTimeCreatingJob {
 	private String requireNote;
 	// THỜI GIAN
 	private Integer lessonNumber; // Số buổi
-	@Enumerated(EnumType.STRING)
 	
+	@Enumerated(EnumType.STRING)
 	private AmoutPerTime lessonNumberPerTime; // Số buổi tính theo
-	
-	private float hour; // Số giờ
-	
-	@Enumerated(EnumType.STRING)
-	private AmoutPerTime hourPerTime; // Số giờ tính theo
 	
 	private String freeTime;
 	
@@ -64,10 +59,12 @@ public class TaskByTheTimeCreatingJob {
 	private LocalDateTime startDate;
 	
 	// HỌC PHÍ
-	private Integer salary;
+	private Integer taskFeeForStudent;
+
+	private Integer taskFeeForGraduatedStudent;
+
+	private Integer taskFeeForTeacher;
 	
-	@Enumerated(EnumType.STRING)
-	private UnitOfMoney unitOfSalary;
 	
 	private AmoutPerTime salaryPerTime;
 	// PHÍ THU
@@ -92,7 +89,7 @@ public class TaskByTheTimeCreatingJob {
 	private UnitOfMoney unitOfAffiliateFee;
 	
 	@Enumerated(EnumType.STRING)
-	private PercentageOfMoney percentageOfAffiliateFeeIntegeraskFee;
+	private PercentageOfMoney percentageOfAffiliateFeeInTaskFee;
 
 	private String taskPlaceAddresses;
 

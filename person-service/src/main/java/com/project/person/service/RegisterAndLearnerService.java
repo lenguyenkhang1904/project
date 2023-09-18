@@ -3,6 +3,7 @@ package com.project.person.service;
 import java.util.List;
 
 import com.project.person.dto.RegisterAndLearnerDto;
+import com.project.person.entity.RegisterAndLearner;
 
 public interface RegisterAndLearnerService {
 	
@@ -40,4 +41,7 @@ public interface RegisterAndLearnerService {
 
 	String update(RegisterAndLearnerDto registerAndLearnerDto);
 
+	List<RegisterAndLearner> findAllBeforeSynchronize();
+	
+	void saveAll(List<RegisterAndLearner> entities);
 }

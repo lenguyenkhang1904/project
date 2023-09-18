@@ -60,4 +60,6 @@ public interface RegisterAndLearnerFacade {
 	
 	String update(RequestUpdateResigterAndLearnerDto dto);
 
+	boolean findAllRegisterAndLearnerSynchronizeSynchronizedAvatarAndPublicAndPrivateImg();
+
 }

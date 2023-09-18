@@ -27,16 +27,14 @@ public interface RegisterAndLearnerRepository extends JpaRepository<RegisterAndL
 	@Query("SELECT r.fullName FROM RegisterAndLearner r WHERE r.englishFullName LIKE CONCAT('%',:englishFullName,'%')")
 	List<String> findByEnglishNameAndShowFullName(@Param("englishFullName") String englishFullName);
 	
-	@EntityGraph(value = "registerAndLearner")
 	@Query("SELECT r.fullName FROM RegisterAndLearner r WHERE r.fullName LIKE CONCAT('%',:fullName,'%')")
 	List<String> findByFullNameAndShowFullName(@Param("fullName") String fullName);
 	
 	@EntityGraph(value = "registerAndLearner")
 	List<RegisterAndLearner> findByVocativeAndFullNameContaining(String vocative,String fullName);
 	
-	@EntityGraph(value = "registerAndLearner")
 	@Query("SELECT r.fullName FROM RegisterAndLearner r WHERE r.vocative=:vocative AND r.fullName LIKE CONCAT('%',:fullName,'%')")
-	List<String> findByVocativeAndFullNameAndShowFullName(@Param("vocative") String vocative,@Param("fullName") String fullName);
+	List<String> findByVocativeAndFullNameAndShowFullNameByFullName(@Param("vocative") String vocative,@Param("fullName") String fullName);
 	
 	@EntityGraph(value = "registerAndLearner")
 	List<RegisterAndLearner> findByVocativeAndEnglishFullNameContaining(String vocative,String englishFullName);

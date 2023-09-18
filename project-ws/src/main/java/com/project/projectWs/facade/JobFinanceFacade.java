@@ -25,4 +25,6 @@ public interface JobFinanceFacade {
 	
 	ResponseJobFinanceDto findById(String id);
 
+	boolean syncUpData();
+
 }

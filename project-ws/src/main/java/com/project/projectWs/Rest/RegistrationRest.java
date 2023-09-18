@@ -1,10 +1,11 @@
-package com.project.projectWs.rest;
+ package com.project.projectWs.rest;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,26 +29,29 @@ public class RegistrationRest {
 	private RegistrationFacade registrationFacade;
 	
 	@PostMapping("/create")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> createRegistration(@RequestBody final RequestSaveRegistrationDto request) {
 		String id = registrationFacade.createRegistration(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
 	@PutMapping("/update")
+	@PreAuthorize("hasAnyAuthority('REGISTERANDLEARNER', 'ADMINISTRATOR')")
 	public ResponseEntity<Object> updateRegistration(@RequestBody final RequestUpdateRegistrationDto request) {
 		String id = registrationFacade.updateRegistration(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 	
-	@GetMapping("/find-all")
-	public ResponseEntity<Object> findAllRegistration() {
-		List<ResponseRegistrationDto> dtos = registrationFacade.findAllRegistration();
+	@GetMapping("/find-all-by-task-id/{taskId}")
+	@PreAuthorize("hasAuthority('ADMINISTRATOR')")
+	public ResponseEntity<Object> findAllRegistrationByTaskId(@PathVariable("taskId") String taskId) {
+		List<ResponseRegistrationDto> dtos = registrationFacade.findAllRegistration(taskId);
 		return ResponseHandler.getResponse(dtos , HttpStatus.OK);
 	}
 	
-	@GetMapping("/find-by-id/{id}")
-	public ResponseEntity<Object> findById(@PathVariable("id") String id) {
-		ResponseRegistrationDto dto = registrationFacade.findById(id);
-		return ResponseHandler.getResponse(dto, HttpStatus.OK);
-	}
+//	@GetMapping("/find-by-id/{id}")
+//	public ResponseEntity<Object> findById(@PathVariable("id") String id) {
+//		ResponseRegistrationDto dto = registrationFacade.findById(id);
+//		return ResponseHandler.getResponse(dto, HttpStatus.OK);
+//	}
 }

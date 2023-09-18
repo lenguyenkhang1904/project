@@ -1,5 +1,6 @@
 package com.project.projectWs.facade.impl;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -9,20 +10,25 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.common.collect.Sets;
 import com.project.common.utils.JobResult;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.education.dto.SubjectGroupDto;
 import com.project.finance.dto.JobFinanceDto;
 import com.project.finance.service.JobFinanceService;
 import com.project.job.dto.JobDto;
+import com.project.job.dto.JobProgressDto;
 import com.project.job.dto.TaskByTheTimeCreatingDto;
 import com.project.job.dto.TutorByTheTimeCreatingJobDto;
+import com.project.job.entity.Job;
+import com.project.job.service.JobProgressService;
 import com.project.job.service.JobService;
+import com.project.location.dto.TaskPlaceAddressDto;
 import com.project.person.dto.TutorDto;
 import com.project.person.service.TutorService;
-import com.project.person.utils.RemoveDuplicateElement;
 import com.project.projectWs.dto.RequestSaveJob;
 import com.project.projectWs.dto.RequestUpdateJobDto;
 import com.project.projectWs.dto.RequestUpdateJobResultDto;
@@ -36,18 +42,13 @@ import com.project.projectWs.facade.UserFacade;
 import com.project.projectWs.utils.ExperienceForTutor;
 import com.project.storage.service.RetainedImgsIdentificationAwsService;
 import com.project.task.dto.ApplicationDto;
-import com.project.task.dto.TaskDto;
 import com.project.task.service.ApplicationService;
-import com.project.task.service.TaskService;
 
 @Service
 public class JobFacadeImpl implements JobFacade {
 
 	@Autowired
 	private TutorService tutorService;
-
-	@Autowired
-	private TaskService taskService;
 
 	@Autowired
 	private JobService jobService;
@@ -72,6 +73,9 @@ public class JobFacadeImpl implements JobFacade {
 
 	@Autowired
 	private TutorFacade tutorFacade;
+
+	@Autowired
+	private JobProgressService jobProgressService;
 
 	@Override
 	public String createJob(RequestSaveJob request) {
@@ -110,21 +114,31 @@ public class JobFacadeImpl implements JobFacade {
 		Long tutorId = Long.parseLong(applicationId.substring(
 				(request == null ? requestUpdate.getApplicationId() : request.getApplicationId()).indexOf("-") + 1,
 				applicationId.lastIndexOf("-")));
-		TutorDto tutorDto = tutorService.findById(tutorId);
+		ResponseTutor tutorDto = tutorFacade.findByTutorCode(tutorId);
 		if (tutorId != null && tutorDto != null) {
 			TutorByTheTimeCreatingJobDto dto = new TutorByTheTimeCreatingJobDto();
 			dto = ObjectMapperUtils.map(tutorDto, TutorByTheTimeCreatingJobDto.class);
 			dto.setTutorId(tutorDto.getId());
+			dto.setTutorAddress(tutorDto.getTutorAddress());
+			dto.setPrivateImgs(tutorDto.getPrivateImgs().toString());
+			dto.setPublicImgs(tutorDto.getPublicImgs().toString());
 			jobDto.setTutorId(tutorId);
 			jobDto.setTutorByTheTimeCreatingJobDto(dto);
+
 		}
 
 		String taskId = applicationId.substring(0, applicationId.indexOf("-"));
-		TaskDto taskDto = taskService.findByTaskId(taskId);
-
+		ResponseTaskDto taskDto = taskFacade.findByTaskId(taskId);
 		if (!StringUtils.isEmpty(taskId) && taskDto != null) {
 			TaskByTheTimeCreatingDto dto = new TaskByTheTimeCreatingDto();
 			dto = ObjectMapperUtils.map(taskDto, TaskByTheTimeCreatingDto.class);
+
+			Set<TaskPlaceAddressDto> taskPlaceAddressDtos = taskDto.getTaskPlaceAddressDtos();
+
+			if (!CollectionUtils.isEmpty(taskPlaceAddressDtos)) {
+				dto.setTaskPlaceAddresses(taskPlaceAddressDtos.toString());
+			}
+
 			dto.setTaskId(taskId);
 			jobDto.setTaskId(taskId);
 			jobDto.setTaskByTheTimeCreatingDto(dto);
@@ -138,14 +152,15 @@ public class JobFacadeImpl implements JobFacade {
 		List<ResponseJobDto> responses = new LinkedList<>();
 		List<JobDto> jobDtos = jobService.findAll();
 
-		List<ApplicationDto> applicationDtos = applicationService.findAllApplication();
-
 		List<JobFinanceDto> jobFinances = jobFinanceService.findAll();
+
+		List<JobProgressDto> jobProgresses = jobProgressService.findAll();
 
 		if (!jobDtos.isEmpty()) {
 			responses = jobDtos.stream().map(item -> {
 				ResponseJobDto response = new ResponseJobDto();
-				response = mapDtoToResponse(item, response, applicationDtos, jobFinances);
+				List<ApplicationDto> applicationDtos = applicationService.findAllApplication(item.getTaskId());
+				response = mapDtoToResponse(item, response, applicationDtos, jobFinances, jobProgresses);
 
 				return response;
 			}).collect(Collectors.toList());
@@ -155,7 +170,7 @@ public class JobFacadeImpl implements JobFacade {
 	}
 
 	private ResponseJobDto mapDtoToResponse(JobDto dto, ResponseJobDto response, List<ApplicationDto> applicationDtos,
-			List<JobFinanceDto> jobFinances) {
+			List<JobFinanceDto> jobFinances, List<JobProgressDto> jobProgresses) {
 
 		response = ObjectMapperUtils.map(dto, ResponseJobDto.class);
 
@@ -174,6 +189,13 @@ public class JobFacadeImpl implements JobFacade {
 			response.setJobFinanceDtos(jobFinanceDtoOpt);
 		}
 
+		Set<JobProgressDto> jobProgressesOpt = jobProgresses.stream()
+				.filter(item -> item.getJobId().equals(dto.getId())).collect(Collectors.toSet());
+
+		if (!jobProgressesOpt.isEmpty()) {
+			response.setJobProgressDtos(jobProgressesOpt);
+		}
+
 		return response;
 	}
 
@@ -181,12 +203,13 @@ public class JobFacadeImpl implements JobFacade {
 	public ResponseJobDto findById(String id) {
 		JobDto dto = jobService.findById(id);
 
-		List<ApplicationDto> applicationDtos = applicationService.findAllApplication();
-
 		List<JobFinanceDto> jobFinances = jobFinanceService.findAll();
+
+		List<JobProgressDto> jobProgresses = jobProgressService.findAll();
 		if (dto != null) {
 			ResponseJobDto response = new ResponseJobDto();
-			response = mapDtoToResponse(dto, response, applicationDtos, jobFinances);
+			List<ApplicationDto> applicationDtos = applicationService.findAllApplication(dto.getTaskId());
+			response = mapDtoToResponse(dto, response, applicationDtos, jobFinances, jobProgresses);
 			return response;
 		}
 		return null;
@@ -198,10 +221,11 @@ public class JobFacadeImpl implements JobFacade {
 		JobDto dto = jobService.findById(
 				fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("RetainedImgsIdentification")));
 		List<String> urlImgs = dto.getRetainedImgsIdentification();
-		urlImgs.add(url);
-		List<String> converter = new LinkedList<>(urlImgs);
-		converter = RemoveDuplicateElement.removeDuplicateElemet(converter);
-		dto.setRetainedImgsIdentification(urlImgs);
+		List<String> urls = new LinkedList<>();
+		urls.add(url);
+		urls.addAll(urlImgs);
+		urls = new LinkedList<>(new HashSet<>(urls));
+		dto.setRetainedImgsIdentification(urls);
 		String jobUpdatedId = jobService.updateJob(dto);
 		return jobUpdatedId != null ? "Insert RetainedImgsIdentifications successfully" : "";
 	}
@@ -220,7 +244,7 @@ public class JobFacadeImpl implements JobFacade {
 				awsAvatarURL = uploadImageToAmazonImgs(file, id + "RetainedImgsIdentification" + String.valueOf(1));
 				return awsAvatarURL;
 			} else {
-				int count = Integer.parseInt(lastURL.substring(lastURL.lastIndexOf("c") + 1));
+				int count = Integer.parseInt(lastURL.substring(lastURL.lastIndexOf("n") + 1));
 				awsAvatarURL = uploadImageToAmazonImgs(file,
 						id + "RetainedImgsIdentification" + String.valueOf(count + 1));
 				return awsAvatarURL;
@@ -246,8 +270,11 @@ public class JobFacadeImpl implements JobFacade {
 		boolean check = true;
 
 		if (jobDto != null) {
-			if (jobDto.getJobResult().equals(JobResult.SUCCESS) && jobDto.getId().equals(request.getId())
-					&& request.getJobResult().equals(JobResult.SUCCESS)) {
+			JobResult jobRes = jobDto.getJobResult() == null ? JobResult.NONE : jobDto.getJobResult();
+			if ((jobRes.equals(request.getJobResult()) && (request.getJobResult().equals(JobResult.SUCCESS)
+					|| request.getJobResult().equals(JobResult.FAIL_CAUSE_LEARNER)
+					|| request.getJobResult().equals(JobResult.FAIL_CAUSE_TUTOR)))
+					&& jobDto.getId().equals(request.getId())) {
 				check = false;// lay duoc enity moi cap nhat
 			}
 		}
@@ -257,14 +284,12 @@ public class JobFacadeImpl implements JobFacade {
 			job.setJobResult(request.getJobResult());
 			job.setFailReason(request.getFailReason());
 			job.setFindAnotherTutorIfFail(request.getFindAnotherTutorIfFail());
-			jobDto.setCreatedBy(userFacade.getCurrentUser());
-			String jobId = jobService.updateJob(jobDto);
+			job.setCreatedBy(userFacade.getCurrentUser());
+			String jobId = jobService.updateJob(job);
 
-			Long tutorId = Long.parseLong(
-					request.getId().substring(request.getId().indexOf("-") + 1, request.getId().lastIndexOf("-a")));
+			Long tutorId = Long.parseLong(jobId.substring(jobId.indexOf("-") + 1, jobId.lastIndexOf("-a")));
 
 			String taskId = request.getId().substring(0, request.getId().indexOf("-"));
-
 			ResponseTutor tutorRe = tutorFacade.findByTutorCode(tutorId);
 			if (tutorRe != null) {
 				tutorRe = experienceForTutor.updateExpForTutor(tutorRe);
@@ -276,10 +301,10 @@ public class JobFacadeImpl implements JobFacade {
 				successNo = 0;
 			}
 			Set<SubjectGroupDto> subjectGroupTasks = taskRe.getSubjectGroups();
-			Set<SubjectGroupDto> subjectGroupForSureTutors = tutorRe.getSubjectGroupForsures().stream()
-					.collect(Collectors.toSet());
-			successNo += 1;
 			if (request.getJobResult().equals(JobResult.SUCCESS)) {
+				Set<SubjectGroupDto> subjectGroupForSureTutors = tutorRe.getSubjectGroupForsures().stream()
+						.collect(Collectors.toSet());
+				successNo += 1;
 				if (subjectGroupForSureTutors.isEmpty() && !subjectGroupTasks.isEmpty()) {
 					subjectGroupForSureTutors.addAll(subjectGroupTasks);
 					tutorRe.setSubjectGroupForsures(subjectGroupForSureTutors.stream().collect(Collectors.toList()));
@@ -303,9 +328,11 @@ public class JobFacadeImpl implements JobFacade {
 						.collect(Collectors.toSet());
 				successNo -= 1;
 				if (subjectGroupForFails.isEmpty() && !subjectGroupTasks.isEmpty()) {
+					tutorRe.setSuccessJobsNumbers(successNo);
 					subjectGroupForFails.addAll(subjectGroupTasks);
 					tutorRe.setSubjectGroupfails(subjectGroupForFails.stream().collect(Collectors.toList()));
-					// iTutorRepository.save(tutor);
+					TutorDto tutorDto = convertResponseToJobDto(tutorRe);
+					tutorService.update(tutorDto);
 				} else if (!subjectGroupForFails.isEmpty() && !subjectGroupTasks.isEmpty()) {
 					subjectGroupTasks.stream().filter(subjectGroupTask -> subjectGroupForFails.stream().anyMatch(
 							subjectGroupForFail -> !subjectGroupForFail.getId().equals(subjectGroupTask.getId())))
@@ -329,6 +356,7 @@ public class JobFacadeImpl implements JobFacade {
 		TutorDto dto = new TutorDto();
 		dto = ObjectMapperUtils.map(response, TutorDto.class);
 		dto.setTutorAddressAreaId(response.getTutorAddressAreaId().getId());
+		dto.setSuccessJobsNumbers(response.getSuccessJobsNumbers());
 
 		dto.setAreaTutorIds(response.getAreaTutorId().stream().map(item -> {
 			return item.getId();
@@ -342,8 +370,35 @@ public class JobFacadeImpl implements JobFacade {
 			return item.getId();
 		}).collect(Collectors.toList()));
 
+		dto.setTutorSubjectGroupFaileIds(response.getSubjectGroupfails().stream().map(item -> {
+			return item.getId();
+		}).collect(Collectors.toList()));
+
 		return dto;
 
+	}
+
+	@Override
+	public boolean findAllJobRetainedImgsIdentificationSynchronized() {
+		Set<String> urlRetainedImgsIdentificationOfJob = Sets.newHashSet(identificationAwsService.findAll());
+		List<Job> jobs = jobService.findAllSyncUp();
+		for (Job job : jobs) {
+			List<String> urls = urlRetainedImgsIdentificationOfJob.stream()
+					.filter(item -> item.contains(String.valueOf(job.getId()))).collect(Collectors.toList());
+
+			if (!CollectionUtils.isEmpty(urls)) {
+				StringBuilder imgs = new StringBuilder();
+				urls.stream().forEach(item -> {
+					imgs.append(item + ", ");
+				});
+				job.setRetainedImgsIdentification(imgs.toString());
+			}
+
+		}
+		
+		jobService.saveAll(jobs);
+		
+		return true;
 	}
 
 }

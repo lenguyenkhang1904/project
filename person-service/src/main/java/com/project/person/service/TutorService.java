@@ -37,4 +37,8 @@ public interface TutorService {
 	
 	void deleteSubjectGroupMaybeByTutorId(Long tutorId);
 
+	List<Tutor> findTutorBeforeSynchronize();
+	
+	void saveAll(List<Tutor> tutors);
+
 }

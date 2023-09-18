@@ -53,9 +53,9 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory().withClient(clientId).secret(passwordEncoder.encode(secretId))
-				.accessTokenValiditySeconds(expireToken)
-				.refreshTokenValiditySeconds(expireToken)
-				.authorizedGrantTypes("password", "refresh_token").scopes("read", "write");
+		.accessTokenValiditySeconds(expireToken)
+		.refreshTokenValiditySeconds(expireToken)
+		.authorizedGrantTypes("password", "refresh_token").scopes("read", "write");
 	}
 
 	@Override

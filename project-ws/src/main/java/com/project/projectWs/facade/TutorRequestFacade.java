@@ -10,7 +10,7 @@ public interface TutorRequestFacade {
 
 	String updateTutorRequest(TutorRequestDto dto);
 
-	List<TutorRequestDto> findAll();
+	List<TutorRequestDto> findAll(Long tutorId);
 
 	TutorRequestDto findById(String id);
 

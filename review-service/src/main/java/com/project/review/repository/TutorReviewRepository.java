@@ -12,7 +12,11 @@ import com.project.review.entity.TutorReview;
 @Repository
 public interface TutorReviewRepository extends JpaRepository<TutorReview, String> {
 	
-	@Query("SELECT tr.starNumber FROM TutorReview tr WHERE tr.tutorId=:id")
-	List<Double> findAllByIdTutor(@Param("id") Long tutorId);
+	@Query("SELECT tr FROM TutorReview tr WHERE tr.tutorId=:id")
+	List<TutorReview> findAllByIdTutor(@Param("id") Long tutorId);
+
+	@Query("SELECT tr FROM TutorReview tr")
+	List<TutorReview> findAllBefore();
 
 }
+ 

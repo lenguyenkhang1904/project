@@ -51,7 +51,7 @@ public class FeedbackImgServiceImpl extends AwsClientS3Impl implements FeedbackI
 	@Override
 	public List<String> findAllPrivateFeedBackImgs() {
 		List<String> listObject = listUrlsFeedbacks();
-		return listObject.stream().filter(item -> item.contains("private")).collect(Collectors.toList());
+		return listObject.stream().filter(item -> item.contains("Private")).collect(Collectors.toList());
 	}
 
 	private List<String> listUrlsFeedbacks() {
@@ -70,7 +70,7 @@ public class FeedbackImgServiceImpl extends AwsClientS3Impl implements FeedbackI
 	@Override
 	public List<String> findAllPublicFeedBackImgs() {
 		List<String> listObject = listUrlsFeedbacks();
-		return listObject.stream().filter(item -> item.contains("public")).collect(Collectors.toList());
+		return listObject.stream().filter(item -> item.contains("Public")).collect(Collectors.toList());
 	}
 
 	@Override

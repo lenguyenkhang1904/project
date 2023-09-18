@@ -31,7 +31,7 @@ public class TutorInterest extends AbstractEntity {
 	private String id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "register_and_learner_id")
+	@JoinColumn(name = "register_and_learner_id", unique = true)
 	private RegisterAndLearner registerAndLearner;
 
 	@Column(name = "learner_and_register_phone")

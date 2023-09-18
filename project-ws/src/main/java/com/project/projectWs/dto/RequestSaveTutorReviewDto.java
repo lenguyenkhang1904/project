@@ -13,7 +13,7 @@ public class RequestSaveTutorReviewDto implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	private Double starNumber;
 
 	private String feedbackContent;

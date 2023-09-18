@@ -20,6 +20,9 @@ public interface UserService {
 	String updateTypeRegisterAndLearner(final String id, final String registerAndLearnerId, final String currentUser);
 	
 	String save(UserDto dto);
+	
+	List<UserDto> findAll();
 
+	void deleteById(String id);
 
 }

@@ -34,4 +34,14 @@ public class TaskPlaceAddressDto implements Serializable {
 	
 	private String taskId;
 
+	@Override
+	public String toString() {
+		return "TaskPlaceAddressDto : {\n   exactAddNumber=" + exactAddNumber + ", exactXCoo=" + exactXCoo
+				+ ", exactYCoo=" + exactYCoo + ", relAddNumber=" + relAddNumber + ", relXCoo=" + relXCoo + ", relYCoo="
+				+ relYCoo + ", addStreet=" + addStreet + ", addStreetNote=" + addStreetNote + ", areaId=" + areaId
+				+ ", createdBy=" + createdBy + ", taskId=" + taskId + " }";
+	}
+
+	
+	
 }

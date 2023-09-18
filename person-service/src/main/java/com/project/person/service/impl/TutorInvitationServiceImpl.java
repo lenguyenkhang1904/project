@@ -42,11 +42,15 @@ public class TutorInvitationServiceImpl implements TutorInvitationService {
 			Tutor tutor = tutorOpt.get();
 			tutorInvitation.setTutor(tutor);
 		}
-		Optional<RegisterAndLearner> registerAndLearnerOpt = registerAndLearnerRepository.findById(dto.getRegisterAndLearnerId());
-		if (!tutorOpt.isEmpty()) {
-			RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
-			tutorInvitation.setRegisterAndLearner(registerAndLearner);
+		
+		if(!StringUtils.isEmpty(dto.getRegisterAndLearnerId())) {
+			Optional<RegisterAndLearner> registerAndLearnerOpt = registerAndLearnerRepository.findById(dto.getRegisterAndLearnerId());
+			if (!tutorOpt.isEmpty()) {
+				RegisterAndLearner registerAndLearner = registerAndLearnerOpt.get();
+				tutorInvitation.setRegisterAndLearner(registerAndLearner);
+			}
 		}
+
 		
 		return tutorInvitationRepository.save(tutorInvitation).getId();
 	}
@@ -81,13 +85,18 @@ public class TutorInvitationServiceImpl implements TutorInvitationService {
 	}
 
 	@Override
-	public List<TutorInvitation> findAll() {
-		return tutorInvitationRepository.findAll();
+	public List<TutorInvitation> findAll(Long id) {
+		return tutorInvitationRepository.findAllByTutorId(id);
 	}
 
 	@Override
 	public Optional<TutorInvitation> findById(String id) {
 		return tutorInvitationRepository.findById(id);
+	}
+
+	@Override
+	public Optional<TutorInvitation> findTutorIdAndRegisterId(Long tutorId, String reId) {
+		return  tutorInvitationRepository.findByRegisterAndTutor(reId, tutorId);
 	}
 
 }

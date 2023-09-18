@@ -1,8 +1,17 @@
 package com.project.projectWs.rest;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,24 +24,32 @@ import com.project.projectWs.dto.RequestUpdateRegisterAndLearnerTypeUserDto;
 import com.project.projectWs.dto.RequestUpdateUserDto;
 import com.project.projectWs.dto.RequestUpdateUserRoleDto;
 import com.project.projectWs.dto.RequestUpdateUserTypeTutorDto;
+import com.project.projectWs.dto.ResponseUserDto;
 import com.project.projectWs.facade.UserFacade;
 import com.project.projectWs.utils.Routes;
  	
 @RestController
 @RequestMapping(value = Routes.USER)
+@PreAuthorize("hasAuthority('ADMINISTRATOR')")
 public class UserRest {
 	
 	@Autowired
 	private UserFacade userFacade;
 
 	@PostMapping("/create")
-	public ResponseEntity<Object> saveUser(@RequestBody final RequestSaveUserDto request) {
+	public ResponseEntity<Object> saveUser(@RequestBody @Valid final RequestSaveUserDto request, BindingResult error) {
+		if(error.hasErrors()) {
+			return ResponseHandler.getResponse(error, HttpStatus.BAD_REQUEST);
+		}
 		String id = userFacade.saveUser(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<Object> updateUser(@RequestBody final RequestUpdateUserDto request) {
+	public ResponseEntity<Object> updateUser(@RequestBody @Valid  final RequestUpdateUserDto request, BindingResult error) {
+		if(error.hasErrors()) {
+			return ResponseHandler.getResponse(error, HttpStatus.BAD_REQUEST);
+		}
 		String id = userFacade.updateUser(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
 	}
@@ -53,6 +70,18 @@ public class UserRest {
 	public ResponseEntity<Object> updateRegisterAndLearnerTypeUser(@RequestBody final RequestUpdateRegisterAndLearnerTypeUserDto request) {
 		String id = userFacade.updateRegisterAndLearnerTypeUser(request);
 		return ResponseHandler.getResponse(id, HttpStatus.OK);
+	}
+	
+	@GetMapping("/find-all-user")
+	public ResponseEntity<Object> findAll() {
+		List<ResponseUserDto> response = userFacade.findAll();
+		return ResponseHandler.getResponse(response, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/delete-by-id/{id}")
+	public ResponseEntity<Object> deleteById (@PathVariable("id") String id) {
+		 userFacade.deleteById(id);
+		return ResponseHandler.getResponse("Deleted", HttpStatus.OK);
 	}
 
 }

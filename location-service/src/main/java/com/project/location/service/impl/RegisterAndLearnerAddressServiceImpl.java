@@ -3,6 +3,8 @@ package com.project.location.service.impl;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +34,10 @@ public class RegisterAndLearnerAddressServiceImpl implements RegisterAndLearnerA
 	}
 
 	@Override
+	@Transactional
 	public void saveAll(List<RegisterAndLearnerAddressDto> dtos, String registerAndLearnerId, String currentUser) {
 		List<RegisterAndLearnerAddress> registerAndLearnerAddresses = new LinkedList<>();
+		registerAndLearnerAddressRepository.deleteByRegisterAndLearnerId(registerAndLearnerId);
 		for(RegisterAndLearnerAddressDto dto : dtos) {
 			RegisterAndLearnerAddress registerAndLearnerAddress = new RegisterAndLearnerAddress();
 			registerAndLearnerAddress = ObjectMapperUtils.map(dto, RegisterAndLearnerAddress.class);

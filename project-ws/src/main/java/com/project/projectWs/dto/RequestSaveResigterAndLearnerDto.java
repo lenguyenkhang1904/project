@@ -28,8 +28,6 @@ public class RequestSaveResigterAndLearnerDto implements Serializable {
 
 	protected  String fullName;
 
-	protected  String englishFullName;
-
 	protected  String gender;
 
 	protected  String birthYear;

@@ -12,7 +12,7 @@ public interface ApplicationService {
 	
 	boolean checkExistTaskInApplication(Long tutorId, String taskId);
 	
-	List<ApplicationDto> findAllApplication();
+	List<ApplicationDto> findAllApplication(String id);
 	
 	ApplicationDto findByid(String applicationId);
 

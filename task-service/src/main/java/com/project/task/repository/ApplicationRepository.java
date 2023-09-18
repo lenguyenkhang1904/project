@@ -15,7 +15,7 @@ public interface ApplicationRepository extends JpaRepository<Application, String
 	@Query(value = "SELECT COUNT(*) FROM application app WHERE app.tutor_id =:tutorId AND app.task_id=:taskId", nativeQuery = true)
 	int countByTaskIdAndTutorId(@Param("taskId") String taskId, @Param("tutorId") Long tutorId);
 	
-	@Query("SELECT app FROM Application app")
-	List<Application> findAllAppication();
+	@Query("SELECT app FROM Application app WHERE app.task.id =:id")
+	List<Application> findAllAppication(@Param("id") String id);
 	
 }

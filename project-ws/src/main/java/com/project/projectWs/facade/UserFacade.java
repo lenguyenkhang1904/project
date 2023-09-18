@@ -1,6 +1,7 @@
 package com.project.projectWs.facade;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Optional;
 
 import javax.mail.MessagingException;
@@ -14,6 +15,7 @@ import com.project.projectWs.dto.RequestUpdateUserDto;
 import com.project.projectWs.dto.RequestUpdateUserRoleDto;
 import com.project.projectWs.dto.RequestUpdateUserTypeTutorDto;
 import com.project.projectWs.dto.ResponseLoginDto;
+import com.project.projectWs.dto.ResponseUserDto;
 import com.project.user.management.dto.UserDto;
 
 public interface UserFacade {
@@ -37,4 +39,8 @@ public interface UserFacade {
 	String forgotPassword(RequestEmail request)  throws UnsupportedEncodingException, MessagingException ;
 	
 	String changePassword(RequestUpdatePassword request);
+
+	List<ResponseUserDto> findAll();
+
+	void deleteById(String id);
 }

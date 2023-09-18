@@ -34,7 +34,7 @@ public class Job extends AbstractEntity {
 	@Column(name = "tutor_id")
 	private Long tutorId;
 	
-	@OneToOne(mappedBy = "job")
+	@OneToOne(mappedBy = "job", fetch = FetchType.LAZY, orphanRemoval = false)
 	private ApplicationJob applicationJob;
 
 	// Thông tin Task và Tutor tại thời điểm giao (để lưu trữ lại)

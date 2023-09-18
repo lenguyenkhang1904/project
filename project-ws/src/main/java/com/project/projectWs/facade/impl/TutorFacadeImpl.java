@@ -4,12 +4,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.common.collect.Sets;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.education.dto.SubjectGroupDto;
 import com.project.education.service.SubjectGroupService;
@@ -61,7 +64,7 @@ public class TutorFacadeImpl implements TutorFacade {
 		TutorDto dto = new TutorDto();
 		dto = ObjectMapperUtils.map(request, TutorDto.class);
 		dto.setCreatedBy(userFacade.getCurrentUser());
-		dto.setAreaTutorIds(request.getAreaTutorId());
+		dto.setAreaTutorIds(request.getRelAreaIds());
 		dto.setCalendars(dto.getCalendars());
 		dto.setNowLevel(dto.getNowLevel());
 		dto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());
@@ -200,6 +203,7 @@ public class TutorFacadeImpl implements TutorFacade {
 		urlPrivateImgs = new LinkedList<>(new HashSet<>(urlPrivateImgs));
 		tutorDto.setPrivateImgs(urlPrivateImgs);
 		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
+		tutor.setPrivateImgs(urlPrivateImgs);
 		Long tutorUpdatedId = tutorService.updateTutor(tutor);
 		return tutorUpdatedId != null ? "Insert PrivateImgs successfully" : "";
 	}
@@ -222,6 +226,7 @@ public class TutorFacadeImpl implements TutorFacade {
 		urlPublicImgs = new LinkedList<>(new HashSet<>(urlPublicImgs));
 		tutorDto.setPublicImgs(urlPublicImgs);
 		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
+		tutor.setPublicImgs(urlPublicImgs);
 		Long tutorUpdatedId = tutorService.updateTutor(tutor);
 		return tutorUpdatedId != null ? "Insert PublicImgs successfully" : "";
 	}
@@ -242,8 +247,8 @@ public class TutorFacadeImpl implements TutorFacade {
 	public void deleteByFileNameAndIDPublicImgs(String urlFile) {
 		avatarTutorAwsService.deleteByFileNameAndIDPublicImgs(urlFile);
 		TutorDto tutorDto = tutorService.findById(
-				Long.parseLong(urlFile.substring(urlFile.lastIndexOf("/") + 1, urlFile.lastIndexOf("Private"))));
-		List<String> urlPublicImgs = tutorDto.getPrivateImgs();
+				Long.parseLong(urlFile.substring(urlFile.lastIndexOf("/") + 1, urlFile.lastIndexOf("Public"))));
+		List<String> urlPublicImgs = tutorDto.getPublicImgs();
 		urlPublicImgs.remove(urlFile);
 		tutorDto.setPublicImgs(urlPublicImgs);
 		Tutor tutor = ObjectMapperUtils.map(tutorDto, Tutor.class);
@@ -310,7 +315,7 @@ public class TutorFacadeImpl implements TutorFacade {
 		TutorDto dto = new TutorDto();
 		dto = ObjectMapperUtils.map(request, TutorDto.class);
 		dto.setCreatedBy(userFacade.getCurrentUser());
-		dto.setAreaTutorIds(request.getAreaTutorId());
+		dto.setAreaTutorIds(request.getRelAreaIds());
 		dto.setCalendars(dto.getCalendars());
 		dto.setNowLevel(dto.getNowLevel());
 		dto.setNowLevelUpdatedAt(dto.getNowLevelUpdatedAt());
@@ -340,6 +345,10 @@ public class TutorFacadeImpl implements TutorFacade {
 
 		responseTutor.setSubjectGroupMaybes(subjectGroups.stream()
 				.filter(sub -> item.getSubjectGroupMaybeIds().stream().anyMatch(it -> it.equals(sub.getId())))
+				.collect(Collectors.toList()));
+
+		responseTutor.setSubjectGroupfails(subjectGroups.stream()
+				.filter(sub -> item.getSubjectGroupFails().stream().anyMatch(it -> it.equals(sub.getId())))
 				.collect(Collectors.toList()));
 
 		responseTutor.setJobDtos(
@@ -382,7 +391,6 @@ public class TutorFacadeImpl implements TutorFacade {
 	@Override
 	public TutorForWebByIdDto findAllTutorForWebById(Long id) {
 		TutorForFindAllDto entity = tutorService.findByTutorCode(id);
-		List<TutorForWebDto> tutors = new LinkedList<>();
 		List<AreaDto> areas = areaService.findAll();
 		List<SubjectGroupDto> subjectGroups = subjectGroupService.findAll();
 		List<JobDto> jobsByTutorIds = jobService.findAll();
@@ -402,11 +410,54 @@ public class TutorFacadeImpl implements TutorFacade {
 		responseTutor.setRelArea(
 				areas.stream().filter(area -> entity.getRelArea().stream().anyMatch(it -> it.equals(area.getId())))
 						.collect(Collectors.toList()));
-		
+
 		responseTutor.setTutorReviews(tutorReviewDtos.stream().filter(it -> it.getTutorId().equals(entity.getId()))
 				.collect(Collectors.toList()));
-		
+
 		return responseTutor;
+	}
+
+	@Override
+	public boolean findAllTutorSynchronizedAvatarAndPublicAndPrivateImg() {
+		Set<String> urlAvatarTutors = Sets.newHashSet(avatarTutorAwsService.findAll());
+
+		Set<String> urlTutorPrivateImgs = Sets.newHashSet(avatarTutorAwsService.findAllPrivateImgs());
+
+		Set<String> urlTutorPublicImgs = Sets.newHashSet(avatarTutorAwsService.findAllPublicImgs());
+
+		List<Tutor> tutors = tutorService.findTutorBeforeSynchronize();
+
+		for (Tutor tutor : tutors) {
+			// avatar
+
+			List<String> urlAvatars = urlAvatarTutors.stream()
+					.filter(item -> item.contains(String.valueOf(tutor.getId()))).collect(Collectors.toList());
+
+			if (!CollectionUtils.isEmpty(urlAvatars)) {
+				tutor.setAvatar(urlAvatars.get(0));
+			}
+
+			// privateImgs
+
+			List<String> urlPrivateImgs = urlTutorPrivateImgs.stream()
+					.filter(item -> item.contains(String.valueOf(tutor.getId()))).collect(Collectors.toList());
+
+			if (!CollectionUtils.isEmpty(urlPrivateImgs)) {
+				tutor.setPrivateImgs(urlPrivateImgs);
+			}
+
+			List<String> urlPublicImgs = urlTutorPublicImgs.stream()
+					.filter(item -> item.contains(String.valueOf(tutor.getId()))).collect(Collectors.toList());
+
+			if (!CollectionUtils.isEmpty(urlPublicImgs)) {
+				tutor.setPublicImgs(urlPublicImgs);
+			}
+
+		}
+
+		tutorService.saveAll(tutors);
+
+		return true;
 	}
 
 }

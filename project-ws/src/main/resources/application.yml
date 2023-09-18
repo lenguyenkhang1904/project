@@ -35,3 +35,5 @@ OAuth:
  secret: cHJvamVjdE9NVFNlY3JldA==
  expired: 50000 # s 
  resource: project-omt-ws
+logging:
+  config: classpath:log4j2-spring.xml

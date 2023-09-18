@@ -1,5 +1,6 @@
 package com.project.task.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,10 +51,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 		Optional<Registration> registrationOpt = registrationRepository.findById(dto.getId());
 		if (!registrationOpt.isEmpty()) {
 			Registration registration = registrationOpt.get();
+			LocalDateTime createdDate = registration.getCreatedAt();
 			registration = ObjectMapperUtils.map(dto, Registration.class);
 			registration.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
 			registration.setUpdatedBy(dto.getCreatedBy());
-
+			registration.setCreatedAt(createdDate);
 			Optional<Task> taskOpt = taskRepository.findById(dto.getTaskId());
 			if (!taskOpt.isEmpty()) {
 				Task task = taskOpt.get();
@@ -65,9 +67,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public List<RegistrationDto> findAllRegistration() {
+	public List<RegistrationDto> findAllRegistration(String taskId) {
 		List<RegistrationDto> reDtos = new LinkedList<>();
-		List<Registration> entities = registrationRepository.findAllRegistration();
+		List<Registration> entities = registrationRepository.findAllRegistration(taskId);
 		if (!CollectionUtils.isEmpty(entities)) {
 			reDtos = entities.stream().map(item -> {
 				RegistrationDto dto = new RegistrationDto();
@@ -93,6 +95,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 			return dto;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean checkExistRegistration(String taskId, String registerAndLearnerId) {
+		return registrationRepository.countByTaskIdAndRegisterAndLearnerId(taskId, registerAndLearnerId) == 1;
 	}
 
 }

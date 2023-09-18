@@ -33,7 +33,7 @@ public class TaskDto implements Serializable {
 
 	private String requireNote;
 
-	private String lessonNumber; // Số buổi
+	private Integer lessonNumber; // Số buổi
 
 	private String lessonPeriodOfTime;
 
@@ -93,5 +93,5 @@ public class TaskDto implements Serializable {
 	private Set<RegistrationDto> registrations = new HashSet<>();
 
 	private Set<ApplicationDto> applications = new HashSet<>();
-	
+
 }

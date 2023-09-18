@@ -1,5 +1,7 @@
 package com.project.finance.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.common.utils.DateConverter;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.finance.dto.JobFinanceDto;
 import com.project.finance.entity.JobFinance;
@@ -23,7 +26,8 @@ public class JobFinanceServiceImpl implements JobFinanceService {
 	public String createJobFinance(JobFinanceDto dto) {
 		JobFinance entity = new JobFinance();
 		entity = ObjectMapperUtils.map(dto, JobFinance.class);
-		return entity.getId();
+		entity.setCreatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
+		return jobFinanceRepository.save(entity).getId();
 	}
 
 	@Override
@@ -31,8 +35,12 @@ public class JobFinanceServiceImpl implements JobFinanceService {
 		Optional<JobFinance> entityOpt = jobFinanceRepository.findById(dto.getId());
 		if (!entityOpt.isEmpty()) {
 			JobFinance entity = entityOpt.get();
+			LocalDateTime createdAt = entity.getCreatedAt();
 			entity = ObjectMapperUtils.map(dto, JobFinance.class);
-			return entity.getId();
+			entity.setCreatedAt(createdAt);
+			entity.setUpdatedBy(dto.getCreatedBy());
+			entity.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
+			return jobFinanceRepository.save(entity).getId();
 		}
 		return StringUtils.EMPTY;
 	}
@@ -53,6 +61,16 @@ public class JobFinanceServiceImpl implements JobFinanceService {
 	public List<JobFinanceDto> findAll() {
 		List<JobFinance> entities = jobFinanceRepository.findAll();
 		return ObjectMapperUtils.mapAll(entities, JobFinanceDto.class);
+	}
+
+	@Override
+	public List<JobFinance> findAllSyncUp() {
+		return jobFinanceRepository.findAllBeforeSync();
+	}
+
+	@Override
+	public void saveAll(List<JobFinance> jobs) {
+		jobFinanceRepository.saveAll(jobs);
 	}
 
 }

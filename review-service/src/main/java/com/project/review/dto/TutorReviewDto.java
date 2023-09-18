@@ -32,4 +32,14 @@ public class TutorReviewDto implements Serializable {
 	private List<String> publicFeedbackImgs = new LinkedList<>();
 
 	private List<String> privateFeedbackImgs = new LinkedList<>();
+
+	@Override
+	public String toString() {
+		return "TutorReviewDto [id=" + id + ", starNumber=" + starNumber + ", feedbackContent=" + feedbackContent
+				+ ", tutorId=" + tutorId + ", jobId=" + jobId + ", createdBy=" + createdBy
+				+ ", jobCreatedByCreatingTutorReview=" + jobCreatedByCreatingTutorReview + ", publicFeedbackImgs="
+				+ publicFeedbackImgs + ", privateFeedbackImgs=" + privateFeedbackImgs + "]";
+	}
+	
+	
 }

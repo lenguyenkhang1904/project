@@ -3,6 +3,7 @@ package com.project.projectWs.facade.impl;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.common.collect.Sets;
 import com.project.common.utils.ObjectMapperUtils;
 import com.project.finance.dto.JobFinanceDto;
+import com.project.finance.entity.JobFinance;
 import com.project.finance.service.JobFinanceService;
 import com.project.job.dto.JobDto;
 import com.project.job.service.JobService;
@@ -120,6 +123,25 @@ public class JobFinanceFacadeImpl implements JobFinanceFacade {
 			return response;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean syncUpData() {
+		Set<String> urlRetainedImgsIdentificationOfJob = Sets.newHashSet(billImageAwsService.findAll());
+		List<JobFinance> jobs = jobFinaService.findAllSyncUp();
+		for (JobFinance job : jobs) {
+			List<String> urls = urlRetainedImgsIdentificationOfJob.stream()
+					.filter(item -> item.contains(String.valueOf(job.getId()))).collect(Collectors.toList());
+
+			if (!CollectionUtils.isEmpty(urls)) {
+				job.setBillImg(urls.get(0));
+			}
+
+		}
+
+		jobFinaService.saveAll(jobs);
+
+		return true;
 	}
 
 }

@@ -3,6 +3,8 @@ package com.project.location.service.impl;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,7 @@ public class TaskPlaceAddressServiceImpl implements TaskPlaceAddressService {
 	}
 
 	@Override
+	@Transactional
 	public void saveAll(List<TaskPlaceAddressDto> dtos, String taskId, String currentUser) {
 		List<TaskPlaceAddress> taskPlaceAddresses = new LinkedList<>();
 		taskPlaceAddressRepository.deleteByTaskId(taskId);

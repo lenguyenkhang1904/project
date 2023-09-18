@@ -1,5 +1,6 @@
 package com.project.review.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
@@ -96,10 +97,11 @@ public class TutorReviewServiceImpl implements TutorReviewService {
 		Optional<TutorReview> entityOpt = tutorReviewRepository.findById(tutorDto.getId());
 		if (!entityOpt.isEmpty()) {
 			TutorReview entity = entityOpt.get();
+			LocalDateTime createdDate = entity.getCreatedAt();
 			entity = ObjectMapperUtils.map(tutorDto, TutorReview.class);
 			entity.setUpdatedBy(tutorDto.getCreatedBy());
 			entity.setUpdatedAt(DateConverter.convertDateToLocalDateTime(new Date()));
-
+			entity.setCreatedAt(createdDate);
 			List<String> feedbackPrivates = tutorDto.getPrivateFeedbackImgs();
 
 			if (!CollectionUtils.isEmpty(feedbackPrivates)) {
@@ -114,6 +116,17 @@ public class TutorReviewServiceImpl implements TutorReviewService {
 			return tutorReviewRepository.save(entity).getId();
 		}
 		return StringUtils.EMPTY;
+	}
+
+	@Override
+	public List<TutorReview> findBeforeSynchronize() {
+		return tutorReviewRepository.findAllBefore();
+	}
+
+	@Override
+	public void saveAll(List<TutorReview> reviews) {
+		tutorReviewRepository.saveAll(reviews);
+
 	}
 
 }

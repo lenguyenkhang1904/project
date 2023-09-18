@@ -22,8 +22,6 @@ public class ResponseRegisterAndLearnerDto implements Serializable {
 	private String id;
 	
 	private String createdBy;
-	
-	private String updatedBy;
 
 	private String registeredStatus;
 
@@ -56,8 +54,6 @@ public class ResponseRegisterAndLearnerDto implements Serializable {
 	private List<String> privateImgs = new LinkedList<>();
 
 	private LocalDateTime createdAt;
-	
-	private LocalDateTime updatedAt;
 
 	private String vocative;
 

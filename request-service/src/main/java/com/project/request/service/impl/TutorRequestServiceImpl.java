@@ -44,8 +44,8 @@ public class TutorRequestServiceImpl implements TutorRequestService {
 	}
 
 	@Override
-	public List<TutorRequestDto> findAll() {
-		List<TutorRequest> entities = repo.findAll();
+	public List<TutorRequestDto> findAll(Long tutorId) {
+		List<TutorRequest> entities = repo.findAllByChosenTutorId(tutorId);
 		return ObjectMapperUtils.mapAll(entities, TutorRequestDto.class);
 	}
 

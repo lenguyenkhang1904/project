@@ -72,9 +72,15 @@ public class TutorForFindAllDto implements Serializable  {
 	
 	private List<String> subjectGroupMaybeIds;
 	
+	private List<String> subjectGroupFails;
+	
 	private List<Calendar> calendars;
 	
     private Double averageStarNumbers;
+    
+    private Double exp;
+    
+    private Integer successJobsNumbers;
 	
 	
 }

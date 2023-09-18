@@ -9,6 +9,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +29,7 @@ public class ApplicationJob {
 	private String appicationId;
 	
 	@OneToOne
+	@JsonIgnore
 	private Job job;
 
 }
