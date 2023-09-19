@@ -9,7 +9,7 @@ public class ConstantQueriesDefault {
 			+ ", STRING_AGG(tsgmb.subject_group_id, ', ') AS tutor_subject_group_maybe_ids "
 			+ ", STRING_AGG(tsffs.subject_group_id, ', ') AS tutor_subject_group_for_sure_ids "
 			+ ", STRING_AGG(tca.calendars, ', ') AS calendars, t.average_start_numbers, t.exp, t.success_jobs_numbers, "
-			+ " STRING_AGG(tsfs.subject_group_id, ', ') AS tutor_subject_group_fails_ids "
+			+ " STRING_AGG(tsfs.subject_group_id, ', ') AS tutor_subject_group_fails_ids, "
 			+ "  t.subject, t.subject_class, t.studying_insitution, t.teaching_institution, t.voices, t.tutor_tag, t.tutor_notices, t.advantage_note, t.major, t.hien_dang_la " 
 			+ "FROM tutor t "
 			+ "LEFT JOIN area_tutor art ON t.id = art.tutor_id "
