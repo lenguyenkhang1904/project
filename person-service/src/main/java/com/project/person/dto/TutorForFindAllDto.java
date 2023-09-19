@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import com.project.common.utils.Calendar;
 
 import lombok.Getter;
@@ -81,6 +83,26 @@ public class TutorForFindAllDto implements Serializable  {
     private Double exp;
     
     private Integer successJobsNumbers;
+    
+    private String expNotices;
+    
+	private String studyingInsitution;
+
+	private String teachingInstitution;
+
+	private String major;
+
+	private String voices;
+
+	private String tutorTag;
+
+	private String tutorNotices;
+
+	private String advantageNote;
 	
+	private String subject;
 	
+	private String subjectClass;
+	
+	private String hienDangLa;
 }

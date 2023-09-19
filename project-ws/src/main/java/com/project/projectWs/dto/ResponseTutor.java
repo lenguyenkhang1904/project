@@ -85,5 +85,27 @@ public class ResponseTutor implements Serializable {
 	private Integer successJobsNumbers;
 	
 	private Set<JobDto> jobDtos = new HashSet<>();
+	
+    private String expNotices;
+    
+	private String studyingInsitution;
+
+	private String teachingInstitution;
+
+	private String major;
+
+	private String voices;
+
+	private String tutorTag;
+
+	private String tutorNotices;
+
+	private String advantageNote;
+	
+	private String subject;
+	
+	private String subjectClass;
+	
+	private String hienDangLa;
 
 }

@@ -387,6 +387,8 @@ public class TutorServiceImpl implements TutorService {
 		dto.setYRelCoo((String) objectList[16]);
 		dto.setTutorAddressAreaId((String) objectList[17]);
 		dto.setCreatedAt(DateConverter.convertDateToLocalDateTime((Timestamp) objectList[18]));
+		
+		dto.setExpNotices((String) objectList[20]);
 
 		dto.setAvatar(!StringUtils.isEmpty((String) objectList[21]) ? (String) objectList[21] : "");
 
@@ -425,6 +427,16 @@ public class TutorServiceImpl implements TutorService {
 		dto.setSuccessJobsNumbers((Integer) objectList[32] == null ? 0 : (Integer) objectList[32]);
 		String subjectGroupFails = !StringUtils.isEmpty((String) objectList[33]) ? (String) objectList[33] : "";
 		dto.setSubjectGroupFails(Arrays.asList(subjectGroupFails.split(", ")));
+		dto.setSubject((String) objectList[34]);
+		dto.setSubjectClass((String) objectList[35]);
+		dto.setStudyingInsitution((String) objectList[36]);
+		dto.setTeachingInstitution((String) objectList[37]);
+		dto.setVoices((String) objectList[38]);
+		dto.setTutorTag((String) objectList[39]);
+		dto.setTutorNotices((String) objectList[40]);
+		dto.setAdvantageNote((String) objectList[41]);
+		dto.setMajor((String) objectList[42]);
+		dto.setHienDangLa((String) objectList[43]);
 
 		return dto;
 	}
