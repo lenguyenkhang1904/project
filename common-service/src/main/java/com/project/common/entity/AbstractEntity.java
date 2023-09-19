@@ -24,12 +24,12 @@ public class AbstractEntity {
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.DATE_TIME_FORMAT) 
 	@DateTimeFormat(pattern = DateTimeUtils.DATE_TIME_FORMAT) 
-	@Column(name = "update_at")
+	@Column(name = "updated_at")
 	protected LocalDateTime updatedAt;
 
 	@Column(name = "created_by")
 	protected String createdBy;  
 
-	@Column(name = "update_by")
+	@Column(name = "updated_by")
 	protected String updatedBy;
 }
