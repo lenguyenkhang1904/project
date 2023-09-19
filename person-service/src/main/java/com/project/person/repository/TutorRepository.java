@@ -17,7 +17,7 @@ public interface TutorRepository extends JpaRepository<Tutor, Long> {
 	
 	@Query(value = "SELECT t.id, t.birth_date, t.birth_year, t.emails, t.english_full_name, t.fbs, "
 			+ " t.full_name, t.gender, t.id_card_issued_on, t.id_card_number, t.phones, t.registered_status, t.zaloes, t.place_of_birth, t.tutor_address, "
-			+ " t.x_rel_coo, t.y_rel_coo, t.tutor_address_area_id, t.created_at, t.update_at, t.exp_notices, t.avatar, t.created_by, t.updated_by "
+			+ " t.x_rel_coo, t.y_rel_coo, t.tutor_address_area_id, t.created_at, t.updated_at, t.exp_notices, t.avatar, t.created_by, t.updated_by "
 			+ ", STRING_AGG(art.area_id, ', ') AS rel_area "
 			+ ", STRING_AGG(tpr.private_imgs, ', ') AS private_imgs "
 			+ ", STRING_AGG(tp.public_imgs, ', ') AS public_imgs "
