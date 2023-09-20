@@ -172,8 +172,16 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 
 	@Override
 	public List<RegisterAndLearnerDto> findByEnglishFullNameContaining(final String englishFullName) {
-		return ObjectMapperUtils.mapAll(registerAndLearnerRepository.findByEnglishFullNameContaining(englishFullName),
-				RegisterAndLearnerDto.class);
+		List<RegisterAndLearnerDto> dtos = new LinkedList<>();
+		List<RegisterAndLearner> entites = registerAndLearnerRepository.findByEnglishFullNameContaining(englishFullName);
+		if(!CollectionUtils.isEmpty(entites)) {
+			dtos = entites.stream().map(item -> {
+				RegisterAndLearnerDto dto = new RegisterAndLearnerDto();
+				dto = convertEntityToModel(dto, item);
+				return dto;
+			}).collect(Collectors.toList());
+		}
+		return dtos;
 	}
 
 	@Override
@@ -183,9 +191,16 @@ public class RegisterAndLearnerServiceImpl implements RegisterAndLearnerService 
 
 	@Override
 	public List<RegisterAndLearnerDto> findByVocativeAndFullName(String vocative, String fullName) {
-		return ObjectMapperUtils.mapAll(
-				registerAndLearnerRepository.findByVocativeAndFullNameContaining(vocative, fullName),
-				RegisterAndLearnerDto.class);
+		List<RegisterAndLearnerDto> dtos = new LinkedList<>();
+		List<RegisterAndLearner> entites = registerAndLearnerRepository.findByVocativeAndFullNameContaining(vocative, fullName);
+		if(!CollectionUtils.isEmpty(entites)) {
+			dtos = entites.stream().map(item -> {
+				RegisterAndLearnerDto dto = new RegisterAndLearnerDto();
+				dto = convertEntityToModel(dto, item);
+				return dto;
+			}).collect(Collectors.toList());
+		}
+		return dtos;
 	}
 
 	@Override
