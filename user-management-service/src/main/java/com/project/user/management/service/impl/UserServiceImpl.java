@@ -183,6 +183,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteById(String id) {
 		Optional<User> userOpt = userRepository.findById(id);
 		if (userOpt.isPresent()) { 
