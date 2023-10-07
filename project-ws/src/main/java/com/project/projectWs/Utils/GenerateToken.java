@@ -21,7 +21,6 @@ import com.project.projectWs.dto.ResponseToken;
 import lombok.extern.log4j.Log4j2;
 
 @Component
-@Log4j2
 public class GenerateToken {
 
 	@Autowired
@@ -32,15 +31,12 @@ public class GenerateToken {
 		HttpHeaders header = buildHeader(request.getSecretId(), request.getClientId());
 
 		String url = request.getUrlBase() + "/oauth/token";
-		log.info("url: " + url);
-
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
 		body.add("grant_type", "password");
 		body.add("username", request.getUsername());
 		body.add("password", request.getPassword());
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(body, header) ;
-		log.info("--- body: " + entity.toString());
 
 		ResponseEntity<ResponseToken> response = restTemplate.exchange(url, HttpMethod.POST, entity,
 				ResponseToken.class);

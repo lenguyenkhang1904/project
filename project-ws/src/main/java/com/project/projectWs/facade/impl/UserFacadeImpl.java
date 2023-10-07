@@ -43,10 +43,7 @@ import com.project.user.management.dto.UserDto;
 import com.project.user.management.service.RoleService;
 import com.project.user.management.service.UserService;
 
-import lombok.extern.log4j.Log4j2;
-
 @Service
-@Log4j2
 public class UserFacadeImpl implements UserFacade {
 
 	@Autowired
@@ -188,10 +185,8 @@ public class UserFacadeImpl implements UserFacade {
 	public String changePassword(RequestUpdatePassword request) {
 		final String tokenRequest = request.getToken();
 		final Optional<UserDto> userOpt = findByPhonesOrEmailOrUsername(request.getUsername());
-		log.info(userOpt.get().toString());
 		final String tokenCache = generateCode.getOtp(request.getUsername());
 		if (StringUtils.isEmpty(tokenCache)) {
-			log.error("Invalid token");
 			return "Invalid token";
 		}
 		if (tokenRequest.equals(tokenCache) && userOpt.isPresent()) {
